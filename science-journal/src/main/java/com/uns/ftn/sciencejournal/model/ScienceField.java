@@ -7,14 +7,14 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name="SCIENCE_FIELD")
+@Table(name = "SCIENCE_FIELD")
 public class ScienceField {
 
     @Id
-    @Column(name="CODE", length = 3)
+    @Column(name = "CODE", length = 3)
     private String code;
 
-    @Column(name="NAME", nullable = false, length = 30)
+    @Column(name = "FIELD", nullable = false, length = 31)
     private String name;
 
     public ScienceField() {

@@ -1,36 +1,27 @@
 package com.uns.ftn.sciencejournal.model;
 
-import com.uns.ftn.sciencejournal.model.enums.ReviewType;
+import com.uns.ftn.sciencejournal.model.enums.ReviewSummary;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "COMMENT")
 public class Comment {
 
     @Id
-    @GeneratedValue
-    @Column(name = "ID")
-    private Long commentId;
+    private Long id;
 
-    @Column(name = "REVIEW", nullable = false)
+    @OneToOne
+    @MapsId
+    private Task task;
+
+    @Column(name = "PUBLIC_COMMENT", length = 1023, nullable = true)
+    private String publicComment;
+
+    @Column(name = "PRIVATE_COMMENT", length = 1023, nullable = true)
+    private String privateComment;
+
+    @Column(name = "REVIEW_SUMMARY", nullable = true)
     @Enumerated(EnumType.STRING)
-    private ReviewType review;
-
-    @Column(name = "COMMENT", length = 1023,nullable = false)
-    private String comment;
-
-    @Column(name = "EDITOR_COMMENT", length = 1023, nullable = true)
-    private String editorComment;
-
-    @Column(name = "DEADLINE", nullable = false)
-    private LocalDate deadline;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    //@Column(name = "REVIEWER", nullable = false)
-    private Reviewer reviewer;
-
-    //@OneToOne(fetch = FetchType.LAZY)
-    //private Task task;
+    private ReviewSummary summary;
 }

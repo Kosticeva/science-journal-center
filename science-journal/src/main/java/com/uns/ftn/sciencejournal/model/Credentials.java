@@ -4,14 +4,14 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="CREDENTIALS")
+@Table(name = "CREDENTIALS")
 public class Credentials {
 
     @Id
-    @Column(name="USERNAME")
+    @Column(name = "USERNAME", length = 31)
     private String username;
 
-    @Column(name="PASSWORD", nullable = false)
+    @Column(name = "PASSWORD", length = 63, nullable = false)
     private String password;
 
     public Credentials() {
