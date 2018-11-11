@@ -1,16 +1,17 @@
 package com.uns.ftn.sciencejournal.model;
 
+import org.hibernate.annotations.JoinColumnOrFormula;
+
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "USER")
 public class User {
 
     @Id
-    private String username;
+    @GeneratedValue
+    @Column(name = "id")
+    private Long userId;
 
     @Column(name = "FIRST_NAME", length = 31, nullable = true)
     private String fName;
@@ -26,13 +27,4 @@ public class User {
 
     @Column(name = "EMAIL", length = 63, nullable = true)
     private String email;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "USERNAME")
-    private Credentials credentials;
-
-    /*@OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "USER_TRANSACTIONS", joinColumns = @JoinColumn(name = "USERNAME"), inverseJoinColumns = @JoinColumn(name = "TRANSACTION_ID"))
-    private Set<Transaction> transactions = new HashSet<>();*/
 }

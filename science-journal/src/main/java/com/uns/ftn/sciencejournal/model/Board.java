@@ -10,15 +10,18 @@ public class Board implements Serializable {
     @EmbeddedId
     private BoardPK key;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("issn")
+    @JoinColumn(name = "MAGAZINE")
     private Magazine magazine;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("code")
+    @JoinColumn(name = "FIELD")
     private ScienceField field;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "EDITOR")
     private Editor editor;
 
     @Embeddable

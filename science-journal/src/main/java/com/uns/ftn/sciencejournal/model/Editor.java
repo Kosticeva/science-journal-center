@@ -11,9 +11,9 @@ public class Editor {
     @Column(name = "ID")
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "USERNAME")
-    private User userData;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "USERNAME", unique = true)
+    private Credentials user;
 
     @Column(name = "TITLE", length = 31, nullable = false)
     private String title;

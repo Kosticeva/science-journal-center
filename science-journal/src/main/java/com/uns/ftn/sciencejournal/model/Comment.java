@@ -11,8 +11,9 @@ public class Comment {
     @Id
     private Long id;
 
-    @OneToOne
+    @OneToOne(optional = false)
     @MapsId
+    @JoinColumn(name = "TASK")
     private Task task;
 
     @Column(name = "PUBLIC_COMMENT", length = 1023, nullable = true)

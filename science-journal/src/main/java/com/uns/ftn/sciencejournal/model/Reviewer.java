@@ -13,18 +13,18 @@ public class Reviewer {
     @Column(name = "ID")
     private Integer id;
 
-    @OneToOne
-    @JoinColumn(name = "USERNAME")
-    private User userData;
+    @OneToOne(optional = false)
+    @JoinColumn(name = "USERNAME", unique = true)
+    private Credentials user;
 
     @Column(name = "TITLE", length = 31, nullable = false)
     private String title;
 
-    @ManyToMany
-    @JoinTable(name = "REVIEWER_MAGAZINE", joinColumns = @JoinColumn(name = "REVIEWER_ID"), inverseJoinColumns = @JoinColumn(name = "MAGAZINE_ISSN"))
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "REVIEWER_MAGAZINE", joinColumns = @JoinColumn(name = "REVIEWER"), inverseJoinColumns = @JoinColumn(name = "MAGAZINE"))
     private Set<Magazine> magazines = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "REVIEWER_FIELD", joinColumns = @JoinColumn(name = "REVIEWER_ID"), inverseJoinColumns = @JoinColumn(name="FIELD_CODE"))
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "REVIEWER_FIELD", joinColumns = @JoinColumn(name = "REVIEWER"), inverseJoinColumns = @JoinColumn(name="FIELD"))
     private Set<ScienceField> fields = new HashSet<>();
 }

@@ -14,22 +14,24 @@ public class Task {
     @Column(name = "ID")
     private Long taskId;
 
-    @ManyToOne
-    private User user;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "ASSIGNEE")
+    private Credentials user;
 
     @Column(name = "DEADLINE", nullable = false)
     private LocalDate deadline;
 
-    @ManyToOne
-    private Paper paper;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "APPLICATION")
+    private Application paper;
 
-    @Column(name = "TASK_SUMMARY", nullable = false)
+    @Column(name = "SUMMARY", nullable = false)
     private String taskSummary;
 
-    @Column(name = "TASK_TYPE", nullable = false)
+    @Column(name = "TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaperApplicationState type;
 
-    @Column(name = "FINISHED", nullable = true)
+    @Column(name = "FINISHED", nullable = false)
     private Boolean finished;
 }

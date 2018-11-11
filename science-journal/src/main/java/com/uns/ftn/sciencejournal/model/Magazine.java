@@ -3,7 +3,8 @@ package com.uns.ftn.sciencejournal.model;
 import com.uns.ftn.sciencejournal.model.enums.MagazinePaymentType;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "MAGAZINE")
@@ -20,14 +21,18 @@ public class Magazine {
     @Enumerated(EnumType.STRING)
     private MagazinePaymentType type;
 
-    @Column(name = "PRICE", nullable = false)
-    private Double price;
-
-    @Column(name = "MEMBERSHIP", nullable = true)
+    @Column(name = "MEMBERSHIP_PRICE", nullable = true)
     private Double membership;
 
-    @OneToOne
-    @JoinColumn(name = "CHIEF_EDITOR")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "CHIEF_EDITOR", unique = true)
     private Editor editor;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "MAGAZINE_FIELDS", joinColumns = @JoinColumn(name = "MAGAZINE"), inverseJoinColumns = @JoinColumn(name = "FIELD"))
+    private Set<ScienceField> fields = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "MAGAZINE_PAYMENT_OPTIONS", joinColumns = @JoinColumn(name = "MAGAZINE"), inverseJoinColumns = @JoinColumn(name = "OPTION"))
+    private Set<PaymentOption> options = new HashSet<>();
 }
