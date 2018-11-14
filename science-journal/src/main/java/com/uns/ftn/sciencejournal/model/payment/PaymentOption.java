@@ -1,9 +1,6 @@
 package com.uns.ftn.sciencejournal.model.payment;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -11,6 +8,7 @@ import java.util.Objects;
 public class PaymentOption {
 
     @Id
+    @GeneratedValue
     @Column(name = "CODE")
     private Integer paymentOptionCode;
 

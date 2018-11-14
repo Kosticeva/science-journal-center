@@ -7,6 +7,9 @@ import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TaskMapper {
 
@@ -42,5 +45,23 @@ public class TaskMapper {
         dto.setUser(task.getUser().getUsername());
 
         return dto;
+    }
+
+    public List<Task> mapManyFromDTO(List<TaskDTO> taskDTOs) {
+        List<Task> tasks = new ArrayList<>();
+        for (TaskDTO taskDTO : taskDTOs) {
+            tasks.add(mapFromDTO(taskDTO));
+        }
+
+        return tasks;
+    }
+
+    public List<TaskDTO> mapManyToDTO(List<Task> tasks) {
+        List<TaskDTO> taskDTOs = new ArrayList<>();
+        for (Task task : tasks) {
+            taskDTOs.add(mapToDTO(task));
+        }
+
+        return taskDTOs;
     }
 }

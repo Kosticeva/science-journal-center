@@ -10,7 +10,9 @@ import com.uns.ftn.sciencejournal.repository.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class ApplicationMapper {
@@ -67,5 +69,23 @@ public class ApplicationMapper {
         }
 
         return dto;
+    }
+
+    public List<Application> mapManyFromDTO(List<ApplicationDTO> applicationDTOs) {
+        List<Application> applications = new ArrayList<>();
+        for (ApplicationDTO applicationDTO : applicationDTOs) {
+            applications.add(mapFromDTO(applicationDTO));
+        }
+
+        return applications;
+    }
+
+    public List<ApplicationDTO> mapManyToDTO(List<Application> applications) {
+        List<ApplicationDTO> applicationDTOs = new ArrayList<>();
+        for (Application application : applications) {
+            applicationDTOs.add(mapToDTO(application));
+        }
+
+        return applicationDTOs;
     }
 }

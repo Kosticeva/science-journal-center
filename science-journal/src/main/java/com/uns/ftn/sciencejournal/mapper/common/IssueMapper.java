@@ -6,6 +6,9 @@ import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class IssueMapper {
 
@@ -34,5 +37,23 @@ public class IssueMapper {
         dto.setPrice(issue.getPrice());
 
         return dto;
+    }
+
+    public List<Issue> mapManyFromDTO(List<IssueDTO> issueDTOs) {
+        List<Issue> issues = new ArrayList<>();
+        for (IssueDTO issueDTO : issueDTOs) {
+            issues.add(mapFromDTO(issueDTO));
+        }
+
+        return issues;
+    }
+
+    public List<IssueDTO> mapManyToDTO(List<Issue> issues) {
+        List<IssueDTO> issueDTOs = new ArrayList<>();
+        for (Issue issue : issues) {
+            issueDTOs.add(mapToDTO(issue));
+        }
+
+        return issueDTOs;
     }
 }

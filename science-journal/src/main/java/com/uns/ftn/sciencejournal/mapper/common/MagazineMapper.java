@@ -10,7 +10,9 @@ import com.uns.ftn.sciencejournal.repository.users.EditorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class MagazineMapper {
@@ -66,5 +68,23 @@ public class MagazineMapper {
         }
 
         return dto;
+    }
+
+    public List<Magazine> mapManyFromDTO(List<MagazineDTO> magazineDTOs) {
+        List<Magazine> magazines = new ArrayList<>();
+        for (MagazineDTO magazineDTO : magazineDTOs) {
+            magazines.add(mapFromDTO(magazineDTO));
+        }
+
+        return magazines;
+    }
+
+    public List<MagazineDTO> mapManyToDTO(List<Magazine> magazines) {
+        List<MagazineDTO> magazineDTOs = new ArrayList<>();
+        for (Magazine magazine : magazines) {
+            magazineDTOs.add(mapToDTO(magazine));
+        }
+
+        return magazineDTOs;
     }
 }

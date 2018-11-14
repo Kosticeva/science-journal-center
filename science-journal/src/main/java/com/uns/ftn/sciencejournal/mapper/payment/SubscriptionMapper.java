@@ -7,6 +7,9 @@ import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class SubscriptionMapper {
 
@@ -42,6 +45,23 @@ public class SubscriptionMapper {
         dto.setUser(subscription.getUser().getUsername());
 
         return dto;
+    }
 
+    public List<Subscription> mapManyFromDTO(List<SubscriptionDTO> subscriptionDTOs) {
+        List<Subscription> subscriptions = new ArrayList<>();
+        for (SubscriptionDTO subscriptionDTO : subscriptionDTOs) {
+            subscriptions.add(mapFromDTO(subscriptionDTO));
+        }
+
+        return subscriptions;
+    }
+
+    public List<SubscriptionDTO> mapManyToDTO(List<Subscription> subscriptions) {
+        List<SubscriptionDTO> subscriptionDTOs = new ArrayList<>();
+        for (Subscription subscription : subscriptions) {
+            subscriptionDTOs.add(mapToDTO(subscription));
+        }
+
+        return subscriptionDTOs;
     }
 }

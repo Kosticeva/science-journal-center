@@ -8,6 +8,9 @@ import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class IssuePurchaseMapper {
 
@@ -46,5 +49,23 @@ public class IssuePurchaseMapper {
         dto.setUser(issuePurchase.getUser().getUsername());
 
         return dto;
+    }
+
+    public List<IssuePurchase> mapManyFromDTO(List<IssuePurchaseDTO> issuePurchaseDTOs) {
+        List<IssuePurchase> issuePurchases = new ArrayList<>();
+        for (IssuePurchaseDTO issuePurchaseDTO : issuePurchaseDTOs) {
+            issuePurchases.add(mapFromDTO(issuePurchaseDTO));
+        }
+
+        return issuePurchases;
+    }
+
+    public List<IssuePurchaseDTO> mapManyToDTO(List<IssuePurchase> issuePurchases) {
+        List<IssuePurchaseDTO> issuePurchaseDTOs = new ArrayList<>();
+        for (IssuePurchase issuePurchase : issuePurchases) {
+            issuePurchaseDTOs.add(mapToDTO(issuePurchase));
+        }
+
+        return issuePurchaseDTOs;
     }
 }

@@ -10,7 +10,9 @@ import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class ReviewerMapper {
@@ -62,5 +64,23 @@ public class ReviewerMapper {
         }
 
         return dto;
+    }
+
+    public List<Reviewer> mapManyFromDTO(List<ReviewerDTO> reviewerDTOs) {
+        List<Reviewer> reviewers = new ArrayList<>();
+        for (ReviewerDTO reviewerDTO : reviewerDTOs) {
+            reviewers.add(mapFromDTO(reviewerDTO));
+        }
+
+        return reviewers;
+    }
+
+    public List<ReviewerDTO> mapManyToDTO(List<Reviewer> reviewers) {
+        List<ReviewerDTO> reviewerDTOs = new ArrayList<>();
+        for (Reviewer reviewer : reviewers) {
+            reviewerDTOs.add(mapToDTO(reviewer));
+        }
+
+        return reviewerDTOs;
     }
 }

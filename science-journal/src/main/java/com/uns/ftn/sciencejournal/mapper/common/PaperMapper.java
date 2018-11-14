@@ -10,7 +10,9 @@ import com.uns.ftn.sciencejournal.repository.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class PaperMapper {
@@ -64,5 +66,23 @@ public class PaperMapper {
         }
 
         return dto;
+    }
+
+    public List<Paper> mapManyFromDTO(List<PaperDTO> paperDTOs) {
+        List<Paper> papers = new ArrayList<>();
+        for (PaperDTO paperDTO : paperDTOs) {
+            papers.add(mapFromDTO(paperDTO));
+        }
+
+        return papers;
+    }
+
+    public List<PaperDTO> mapManyToDTO(List<Paper> papers) {
+        List<PaperDTO> paperDTOs = new ArrayList<>();
+        for (Paper paper : papers) {
+            paperDTOs.add(mapToDTO(paper));
+        }
+
+        return paperDTOs;
     }
 }

@@ -4,6 +4,9 @@ import com.uns.ftn.sciencejournal.dto.users.UserDTO;
 import com.uns.ftn.sciencejournal.model.users.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserMapper {
 
@@ -31,5 +34,23 @@ public class UserMapper {
         dto.setId(user.getUserId());
 
         return dto;
+    }
+
+    public List<User> mapManyFromDTO(List<UserDTO> userDTOs) {
+        List<User> users = new ArrayList<>();
+        for (UserDTO userDTO : userDTOs) {
+            users.add(mapFromDTO(userDTO));
+        }
+
+        return users;
+    }
+
+    public List<UserDTO> mapManyToDTO(List<User> users) {
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(mapToDTO(user));
+        }
+
+        return userDTOs;
     }
 }

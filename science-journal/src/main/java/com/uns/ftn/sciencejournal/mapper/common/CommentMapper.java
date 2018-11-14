@@ -6,6 +6,9 @@ import com.uns.ftn.sciencejournal.repository.common.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CommentMapper {
 
@@ -34,5 +37,23 @@ public class CommentMapper {
         dto.setTask(comment.getTask().getId());
 
         return dto;
+    }
+
+    public List<Comment> mapManyFromDTO(List<CommentDTO> commentDTOs) {
+        List<Comment> comments = new ArrayList<>();
+        for (CommentDTO commentDTO : commentDTOs) {
+            comments.add(mapFromDTO(commentDTO));
+        }
+
+        return comments;
+    }
+
+    public List<CommentDTO> mapManyToDTO(List<Comment> comments) {
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+        for (Comment comment : comments) {
+            commentDTOs.add(mapToDTO(comment));
+        }
+
+        return commentDTOs;
     }
 }
