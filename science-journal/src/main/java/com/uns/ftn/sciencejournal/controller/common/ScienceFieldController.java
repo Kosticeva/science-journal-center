@@ -38,7 +38,7 @@ public class ScienceFieldController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ScienceFieldDTO> createScienceField(@RequestBody ScienceFieldDTO newScienceField) {
-        if (newScienceField.getCode().equals(null)) {
+        if (!newScienceField.getCode().equals(null)) {
             ScienceField scienceField = scienceFieldService.createScienceField(scienceFieldMapper.mapFromDTO(newScienceField));
 
             if (!scienceField.equals(null)) {

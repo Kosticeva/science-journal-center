@@ -37,7 +37,7 @@ public class PaperController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaperDTO> createPaper(@RequestBody PaperDTO newPaper) {
-        if (newPaper.getDoi().equals(null)) {
+        if (!newPaper.getDoi().equals(null)) {
             Paper paper = paperService.createPaper(paperMapper.mapFromDTO(newPaper));
 
             if (!paper.equals(null)) {
