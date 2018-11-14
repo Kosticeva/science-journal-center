@@ -125,15 +125,15 @@ insert into magazine_fields(magazine, field) values ('74651xaa', 'BIO');
 insert into magazine_fields(magazine, field) values ('74651xaa', 'HIS');
 insert into magazine_fields(magazine, field) values ('74651xaa', 'GEO');
 
-insert into board(magazine, field, editor) values ('12345678', 'PHY', 4);
-insert into board(magazine, field, editor) values ('12345678', 'CHE', 5);
-insert into board(magazine, field, editor) values ('12345678', 'MAT', 6);
-insert into board(magazine, field, editor) values ('87654321', 'PHI', 7);
-insert into board(magazine, field, editor) values ('87654321', 'LIT', 8);
-insert into board(magazine, field, editor) values ('87654321', 'SSC', 7);
-insert into board(magazine, field, editor) values ('74651xaa', 'GEO', 9);
-insert into board(magazine, field, editor) values ('74651xaa', 'HIS', 10);
-insert into board(magazine, field, editor) values ('74651xaa', 'BIO', 11);
+insert into boardMember(magazine, field, editor) values ('12345678', 'PHY', 4);
+insert into boardMember(magazine, field, editor) values ('12345678', 'CHE', 5);
+insert into boardMember(magazine, field, editor) values ('12345678', 'MAT', 6);
+insert into boardMember(magazine, field, editor) values ('87654321', 'PHI', 7);
+insert into boardMember(magazine, field, editor) values ('87654321', 'LIT', 8);
+insert into boardMember(magazine, field, editor) values ('87654321', 'SSC', 7);
+insert into boardMember(magazine, field, editor) values ('74651xaa', 'GEO', 9);
+insert into boardMember(magazine, field, editor) values ('74651xaa', 'HIS', 10);
+insert into boardMember(magazine, field, editor) values ('74651xaa', 'BIO', 11);
 
 insert into reviewer_magazine(magazine, reviewer) values ('12345678', 2);
 insert into reviewer_magazine(magazine, reviewer) values ('12345678', 3);

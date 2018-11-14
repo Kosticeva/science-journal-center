@@ -15,7 +15,7 @@ public class SubscriptionPurchaseDTO {
 
     private PurchaseType type;
 
-    private Boolean succesful;
+    private Boolean successful;
 
     private Integer paymentOption;
 
@@ -24,12 +24,12 @@ public class SubscriptionPurchaseDTO {
     public SubscriptionPurchaseDTO() {
     }
 
-    public SubscriptionPurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type, Boolean succesful, Integer paymentOption, Long subscription) {
+    public SubscriptionPurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type, Boolean successful, Integer paymentOption, Long subscription) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
         this.type = type;
-        this.succesful = succesful;
+        this.successful = successful;
         this.paymentOption = paymentOption;
         this.subscription = subscription;
     }
@@ -43,14 +43,14 @@ public class SubscriptionPurchaseDTO {
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
                 Objects.equals(user, that.user) &&
                 type == that.type &&
-                Objects.equals(succesful, that.succesful) &&
+                Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
                 Objects.equals(subscription, that.subscription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, type, succesful, paymentOption, subscription);
+        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, subscription);
     }
 
     public Long getId() {
@@ -85,12 +85,12 @@ public class SubscriptionPurchaseDTO {
         this.type = type;
     }
 
-    public Boolean getSuccesful() {
-        return succesful;
+    public Boolean getSuccessful() {
+        return successful;
     }
 
-    public void setSuccesful(Boolean succesful) {
-        this.succesful = succesful;
+    public void setSuccessful(Boolean successful) {
+        this.successful = successful;
     }
 
     public Integer getPaymentOption() {

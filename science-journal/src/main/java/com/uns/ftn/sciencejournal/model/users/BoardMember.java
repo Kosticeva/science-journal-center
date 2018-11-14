@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "BOARD")
-public class Board implements Serializable {
+public class BoardMember implements Serializable {
 
     @EmbeddedId
     private BoardPK key;
@@ -28,10 +28,10 @@ public class Board implements Serializable {
     @JoinColumn(name = "EDITOR")
     private Editor editor;
 
-    public Board() {
+    public BoardMember() {
     }
 
-    public Board(BoardPK key, Magazine magazine, ScienceField field, Editor editor) {
+    public BoardMember(BoardPK key, Magazine magazine, ScienceField field, Editor editor) {
         this.key = key;
         this.magazine = magazine;
         this.field = field;
@@ -40,7 +40,7 @@ public class Board implements Serializable {
 
     @Override
     public String toString() {
-        return "Board{" +
+        return "BoardMember{" +
                 "key=" + key +
                 ", magazine=" + magazine +
                 ", field=" + field +
@@ -52,11 +52,11 @@ public class Board implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Board board = (Board) o;
-        return Objects.equals(key, board.key) &&
-                Objects.equals(magazine, board.magazine) &&
-                Objects.equals(field, board.field) &&
-                Objects.equals(editor, board.editor);
+        BoardMember boardMember = (BoardMember) o;
+        return Objects.equals(key, boardMember.key) &&
+                Objects.equals(magazine, boardMember.magazine) &&
+                Objects.equals(field, boardMember.field) &&
+                Objects.equals(editor, boardMember.editor);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class PaperPurchaseDTO {
 
     private PurchaseType type;
 
-    private Boolean succesful;
+    private Boolean successful;
 
     private Integer paymentOption;
 
@@ -24,12 +24,12 @@ public class PaperPurchaseDTO {
     public PaperPurchaseDTO() {
     }
 
-    public PaperPurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type, Boolean succesful, Integer paymentOption, String paper) {
+    public PaperPurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type, Boolean successful, Integer paymentOption, String paper) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
         this.type = type;
-        this.succesful = succesful;
+        this.successful = successful;
         this.paymentOption = paymentOption;
         this.paper = paper;
     }
@@ -43,14 +43,14 @@ public class PaperPurchaseDTO {
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
                 Objects.equals(user, that.user) &&
                 type == that.type &&
-                Objects.equals(succesful, that.succesful) &&
+                Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
                 Objects.equals(paper, that.paper);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, type, succesful, paymentOption, paper);
+        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, paper);
     }
 
     public Long getId() {
@@ -85,12 +85,12 @@ public class PaperPurchaseDTO {
         this.type = type;
     }
 
-    public Boolean getSuccesful() {
-        return succesful;
+    public Boolean getSuccessful() {
+        return successful;
     }
 
-    public void setSuccesful(Boolean succesful) {
-        this.succesful = succesful;
+    public void setSuccessful(Boolean successful) {
+        this.successful = successful;
     }
 
     public Integer getPaymentOption() {

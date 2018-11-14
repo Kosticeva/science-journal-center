@@ -2,7 +2,7 @@ package com.uns.ftn.sciencejournal.dto.users;
 
 import java.util.Objects;
 
-public class BoardDTO {
+public class BoardMemberDTO {
 
     private String magazine;
 
@@ -10,10 +10,10 @@ public class BoardDTO {
 
     private Integer editor;
 
-    public BoardDTO() {
+    public BoardMemberDTO() {
     }
 
-    public BoardDTO(String magazine, String fieldCode, Integer editor) {
+    public BoardMemberDTO(String magazine, String fieldCode, Integer editor) {
         this.magazine = magazine;
         this.fieldCode = fieldCode;
         this.editor = editor;
@@ -23,10 +23,10 @@ public class BoardDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BoardDTO boardDTO = (BoardDTO) o;
-        return Objects.equals(magazine, boardDTO.magazine) &&
-                Objects.equals(fieldCode, boardDTO.fieldCode) &&
-                Objects.equals(editor, boardDTO.editor);
+        BoardMemberDTO boardMemberDTO = (BoardMemberDTO) o;
+        return Objects.equals(magazine, boardMemberDTO.magazine) &&
+                Objects.equals(fieldCode, boardMemberDTO.fieldCode) &&
+                Objects.equals(editor, boardMemberDTO.editor);
     }
 
     @Override
