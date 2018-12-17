@@ -26,18 +26,19 @@ public class IssueController {
         return ResponseEntity.ok(issueMapper.mapManyToDTO(issueService.getAll()));
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IssueDTO> getIssueById(@PathVariable("id") Long id) {
-        if (!id.equals(null)) {
-            return ResponseEntity.ok(issueMapper.mapToDTO(issueService.getById(id)));
+    @GetMapping(value = "/{id}/{edition}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<IssueDTO> getIssueById(@PathVariable("id") String issn,
+                                                 @PathVariable("edition") String edition) {
+        if (issn.equals(null) || edition.equals(null)) {
+            return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.ok(issueMapper.mapToDTO(issueService.getById(issn, edition)));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueDTO newIssue) {
-        if (newIssue.getId().equals(null)) {
+        if (!newIssue.getMagazine().equals(null) && !newIssue.getEdition().equals(null)) {
             Issue issue = issueService.createIssue(issueMapper.mapFromDTO(newIssue));
 
             if (!issue.equals(null)) {
@@ -48,10 +49,13 @@ public class IssueController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IssueDTO> updateIssue(@PathVariable("id") Long id, @RequestBody IssueDTO newIssue) {
-        if (!newIssue.getId().equals(null) && !id.equals(null)) {
-            Issue issue = issueService.updateIssue(issueMapper.mapFromDTO(newIssue), id);
+    @PutMapping(value = "/{id}/{edition}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<IssueDTO> updateIssue(@PathVariable("id") String issn,
+                                                @PathVariable("edition") String edition,
+                                                @RequestBody IssueDTO newIssue) {
+        if (!newIssue.getMagazine().equals(null) && !issn.equals(null) && !edition.equals(null)) {
+            Issue issue = issueService.updateIssue(issueMapper.mapFromDTO(newIssue), issn, edition);
 
             if (!issue.equals(null)) {
                 return ResponseEntity.ok(issueMapper.mapToDTO(issue));
@@ -61,13 +65,13 @@ public class IssueController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteIssue(@PathVariable("id") Long id) {
-        if (!id.equals(null)) {
-            issueService.deleteIssue(id);
-            return ResponseEntity.ok(null);
+    @DeleteMapping(value = "/{id}/{edition}")
+    public ResponseEntity deleteIssue(@PathVariable("id") String issn, @PathVariable("edition") String edition) {
+        if (issn.equals(null) || edition.equals(null)) {
+            ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.badRequest().build();
+        issueService.deleteIssue(issn, edition);
+        return ResponseEntity.ok(null);
     }
 }

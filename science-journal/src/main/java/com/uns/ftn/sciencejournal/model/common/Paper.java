@@ -4,7 +4,6 @@ import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.model.users.User;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -31,11 +30,15 @@ public class Paper {
     private Credentials author;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "COAUTHORS", joinColumns = @JoinColumn(name = "PAPER"), inverseJoinColumns = @JoinColumn(name = "AUTHOR"))
+    @JoinTable(name = "COAUTHORS", joinColumns = @JoinColumn(name = "PAPER"),
+            inverseJoinColumns = @JoinColumn(name = "AUTHOR"))
     private Set<User> coauthors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ISSUE")
+    @JoinColumns({
+            @JoinColumn(name = "ISSUE_ISSN", referencedColumnName = "ISSN"),
+            @JoinColumn(name = "ISSUE_EDITION", referencedColumnName = "EDITION")
+    })
     private Issue issue;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -43,15 +46,23 @@ public class Paper {
     private ScienceField field;
 
     @Column(name = "FILE", nullable = false)
-    private Byte[] file;
+    private String file;
 
     @Column(name = "PRICE")
     private Double price;
 
+    @OneToOne(optional = false)
+    @JoinColumns({
+            @JoinColumn(name = "LAST_REVISION_ID", referencedColumnName = "ID"),
+            @JoinColumn(name = "LAST_REVISION_VERSION", referencedColumnName = "VERSION")})
+    private Application lastRevision;
+
     public Paper() {
     }
 
-    public Paper(String doi, String title, String paperAbstract, String keyTerms, Credentials author, Set<User> coauthors, Issue issue, ScienceField field, Byte[] file, Double price) {
+    public Paper(String doi, String title, String paperAbstract, String keyTerms, Credentials author,
+                 Set<User> coauthors, Issue issue, ScienceField field, String file, Double price,
+                 Application lastRevision) {
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
@@ -62,6 +73,7 @@ public class Paper {
         this.field = field;
         this.file = file;
         this.price = price;
+        this.lastRevision = lastRevision;
     }
 
     @Override
@@ -77,15 +89,14 @@ public class Paper {
                 Objects.equals(coauthors, paper.coauthors) &&
                 Objects.equals(issue, paper.issue) &&
                 Objects.equals(field, paper.field) &&
-                Arrays.equals(file, paper.file) &&
-                Objects.equals(price, paper.price);
+                Objects.equals(file, paper.file) &&
+                Objects.equals(price, paper.price) &&
+                Objects.equals(lastRevision, paper.lastRevision);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue, field, price);
-        result = 31 * result + Arrays.hashCode(file);
-        return result;
+        return Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue, field, file, price, lastRevision);
     }
 
     @Override
@@ -99,8 +110,9 @@ public class Paper {
                 ", coauthors=" + coauthors +
                 ", issue=" + issue +
                 ", field=" + field +
-                ", file=" + Arrays.toString(file) +
+                ", file='" + file + '\'' +
                 ", price=" + price +
+                ", lastRevision=" + lastRevision +
                 '}';
     }
 
@@ -168,19 +180,27 @@ public class Paper {
         this.field = field;
     }
 
-    public Byte[] getFile() {
-        return file;
-    }
-
-    public void setFile(Byte[] file) {
-        this.file = file;
-    }
-
     public Double getPrice() {
         return price;
     }
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public Application getLastRevision() {
+        return lastRevision;
+    }
+
+    public void setLastRevision(Application lastRevision) {
+        this.lastRevision = lastRevision;
     }
 }

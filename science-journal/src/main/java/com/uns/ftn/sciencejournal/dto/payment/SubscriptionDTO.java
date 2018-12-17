@@ -24,7 +24,8 @@ public class SubscriptionDTO {
     public SubscriptionDTO() {
     }
 
-    public SubscriptionDTO(Long id, String user, String magazine, SubscriptionType type, LocalDate date, Boolean paid, Boolean cancelled) {
+    public SubscriptionDTO(Long id, String user, String magazine, SubscriptionType type, LocalDate date,
+                           Boolean paid, Boolean cancelled) {
         this.id = id;
         this.user = user;
         this.magazine = magazine;
@@ -51,6 +52,19 @@ public class SubscriptionDTO {
     @Override
     public int hashCode() {
         return Objects.hash(id, user, magazine, type, date, paid, cancelled);
+    }
+
+    @Override
+    public String toString() {
+        return "SubscriptionDTO{" +
+                "id=" + id +
+                ", user='" + user + '\'' +
+                ", magazine='" + magazine + '\'' +
+                ", type=" + type +
+                ", date=" + date +
+                ", paid=" + paid +
+                ", cancelled=" + cancelled +
+                '}';
     }
 
     public Long getId() {

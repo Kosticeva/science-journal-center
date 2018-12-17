@@ -2,9 +2,11 @@ package com.uns.ftn.sciencejournal.service.common;
 
 import com.uns.ftn.sciencejournal.model.common.Comment;
 import com.uns.ftn.sciencejournal.repository.common.CommentRepository;
+import com.uns.ftn.sciencejournal.repository.common.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -12,6 +14,10 @@ public class CommentService {
 
     @Autowired
     CommentRepository commentRepository;
+
+    @Autowired
+    TaskRepository taskRepository;
+
 
     public Comment getById(Long id) {
         return commentRepository.findById(id).orElse(null);
@@ -27,6 +33,12 @@ public class CommentService {
             return null;
         }
 
+        if (!checkCommentValidity(comment)) {
+            return null;
+        }
+
+        comment.setTimestamp(LocalDateTime.now());
+
         return commentRepository.save(comment);
     }
 
@@ -37,12 +49,40 @@ public class CommentService {
         }
 
         Comment comment = getById(id);
-        if (comment != null) {
-
-            return commentRepository.save(comment);
+        if (comment == null) {
+            return null;
         }
 
-        return null;
+        if (!checkCommentValidity(newComment)) {
+            return null;
+        }
+
+        comment.setTask(newComment.getTask());
+        comment.setPrivateComment(newComment.getPrivateComment());
+        comment.setPublicComment(newComment.getPublicComment());
+        comment.setSummary(newComment.getSummary());
+
+        return commentRepository.save(comment);
+    }
+
+    public boolean checkCommentValidity(Comment comment) {
+        if (comment.getTask() == null || comment.getTask().getId() == null) {
+            return false;
+        }
+
+        if (taskRepository.getOne(comment.getId()) == null) {
+            return false;
+        }
+
+        if (comment.getPublicComment() == null || comment.getPublicComment().equals("")) {
+            return false;
+        }
+
+        if (comment.getSummary() == null) {
+            return false;
+        }
+
+        return true;
     }
 
     public void deleteComment(Long id) {

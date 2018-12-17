@@ -33,15 +33,16 @@ public class ReviewerMapper {
         reviewer.setTitle(dto.getTitle());
         reviewer.setUser(credentialsRepository.getOne(dto.getUser()));
 
+        reviewer.setMagazines(new HashSet<>());
+        for (String issn : dto.getMagazines()) {
+            reviewer.getMagazines().add(magazineRepository.getOne(issn));
+        }
+
         reviewer.setFields(new HashSet<>());
         for (String code : dto.getFields()) {
             reviewer.getFields().add(scienceFieldRepository.getOne(code));
         }
 
-        reviewer.setMagazines(new HashSet<>());
-        for (String issn : dto.getMagazines()) {
-            reviewer.getMagazines().add(magazineRepository.getOne(issn));
-        }
 
         return reviewer;
     }
@@ -53,14 +54,14 @@ public class ReviewerMapper {
         dto.setTitle(reviewer.getTitle());
         dto.setUser(reviewer.getUser().getUsername());
 
-        dto.setFields(new HashSet<>());
-        for (ScienceField field : reviewer.getFields()) {
-            dto.getFields().add(field.getCode());
-        }
-
         dto.setMagazines(new HashSet<>());
         for (Magazine magazine : reviewer.getMagazines()) {
             dto.getMagazines().add(magazine.getIssn());
+        }
+
+        dto.setFields(new HashSet<>());
+        for (ScienceField field : reviewer.getFields()) {
+            dto.getFields().add(field.getCode());
         }
 
         return dto;

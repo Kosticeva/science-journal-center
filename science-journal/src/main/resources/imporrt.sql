@@ -8,6 +8,19 @@ insert into science_field(code, field) values ('BIO', 'biology');
 insert into science_field(code, field) values ('PHI', 'philosophy');
 insert into science_field(code, field) values ('SSC', 'social sciences');
 
+insert into magazine(issn, membership_price, name, type) values ('12345678', 1000, 'Chemistry, Physics and Mathematics Review', 'OPEN_ACCESS');
+insert into magazine(issn, membership_price, name, type) values ('87654321', 500, 'Biology, History and Geography Journal', 'OPEN_ACCESS');
+insert into magazine(issn, membership_price, name, type) values ('74651xaa', 0, 'On Literature And Philosophy', 'PAID_ACCESS');
+
+insert into magazine_fields(magazine, field) values ('12345678', 'PHY');
+insert into magazine_fields(magazine, field) values ('12345678', 'CHE');
+insert into magazine_fields(magazine, field) values ('12345678', 'MAT');
+insert into magazine_fields(magazine, field) values ('87654321', 'LIT');
+insert into magazine_fields(magazine, field) values ('87654321', 'PHI');
+insert into magazine_fields(magazine, field) values ('74651xaa', 'BIO');
+insert into magazine_fields(magazine, field) values ('74651xaa', 'HIS');
+insert into magazine_fields(magazine, field) values ('74651xaa', 'GEO');
+
 --------------------------------------------------------------------------------------------------------------------------------
 
 insert into user(id, city, country, email, first_name, last_name) values (1, 'Ruma', 'Serbia', 'kosticka.jelena@gmail.com', 'Jelena', 'Kostic');
@@ -68,72 +81,47 @@ insert into reviewer_field(reviewer, field) values (9, 'GEO');
 
 insert into user(id, city, country, email, first_name, last_name) values (12, 'Istanbul', 'Turkey', 'editor.chief@magazine1.com', 'Chief', 'Editor1');
 insert into credentials(username, password, details) values ('editor1', 'editor', 12);
-insert into editor(id, username, title) values (1, 'editor1', 'PhD in Science');
+insert into editor(id, username, title, magazine, field) values (1, 'editor1', 'PhD in Science', '12345678', null);
 
 insert into user(id, city, country, email, first_name, last_name) values (13, 'Moscow', 'Russia', 'editor.chief@magazine2.com', 'Chief', 'Editor2');
 insert into credentials(username, password, details) values ('editor2', 'editor', 13);
-insert into editor(id, username, title) values (2, 'editor2', 'PhD in Social Sciences');
+insert into editor(id, username, title, magazine, field) values (2, 'editor2', 'PhD in Social Sciences', '87654321', null);
 
 insert into user(id, city, country, email, first_name, last_name) values (14, 'Saint Petersburg', 'Russia', 'editor.chief@magazine3.com', 'Chief', 'Editor3');
 insert into credentials(username, password, details) values ('editor3', 'editor', 14);
-insert into editor(id, username, title) values (3, 'editor3', 'PhD in Science');
+insert into editor(id, username, title, magazine, field) values (3, 'editor3', 'PhD in Science', '87654321', null);
 
 insert into user(id, city, country, email, first_name, last_name) values (15, 'London', 'United Kingdom', 'editor.physics@magazine1.com', 'Physics', 'Editor');
 insert into credentials(username, password, details) values ('editor_physics', 'editor_physics', 15);
-insert into editor(id, username, title) values (4, 'editor_physics', 'PhD in Science');
+insert into editor(id, username, title, magazine, field) values (4, 'editor_physics', 'PhD in Science', '12345678', 'PHY');
 
 insert into user(id, city, country, email, first_name, last_name) values (16, 'Berlin', 'Germany', 'editor.chemistry@magazine1.com', 'Chemistry', 'Editor');
 insert into credentials(username, password, details) values ('editor_chemistry', 'editor_chemistry', 16);
-insert into editor(id, username, title) values (5, 'editor_chemistry', 'PhD in Science');
+insert into editor(id, username, title, magazine, field) values (5, 'editor_chemistry', 'PhD in Science', '12345678', 'CHE');
 
 insert into user(id, city, country, email, first_name, last_name) values (17, 'Madrid', 'Spain', 'editor.mathematics@magazine1.com', 'Mathematics', 'Editor');
 insert into credentials(username, password, details) values ('editor_mathematics', 'editor_mathematics', 17);
-insert into editor(id, username, title) values (6, 'editor_mathematics', 'MsC in Science');
+insert into editor(id, username, title, magazine, field) values (6, 'editor_mathematics', 'MsC in Science', '12345678', 'MAT');
 
 insert into user(id, city, country, email, first_name, last_name) values (18, 'Paris', 'France', 'editor.literature@magazine2.com', 'Literature', 'Editor');
 insert into credentials(username, password, details) values ('editor_literature', 'editor_literature', 18);
-insert into editor(id, username, title) values (7, 'editor_literature', 'PhD in Literature');
+insert into editor(id, username, title, magazine, field) values (7, 'editor_literature', 'PhD in Literature', '87654321', 'LIT');
 
 insert into user(id, city, country, email, first_name, last_name) values (19, 'Rome', 'Italy', 'editor.philosophy@magazine2.com', 'Philosophy', 'Editor');
 insert into credentials(username, password, details) values ('editor_philosophy', 'editor_philosophy', 19);
-insert into editor(id, username, title) values (8, 'editor_philosophy', 'MsC in Philosophy');
+insert into editor(id, username, title, magazine, field) values (8, 'editor_philosophy', 'MsC in Philosophy', '87654321', 'PHI');
 
 insert into user(id, city, country, email, first_name, last_name) values (20, 'Kyev', 'Ukraine', 'editor.geography@magazine3.com', 'Geography', 'Editor');
 insert into credentials(username, password, details) values ('editor_geography', 'editor_geography', 20);
-insert into editor(id, username, title) values (9, 'editor_geography', 'MsC in Science');
+insert into editor(id, username, title, magazine, field) values (9, 'editor_geography', 'MsC in Science', '74651xaa', 'GEO');
 
 insert into user(id, city, country, email, first_name, last_name) values (21, 'Bucharest', 'Romaina', 'editor.history@magazine3.com', 'History', 'Editor');
 insert into credentials(username, password, details) values ('editor_history', 'editor_history', 21);
-insert into editor(id, username, title) values (10, 'editor_history', 'MsC in History');
+insert into editor(id, username, title, magazine, field) values (10, 'editor_history', 'MsC in History', '74651xaa', 'HIS');
 
 insert into user(id, city, country, email, first_name, last_name) values (22, 'Minsk', 'Belarus', 'editor.biology@magazine3.com', 'Biology', 'Editor');
 insert into credentials(username, password, details) values ('editor_biology', 'editor_biology', 22);
-insert into editor(id, username, title) values (11, 'editor_biology', 'MsC in Science');
-
----------------------------------------------------------------------------------------------------------------------
-
-insert into magazine(issn, membership_price, name, type, chief_editor) values ('12345678', 1000, 'Chemistry, Physics and Mathematics Review', 'OPEN_ACCESS', 1);
-insert into magazine(issn, membership_price, name, type, chief_editor) values ('87654321', 500, 'Biology, History and Geography Journal', 'OPEN_ACCESS', 2);
-insert into magazine(issn, membership_price, name, type, chief_editor) values ('74651xaa', 0, 'On Literature And Philosophy', 'PAID_ACCESS', 3);
-
-insert into magazine_fields(magazine, field) values ('12345678', 'PHY');
-insert into magazine_fields(magazine, field) values ('12345678', 'CHE');
-insert into magazine_fields(magazine, field) values ('12345678', 'MAT');
-insert into magazine_fields(magazine, field) values ('87654321', 'LIT');
-insert into magazine_fields(magazine, field) values ('87654321', 'PHI');
-insert into magazine_fields(magazine, field) values ('74651xaa', 'BIO');
-insert into magazine_fields(magazine, field) values ('74651xaa', 'HIS');
-insert into magazine_fields(magazine, field) values ('74651xaa', 'GEO');
-
-insert into boardMember(magazine, field, editor) values ('12345678', 'PHY', 4);
-insert into boardMember(magazine, field, editor) values ('12345678', 'CHE', 5);
-insert into boardMember(magazine, field, editor) values ('12345678', 'MAT', 6);
-insert into boardMember(magazine, field, editor) values ('87654321', 'PHI', 7);
-insert into boardMember(magazine, field, editor) values ('87654321', 'LIT', 8);
-insert into boardMember(magazine, field, editor) values ('87654321', 'SSC', 7);
-insert into boardMember(magazine, field, editor) values ('74651xaa', 'GEO', 9);
-insert into boardMember(magazine, field, editor) values ('74651xaa', 'HIS', 10);
-insert into boardMember(magazine, field, editor) values ('74651xaa', 'BIO', 11);
+insert into editor(id, username, title, magazine, field) values (11, 'editor_biology', 'MsC in Science', '74651xaa', 'BIO');
 
 insert into reviewer_magazine(magazine, reviewer) values ('12345678', 2);
 insert into reviewer_magazine(magazine, reviewer) values ('12345678', 3);

@@ -39,7 +39,8 @@ public class PaperPurchaseController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaperPurchaseDTO> createPaperPurchase(@RequestBody PaperPurchaseDTO newPaperPurchase) {
         if (newPaperPurchase.getId().equals(null)) {
-            PaperPurchase paperPurchase = paperPurchaseService.createPaperPurchase(paperPurchaseMapper.mapFromDTO(newPaperPurchase));
+            PaperPurchase paperPurchase = paperPurchaseService.createPaperPurchase(
+                    paperPurchaseMapper.mapFromDTO(newPaperPurchase));
 
             if (!paperPurchase.equals(null)) {
                 return ResponseEntity.ok(paperPurchaseMapper.mapToDTO(paperPurchase));
@@ -49,10 +50,13 @@ public class PaperPurchaseController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PaperPurchaseDTO> updatePaperPurchase(@PathVariable("id") Long id, @RequestBody PaperPurchaseDTO newPaperPurchase) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PaperPurchaseDTO> updatePaperPurchase(@PathVariable("id") Long id,
+                                                                @RequestBody PaperPurchaseDTO newPaperPurchase) {
         if (!newPaperPurchase.getId().equals(null) && !id.equals(null)) {
-            PaperPurchase paperPurchase = paperPurchaseService.updatePaperPurchase(paperPurchaseMapper.mapFromDTO(newPaperPurchase), id);
+            PaperPurchase paperPurchase = paperPurchaseService.updatePaperPurchase(
+                    paperPurchaseMapper.mapFromDTO(newPaperPurchase), id);
 
             if (!paperPurchase.equals(null)) {
                 return ResponseEntity.ok(paperPurchaseMapper.mapToDTO(paperPurchase));

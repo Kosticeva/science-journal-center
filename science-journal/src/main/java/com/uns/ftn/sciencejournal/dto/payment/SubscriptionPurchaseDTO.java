@@ -21,10 +21,13 @@ public class SubscriptionPurchaseDTO {
 
     private Long subscription;
 
+    private Double amount;
+
     public SubscriptionPurchaseDTO() {
     }
 
-    public SubscriptionPurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type, Boolean successful, Integer paymentOption, Long subscription) {
+    public SubscriptionPurchaseDTO(Double amount, Long id, LocalDateTime timeOfPurchase, String user,
+                                   PurchaseType type, Boolean successful, Integer paymentOption, Long subscription) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
@@ -32,25 +35,15 @@ public class SubscriptionPurchaseDTO {
         this.successful = successful;
         this.paymentOption = paymentOption;
         this.subscription = subscription;
+        this.amount = amount;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SubscriptionPurchaseDTO that = (SubscriptionPurchaseDTO) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
-                Objects.equals(user, that.user) &&
-                type == that.type &&
-                Objects.equals(successful, that.successful) &&
-                Objects.equals(paymentOption, that.paymentOption) &&
-                Objects.equals(subscription, that.subscription);
+    public Double getAmount() {
+        return amount;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, subscription);
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -107,5 +100,39 @@ public class SubscriptionPurchaseDTO {
 
     public void setSubscription(Long subscription) {
         this.subscription = subscription;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubscriptionPurchaseDTO that = (SubscriptionPurchaseDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
+                Objects.equals(user, that.user) &&
+                type == that.type &&
+                Objects.equals(successful, that.successful) &&
+                Objects.equals(paymentOption, that.paymentOption) &&
+                Objects.equals(subscription, that.subscription) &&
+                Objects.equals(amount, that.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, subscription, amount);
+    }
+
+    @Override
+    public String toString() {
+        return "SubscriptionPurchaseDTO{" +
+                "id=" + id +
+                ", timeOfPurchase=" + timeOfPurchase +
+                ", user='" + user + '\'' +
+                ", type=" + type +
+                ", successful=" + successful +
+                ", paymentOption=" + paymentOption +
+                ", subscription=" + subscription +
+                ", amount=" + amount +
+                '}';
     }
 }

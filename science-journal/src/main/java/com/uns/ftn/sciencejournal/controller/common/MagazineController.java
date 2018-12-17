@@ -48,8 +48,10 @@ public class MagazineController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MagazineDTO> updateMagazine(@PathVariable("id") String id, @RequestBody MagazineDTO newMagazine) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MagazineDTO> updateMagazine(@PathVariable("id") String id,
+                                                      @RequestBody MagazineDTO newMagazine) {
         if (!newMagazine.getIssn().equals(null) && !id.equals(null)) {
             Magazine magazine = magazineService.updateMagazine(magazineMapper.mapFromDTO(newMagazine), id);
 

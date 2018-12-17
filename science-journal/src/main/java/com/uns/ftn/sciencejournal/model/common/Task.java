@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Task {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
@@ -24,7 +24,9 @@ public class Task {
     private LocalDateTime deadline;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "APPLICATION")
+    @JoinColumns({
+            @JoinColumn(name = "APPLICATION_ID", referencedColumnName = "ID"),
+            @JoinColumn(name = "APPLICATION_VERSION", referencedColumnName = "VERSION")})
     private Application paper;
 
     @Column(name = "SUMMARY", nullable = false)
@@ -40,7 +42,8 @@ public class Task {
     public Task() {
     }
 
-    public Task(Credentials user, LocalDateTime deadline, Application paper, String summary, PaperApplicationState type, Boolean finished) {
+    public Task(Credentials user, LocalDateTime deadline, Application paper, String summary,
+                PaperApplicationState type, Boolean finished) {
         this.user = user;
         this.deadline = deadline;
         this.paper = paper;

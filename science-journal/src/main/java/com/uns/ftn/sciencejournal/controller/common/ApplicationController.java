@@ -26,10 +26,11 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationMapper.mapManyToDTO(applicationService.getAll()));
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationDTO> getApplicationById(@PathVariable("id") Long id) {
+    @GetMapping(value = "/{id}/{versionid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApplicationDTO> getApplicationById(@PathVariable("id") Long id,
+                                                             @PathVariable("versionid") Integer version) {
         if (!id.equals(null)) {
-            return ResponseEntity.ok(applicationMapper.mapToDTO(applicationService.getById(id)));
+            return ResponseEntity.ok(applicationMapper.mapToDTO(applicationService.getById(id, version)));
         }
 
         return ResponseEntity.badRequest().build();
@@ -48,10 +49,13 @@ public class ApplicationController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationDTO> updateApplication(@PathVariable("id") Long id, @RequestBody ApplicationDTO newApplication) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApplicationDTO> updateApplication(@PathVariable("id") Long id,
+                                                            @RequestBody ApplicationDTO newApplication) {
         if (!newApplication.getPaperId().equals(null) && !id.equals(null)) {
-            Application application = applicationService.updateApplication(applicationMapper.mapFromDTO(newApplication), id);
+            Application application = applicationService.updateApplication(
+                    applicationMapper.mapFromDTO(newApplication), id);
 
             if (!application.equals(null)) {
                 return ResponseEntity.ok(applicationMapper.mapToDTO(application));
@@ -61,10 +65,10 @@ public class ApplicationController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteApplication(@PathVariable("id") Long id) {
-        if (!id.equals(null)) {
-            applicationService.deleteApplication(id);
+    @DeleteMapping(value = "/{id}/{versionid}")
+    public ResponseEntity deleteApplication(@PathVariable("id") Long id, @PathVariable("versionid") Integer version) {
+        if (!id.equals(null) && !version.equals(null)) {
+            applicationService.deleteApplication(id, version);
             return ResponseEntity.ok(null);
         }
 

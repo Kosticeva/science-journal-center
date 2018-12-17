@@ -62,6 +62,4 @@ public class ScienceField {
     public void setName(String name) {
         this.name = name;
     }
-
-
 }

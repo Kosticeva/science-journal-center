@@ -14,7 +14,7 @@ import java.util.Objects;
 public class Subscription implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
@@ -42,7 +42,8 @@ public class Subscription implements Serializable {
     public Subscription() {
     }
 
-    public Subscription(Credentials user, Magazine magazine, SubscriptionType type, LocalDate date, Boolean paid, Boolean cancelled) {
+    public Subscription(Credentials user, Magazine magazine, SubscriptionType type, LocalDate date,
+                        Boolean paid, Boolean cancelled) {
         this.user = user;
         this.magazine = magazine;
         this.type = type;

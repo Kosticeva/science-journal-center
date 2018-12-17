@@ -13,15 +13,19 @@ import java.util.Objects;
 public class IssuePurchase extends Purchase {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ISSUE", nullable = false)
+    @JoinColumns({
+            @JoinColumn(name = "ISSUE_ISSN", referencedColumnName = "ISSN"),
+            @JoinColumn(name = "ISSUE_EDITION", referencedColumnName = "EDITION")
+    })
     private Issue issue;
 
     public IssuePurchase() {
         super();
     }
 
-    public IssuePurchase(Issue issue, LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful, PaymentOption option) {
-        super(timeOfPurchase, user, type, successful, option);
+    public IssuePurchase(Issue issue, LocalDateTime timeOfPurchase, Credentials user, PurchaseType type,
+                         Boolean successful, PaymentOption option, Double amount) {
+        super(timeOfPurchase, user, type, successful, option, amount);
         this.issue = issue;
     }
 

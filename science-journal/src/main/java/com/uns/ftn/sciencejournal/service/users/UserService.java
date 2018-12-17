@@ -27,6 +27,10 @@ public class UserService {
             return null;
         }
 
+        if (!checkUserValidity(user)) {
+            return null;
+        }
+
         return userRepository.save(user);
     }
 
@@ -37,12 +41,45 @@ public class UserService {
         }
 
         User user = getById(id);
-        if (user != null) {
-
-            return userRepository.save(user);
+        if (user == null) {
+            return null;
         }
 
-        return null;
+        if (!checkUserValidity(newUser)) {
+            return null;
+        }
+
+        user.setCity(newUser.getCity());
+        user.setCountry(newUser.getCountry());
+        user.setEmail(newUser.getEmail());
+        user.setfName(newUser.getfName());
+        user.setlName(newUser.getlName());
+
+        return userRepository.save(user);
+    }
+
+    private boolean checkUserValidity(User user) {
+        if (user.getfName() == null || user.getfName().equals("")) {
+            return false;
+        }
+
+        if (user.getlName() == null || user.getlName().equals("")) {
+            return false;
+        }
+
+        if (user.getCity() == null || user.getCity().equals("")) {
+            return false;
+        }
+
+        if (user.getCountry() == null || user.getCountry().equals("")) {
+            return false;
+        }
+
+        if (user.getEmail() == null || user.getEmail().equals("")) {
+            return false;
+        }
+
+        return true;
     }
 
     public void deleteUser(Long id) {

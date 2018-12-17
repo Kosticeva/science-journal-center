@@ -1,5 +1,6 @@
 package com.uns.ftn.sciencejournal.dto.payment;
 
+import com.uns.ftn.sciencejournal.model.common.Issue;
 import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 
 import java.time.LocalDateTime;
@@ -19,38 +20,23 @@ public class IssuePurchaseDTO {
 
     private Integer paymentOption;
 
-    private Long issue;
+    private Issue.IssuePK issuePK;
+
+    private Double amount;
 
     public IssuePurchaseDTO() {
     }
 
-    public IssuePurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type, Boolean successful, Integer paymentOption, Long issue) {
+    public IssuePurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type,
+                            Boolean successful, Integer paymentOption, Issue.IssuePK issuePK, Double amount) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
         this.type = type;
         this.successful = successful;
         this.paymentOption = paymentOption;
-        this.issue = issue;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        IssuePurchaseDTO that = (IssuePurchaseDTO) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
-                Objects.equals(user, that.user) &&
-                type == that.type &&
-                Objects.equals(successful, that.successful) &&
-                Objects.equals(paymentOption, that.paymentOption) &&
-                Objects.equals(issue, that.issue);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, issue);
+        this.issuePK = issuePK;
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -101,11 +87,53 @@ public class IssuePurchaseDTO {
         this.paymentOption = paymentOption;
     }
 
-    public Long getIssue() {
-        return issue;
+    public Issue.IssuePK getIssuePK() {
+        return issuePK;
     }
 
-    public void setIssue(Long issue) {
-        this.issue = issue;
+    public void setIssuePK(Issue.IssuePK issuePK) {
+        this.issuePK = issuePK;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    @Override
+    public String toString() {
+        return "IssuePurchaseDTO{" +
+                "id=" + id +
+                ", timeOfPurchase=" + timeOfPurchase +
+                ", user='" + user + '\'' +
+                ", type=" + type +
+                ", successful=" + successful +
+                ", paymentOption=" + paymentOption +
+                ", issuePK=" + issuePK +
+                ", amount=" + amount +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IssuePurchaseDTO that = (IssuePurchaseDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
+                Objects.equals(user, that.user) &&
+                type == that.type &&
+                Objects.equals(successful, that.successful) &&
+                Objects.equals(paymentOption, that.paymentOption) &&
+                Objects.equals(issuePK, that.issuePK) &&
+                Objects.equals(amount, that.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, issuePK, amount);
     }
 }

@@ -22,13 +22,13 @@ public class TaskMapper {
     public Task mapFromDTO(TaskDTO dto) {
         Task task = new Task();
 
-        task.setDeadline(dto.getDeadline());
-        task.setFinished(dto.getFinished());
         task.setId(dto.getId());
+        task.setUser(credentialsRepository.getOne(dto.getUser()));
+        task.setDeadline(dto.getDeadline());
+        task.setPaper(applicationRepository.getOne(dto.getApplicationPK()));
         task.setSummary(dto.getSummary());
         task.setType(dto.getType());
-        task.setPaper(applicationRepository.getOne(dto.getPaper()));
-        task.setUser(credentialsRepository.getOne(dto.getUser()));
+        task.setFinished(dto.getFinished());
 
         return task;
     }
@@ -41,7 +41,7 @@ public class TaskMapper {
         dto.setId(task.getId());
         dto.setSummary(task.getSummary());
         dto.setType(task.getType());
-        dto.setPaper(task.getPaper().getPaperId());
+        dto.setApplicationPK(task.getPaper().getApplicationPK());
         dto.setUser(task.getUser().getUsername());
 
         return dto;

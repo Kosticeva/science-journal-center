@@ -48,7 +48,8 @@ public class PaperController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaperDTO> updatePaper(@PathVariable("id") String id, @RequestBody PaperDTO newPaper) {
         if (!newPaper.getDoi().equals(null) && !id.equals(null)) {
             Paper paper = paperService.updatePaper(paperMapper.mapFromDTO(newPaper), id);

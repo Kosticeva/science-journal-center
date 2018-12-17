@@ -20,8 +20,9 @@ public class PaperPurchase extends Purchase {
         super();
     }
 
-    public PaperPurchase(LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful, PaymentOption option, Paper paper) {
-        super(timeOfPurchase, user, type, successful, option);
+    public PaperPurchase(LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful,
+                         PaymentOption option, Paper paper, Double amount) {
+        super(timeOfPurchase, user, type, successful, option, amount);
         this.paper = paper;
     }
 

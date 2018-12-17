@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping(path = "/api/credentials")
 public class CredentialsController {
 
     @Autowired
     CredentialsService credentialsService;
-    
+
     @Autowired
     CredentialsMapper credentialsMapper;
 
@@ -49,10 +48,13 @@ public class CredentialsController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CredentialsDTO> updateCredentials(@PathVariable("id") String id, @RequestBody CredentialsDTO newCredentials) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CredentialsDTO> updateCredentials(@PathVariable("id") String id,
+                                                            @RequestBody CredentialsDTO newCredentials) {
         if (!newCredentials.getUsername().equals(null) && !id.equals(null)) {
-            Credentials credentials = credentialsService.updateCredentials(credentialsMapper.mapFromDTO(newCredentials), id);
+            Credentials credentials = credentialsService.updateCredentials(
+                    credentialsMapper.mapFromDTO(newCredentials), id);
 
             if (!credentials.equals(null)) {
                 return ResponseEntity.ok(credentialsMapper.mapToDTO(credentials));

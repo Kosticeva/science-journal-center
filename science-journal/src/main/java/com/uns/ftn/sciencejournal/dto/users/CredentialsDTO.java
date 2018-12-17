@@ -34,6 +34,15 @@ public class CredentialsDTO {
         return Objects.hash(username, password, userDetails);
     }
 
+    @Override
+    public String toString() {
+        return "CredentialsDTO{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", userDetails=" + userDetails +
+                '}';
+    }
+
     public String getUsername() {
         return username;
     }

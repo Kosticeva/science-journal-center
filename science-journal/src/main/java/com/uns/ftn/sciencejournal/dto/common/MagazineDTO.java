@@ -24,7 +24,8 @@ public class MagazineDTO {
     public MagazineDTO() {
     }
 
-    public MagazineDTO(String issn, String name, MagazinePaymentType type, Double membership, Integer editor, Set<String> fields, Set<Integer> options) {
+    public MagazineDTO(String issn, String name, MagazinePaymentType type, Double membership,
+                       Integer editor, Set<String> fields, Set<Integer> options) {
         this.issn = issn;
         this.name = name;
         this.type = type;
@@ -51,6 +52,19 @@ public class MagazineDTO {
     @Override
     public int hashCode() {
         return Objects.hash(issn, name, type, membership, editor, fields, options);
+    }
+
+    @Override
+    public String toString() {
+        return "MagazineDTO{" +
+                "issn='" + issn + '\'' +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", membership=" + membership +
+                ", editor=" + editor +
+                ", fields=" + fields +
+                ", options=" + options +
+                '}';
     }
 
     public String getIssn() {

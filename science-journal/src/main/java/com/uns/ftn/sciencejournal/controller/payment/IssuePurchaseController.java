@@ -38,8 +38,9 @@ public class IssuePurchaseController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IssuePurchaseDTO> createIssuePurchase(@RequestBody IssuePurchaseDTO newIssuePurchase) {
-        if (newIssuePurchase.getId().equals(null)) {
-            IssuePurchase issuePurchase = issuePurchaseService.createIssuePurchase(issuePurchaseMapper.mapFromDTO(newIssuePurchase));
+        if (newIssuePurchase.getId() == null) {
+            IssuePurchase issuePurchase = issuePurchaseService.createIssuePurchase(
+                    issuePurchaseMapper.mapFromDTO(newIssuePurchase));
 
             if (!issuePurchase.equals(null)) {
                 return ResponseEntity.ok(issuePurchaseMapper.mapToDTO(issuePurchase));
@@ -49,10 +50,13 @@ public class IssuePurchaseController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IssuePurchaseDTO> updateIssuePurchase(@PathVariable("id") Long id, @RequestBody IssuePurchaseDTO newIssuePurchase) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<IssuePurchaseDTO> updateIssuePurchase(@PathVariable("id") Long id,
+                                                                @RequestBody IssuePurchaseDTO newIssuePurchase) {
         if (!newIssuePurchase.getId().equals(null) && !id.equals(null)) {
-            IssuePurchase issuePurchase = issuePurchaseService.updateIssuePurchase(issuePurchaseMapper.mapFromDTO(newIssuePurchase), id);
+            IssuePurchase issuePurchase = issuePurchaseService.updateIssuePurchase(
+                    issuePurchaseMapper.mapFromDTO(newIssuePurchase), id);
 
             if (!issuePurchase.equals(null)) {
                 return ResponseEntity.ok(issuePurchaseMapper.mapToDTO(issuePurchase));

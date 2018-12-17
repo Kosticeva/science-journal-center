@@ -20,7 +20,7 @@ public class ScienceFieldController {
 
     @Autowired
     ScienceFieldMapper scienceFieldMapper;
-    
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ScienceFieldDTO>> getAllScienceFields() {
         return ResponseEntity.ok(scienceFieldMapper.mapManyToDTO(scienceFieldService.getAll()));
@@ -39,7 +39,8 @@ public class ScienceFieldController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ScienceFieldDTO> createScienceField(@RequestBody ScienceFieldDTO newScienceField) {
         if (!newScienceField.getCode().equals(null)) {
-            ScienceField scienceField = scienceFieldService.createScienceField(scienceFieldMapper.mapFromDTO(newScienceField));
+            ScienceField scienceField = scienceFieldService.createScienceField(
+                    scienceFieldMapper.mapFromDTO(newScienceField));
 
             if (!scienceField.equals(null)) {
                 return ResponseEntity.ok(scienceFieldMapper.mapToDTO(scienceField));
@@ -49,10 +50,13 @@ public class ScienceFieldController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ScienceFieldDTO> updateScienceField(@PathVariable("id") String id, @RequestBody ScienceFieldDTO newScienceField) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ScienceFieldDTO> updateScienceField(@PathVariable("id") String id,
+                                                              @RequestBody ScienceFieldDTO newScienceField) {
         if (!newScienceField.getCode().equals(null) && !id.equals(null)) {
-            ScienceField scienceField = scienceFieldService.updateScienceField(scienceFieldMapper.mapFromDTO(newScienceField), id);
+            ScienceField scienceField = scienceFieldService.updateScienceField(
+                    scienceFieldMapper.mapFromDTO(newScienceField), id);
 
             if (!scienceField.equals(null)) {
                 return ResponseEntity.ok(scienceFieldMapper.mapToDTO(scienceField));

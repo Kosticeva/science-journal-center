@@ -32,20 +32,24 @@ public class ApplicationMapper {
     public Application mapFromDTO(ApplicationDTO dto) {
         Application application = new Application();
 
-        application.setPaperId(dto.getPaperId());
+        application.setApplicationPK(application.new ApplicationPK(dto.getPaperId(), dto.getVersion()));
         application.setTitle(dto.getTitle());
         application.setPaperAbstract(dto.getPaperAbstract());
         application.setKeyTerms(dto.getKeyTerms());
+
         application.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
-        application.setMagazine(magazineRepository.getOne(dto.getMagazine()));
-        application.setField(scienceFieldRepository.getOne(dto.getField()));
-        application.setAccepted(dto.getAccepted());
-        application.setState(dto.getState());
 
         application.setCoauthors(new HashSet<>());
         for (Long coauthor : dto.getCoauthors()) {
             application.getCoauthors().add(userRepository.getOne(coauthor));
         }
+
+        application.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+        application.setField(scienceFieldRepository.getOne(dto.getField()));
+        application.setFile(dto.getFile());
+        application.setState(dto.getState());
+        application.setAccepted(dto.getAccepted());
+        application.setTimestamp(dto.getTimestamp());
 
         return application;
     }
@@ -53,20 +57,24 @@ public class ApplicationMapper {
     public ApplicationDTO mapToDTO(Application application) {
         ApplicationDTO dto = new ApplicationDTO();
 
-        dto.setPaperId(application.getPaperId());
+        dto.setPaperId(application.getApplicationPK().getId());
+        dto.setVersion(application.getApplicationPK().getVersion());
         dto.setTitle(application.getTitle());
         dto.setPaperAbstract(application.getPaperAbstract());
         dto.setKeyTerms(application.getKeyTerms());
         dto.setAuthor(application.getAuthor().getUsername());
-        dto.setMagazine(application.getMagazine().getIssn());
-        dto.setField(application.getField().getCode());
-        dto.setAccepted(application.getAccepted());
-        dto.setState(application.getState());
 
         dto.setCoauthors(new HashSet<>());
         for (User coauthor : application.getCoauthors()) {
             dto.getCoauthors().add(coauthor.getUserId());
         }
+
+        dto.setMagazine(application.getMagazine().getIssn());
+        dto.setField(application.getField().getCode());
+        dto.setFile(application.getFile());
+        dto.setState(application.getState());
+        dto.setAccepted(application.getAccepted());
+        dto.setTimestamp(application.getTimestamp());
 
         return dto;
     }

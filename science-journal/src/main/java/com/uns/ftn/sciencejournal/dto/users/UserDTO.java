@@ -46,6 +46,18 @@ public class UserDTO {
         return Objects.hash(id, fName, lName, city, country, email);
     }
 
+    @Override
+    public String toString() {
+        return "UserDTO{" +
+                "id=" + id +
+                ", fName='" + fName + '\'' +
+                ", lName='" + lName + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
+
     public Long getId() {
         return id;
     }

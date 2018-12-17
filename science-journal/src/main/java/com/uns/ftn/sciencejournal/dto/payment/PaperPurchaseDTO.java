@@ -21,10 +21,13 @@ public class PaperPurchaseDTO {
 
     private String paper;
 
+    private Double amount;
+
     public PaperPurchaseDTO() {
     }
 
-    public PaperPurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type, Boolean successful, Integer paymentOption, String paper) {
+    public PaperPurchaseDTO(Double amount, Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type,
+                            Boolean successful, Integer paymentOption, String paper) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
@@ -32,25 +35,15 @@ public class PaperPurchaseDTO {
         this.successful = successful;
         this.paymentOption = paymentOption;
         this.paper = paper;
+        this.amount = amount;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PaperPurchaseDTO that = (PaperPurchaseDTO) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
-                Objects.equals(user, that.user) &&
-                type == that.type &&
-                Objects.equals(successful, that.successful) &&
-                Objects.equals(paymentOption, that.paymentOption) &&
-                Objects.equals(paper, that.paper);
+    public Double getAmount() {
+        return amount;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, paper);
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public Long getId() {
@@ -107,5 +100,39 @@ public class PaperPurchaseDTO {
 
     public void setPaper(String paper) {
         this.paper = paper;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PaperPurchaseDTO that = (PaperPurchaseDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
+                Objects.equals(user, that.user) &&
+                type == that.type &&
+                Objects.equals(successful, that.successful) &&
+                Objects.equals(paymentOption, that.paymentOption) &&
+                Objects.equals(paper, that.paper) &&
+                Objects.equals(amount, that.amount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, paper, amount);
+    }
+
+    @Override
+    public String toString() {
+        return "PaperPurchaseDTO{" +
+                "id=" + id +
+                ", timeOfPurchase=" + timeOfPurchase +
+                ", user='" + user + '\'' +
+                ", type=" + type +
+                ", successful=" + successful +
+                ", paymentOption=" + paymentOption +
+                ", paper='" + paper + '\'' +
+                ", amount=" + amount +
+                '}';
     }
 }

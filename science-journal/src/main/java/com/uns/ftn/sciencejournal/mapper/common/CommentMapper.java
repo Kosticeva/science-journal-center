@@ -23,6 +23,7 @@ public class CommentMapper {
         comment.setPublicComment(dto.getPublicComment());
         comment.setSummary(dto.getSummary());
         comment.setTask(taskRepository.getOne(dto.getTask()));
+        comment.setTimestamp(dto.getTimestamp());
 
         return comment;
     }
@@ -35,6 +36,7 @@ public class CommentMapper {
         dto.setPublicComment(comment.getPublicComment());
         dto.setSummary(comment.getSummary());
         dto.setTask(comment.getTask().getId());
+        dto.setTimestamp(comment.getTimestamp());
 
         return dto;
     }

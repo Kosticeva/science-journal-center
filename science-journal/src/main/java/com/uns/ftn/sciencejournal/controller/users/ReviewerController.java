@@ -49,8 +49,10 @@ public class ReviewerController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReviewerDTO> updateReviewer(@PathVariable("id") Integer id, @RequestBody ReviewerDTO newReviewer) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReviewerDTO> updateReviewer(@PathVariable("id") Integer id,
+                                                      @RequestBody ReviewerDTO newReviewer) {
         if (!newReviewer.getId().equals(null) && !id.equals(null)) {
             Reviewer reviewer = reviewerService.updateReviewer(reviewerMapper.mapFromDTO(newReviewer), id);
 

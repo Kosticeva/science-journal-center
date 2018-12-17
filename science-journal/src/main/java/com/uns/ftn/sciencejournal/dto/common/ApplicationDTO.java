@@ -1,15 +1,16 @@
 package com.uns.ftn.sciencejournal.dto.common;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.uns.ftn.sciencejournal.model.enums.PaperApplicationState;
 
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
 public class ApplicationDTO {
 
     private Long paperId;
+
+    private Integer version;
 
     private String title;
 
@@ -19,59 +20,39 @@ public class ApplicationDTO {
 
     private String author;
 
+    private Set<Long> coauthors;
+
     private String magazine;
 
     private String field;
 
-    @JsonIgnore
-    private Byte[] file;
+    private String file;
 
     private PaperApplicationState state;
 
     private Boolean accepted;
 
-    private Set<Long> coauthors;
+    private LocalDate timestamp;
 
     public ApplicationDTO() {
     }
 
-    public ApplicationDTO(Long paperId, String title, String paperAbstract, String keyTerms, String author, String magazine, String field, Byte[] file, PaperApplicationState state, Boolean accepted, Set<Long> coauthors) {
+    public ApplicationDTO(Long paperId, Integer version, String title, String paperAbstract, String keyTerms,
+                          String author, Set<Long> coauthors, String magazine, String field, String file,
+                          PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
         this.paperId = paperId;
+        this.version = version;
         this.title = title;
         this.paperAbstract = paperAbstract;
         this.keyTerms = keyTerms;
         this.author = author;
+        this.coauthors = coauthors;
         this.magazine = magazine;
         this.field = field;
         this.file = file;
         this.state = state;
         this.accepted = accepted;
-        this.coauthors = coauthors;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ApplicationDTO that = (ApplicationDTO) o;
-        return Objects.equals(paperId, that.paperId) &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(paperAbstract, that.paperAbstract) &&
-                Objects.equals(keyTerms, that.keyTerms) &&
-                Objects.equals(author, that.author) &&
-                Objects.equals(magazine, that.magazine) &&
-                Objects.equals(field, that.field) &&
-                Arrays.equals(file, that.file) &&
-                state == that.state &&
-                Objects.equals(accepted, that.accepted) &&
-                Objects.equals(coauthors, that.coauthors);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(paperId, title, paperAbstract, keyTerms, author, magazine, field, state, accepted, coauthors);
-        result = 31 * result + Arrays.hashCode(file);
-        return result;
+        this.timestamp = timestamp;
     }
 
     public Long getPaperId() {
@@ -80,6 +61,14 @@ public class ApplicationDTO {
 
     public void setPaperId(Long paperId) {
         this.paperId = paperId;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public String getTitle() {
@@ -114,6 +103,14 @@ public class ApplicationDTO {
         this.author = author;
     }
 
+    public Set<Long> getCoauthors() {
+        return coauthors;
+    }
+
+    public void setCoauthors(Set<Long> coauthors) {
+        this.coauthors = coauthors;
+    }
+
     public String getMagazine() {
         return magazine;
     }
@@ -130,11 +127,11 @@ public class ApplicationDTO {
         this.field = field;
     }
 
-    public Byte[] getFile() {
+    public String getFile() {
         return file;
     }
 
-    public void setFile(Byte[] file) {
+    public void setFile(String file) {
         this.file = file;
     }
 
@@ -154,11 +151,56 @@ public class ApplicationDTO {
         this.accepted = accepted;
     }
 
-    public Set<Long> getCoauthors() {
-        return coauthors;
+    public LocalDate getTimestamp() {
+        return timestamp;
     }
 
-    public void setCoauthors(Set<Long> coauthors) {
-        this.coauthors = coauthors;
+    public void setTimestamp(LocalDate timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "ApplicationDTO{" +
+                "paperId=" + paperId +
+                ", version=" + version +
+                ", title='" + title + '\'' +
+                ", paperAbstract='" + paperAbstract + '\'' +
+                ", keyTerms='" + keyTerms + '\'' +
+                ", author='" + author + '\'' +
+                ", coauthors=" + coauthors +
+                ", magazine='" + magazine + '\'' +
+                ", field='" + field + '\'' +
+                ", file='" + file + '\'' +
+                ", state=" + state +
+                ", accepted=" + accepted +
+                ", timestamp=" + timestamp +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ApplicationDTO that = (ApplicationDTO) o;
+        return Objects.equals(paperId, that.paperId) &&
+                Objects.equals(version, that.version) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(paperAbstract, that.paperAbstract) &&
+                Objects.equals(keyTerms, that.keyTerms) &&
+                Objects.equals(author, that.author) &&
+                Objects.equals(coauthors, that.coauthors) &&
+                Objects.equals(magazine, that.magazine) &&
+                Objects.equals(field, that.field) &&
+                Objects.equals(file, that.file) &&
+                state == that.state &&
+                Objects.equals(accepted, that.accepted) &&
+                Objects.equals(timestamp, that.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(paperId, version, title, paperAbstract, keyTerms, author, coauthors, magazine,
+                field, file, state, accepted, timestamp);
     }
 }

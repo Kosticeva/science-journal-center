@@ -39,7 +39,8 @@ public class SubscriptionController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SubscriptionDTO> createSubscription(@RequestBody SubscriptionDTO newSubscription) {
         if (newSubscription.getId().equals(null)) {
-            Subscription subscription = subscriptionService.createSubscription(subscriptionMapper.mapFromDTO(newSubscription));
+            Subscription subscription = subscriptionService.createSubscription(
+                    subscriptionMapper.mapFromDTO(newSubscription));
 
             if (!subscription.equals(null)) {
                 return ResponseEntity.ok(subscriptionMapper.mapToDTO(subscription));
@@ -49,10 +50,13 @@ public class SubscriptionController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SubscriptionDTO> updateSubscription(@PathVariable("id") Long id, @RequestBody SubscriptionDTO newSubscription) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SubscriptionDTO> updateSubscription(@PathVariable("id") Long id,
+                                                              @RequestBody SubscriptionDTO newSubscription) {
         if (!newSubscription.getId().equals(null) && !id.equals(null)) {
-            Subscription subscription = subscriptionService.updateSubscription(subscriptionMapper.mapFromDTO(newSubscription), id);
+            Subscription subscription = subscriptionService.updateSubscription(
+                    subscriptionMapper.mapFromDTO(newSubscription), id);
 
             if (!subscription.equals(null)) {
                 return ResponseEntity.ok(subscriptionMapper.mapToDTO(subscription));

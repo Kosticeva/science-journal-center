@@ -27,22 +27,25 @@ public class Magazine {
     @Column(name = "MEMBERSHIP_PRICE")
     private Double membership;
 
-    @OneToOne(optional = false)
+    @OneToOne(optional = true)
     @JoinColumn(name = "CHIEF_EDITOR", unique = true)
     private Editor editor;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "MAGAZINE_FIELDS", joinColumns = @JoinColumn(name = "MAGAZINE"), inverseJoinColumns = @JoinColumn(name = "FIELD"))
+    @JoinTable(name = "MAGAZINE_FIELDS", joinColumns = @JoinColumn(name = "MAGAZINE"),
+            inverseJoinColumns = @JoinColumn(name = "FIELD"))
     private Set<ScienceField> fields = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "MAGAZINE_PAYMENT_OPTIONS", joinColumns = @JoinColumn(name = "MAGAZINE"), inverseJoinColumns = @JoinColumn(name = "OPTION"))
+    @JoinTable(name = "MAGAZINE_PAYMENT_OPTIONS", joinColumns = @JoinColumn(name = "MAGAZINE"),
+            inverseJoinColumns = @JoinColumn(name = "OPTION"))
     private Set<PaymentOption> options = new HashSet<>();
 
     public Magazine() {
     }
 
-    public Magazine(String issn, String name, MagazinePaymentType type, Double membership, Editor editor, Set<ScienceField> fields, Set<PaymentOption> options) {
+    public Magazine(String issn, String name, MagazinePaymentType type, Double membership, Editor editor,
+                    Set<ScienceField> fields, Set<PaymentOption> options) {
         this.issn = issn;
         this.name = name;
         this.type = type;
@@ -50,38 +53,6 @@ public class Magazine {
         this.editor = editor;
         this.fields = fields;
         this.options = options;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Magazine magazine = (Magazine) o;
-        return Objects.equals(issn, magazine.issn) &&
-                Objects.equals(name, magazine.name) &&
-                type == magazine.type &&
-                Objects.equals(membership, magazine.membership) &&
-                Objects.equals(editor, magazine.editor) &&
-                Objects.equals(fields, magazine.fields) &&
-                Objects.equals(options, magazine.options);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(issn, name, type, membership, editor, fields, options);
-    }
-
-    @Override
-    public String toString() {
-        return "Magazine{" +
-                "issn='" + issn + '\'' +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", membership=" + membership +
-                ", editor=" + editor +
-                ", fields=" + fields +
-                ", options=" + options +
-                '}';
     }
 
     public String getIssn() {
@@ -138,5 +109,37 @@ public class Magazine {
 
     public void setOptions(Set<PaymentOption> options) {
         this.options = options;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Magazine magazine = (Magazine) o;
+        return Objects.equals(issn, magazine.issn) &&
+                Objects.equals(name, magazine.name) &&
+                type == magazine.type &&
+                Objects.equals(membership, magazine.membership) &&
+                Objects.equals(editor, magazine.editor) &&
+                Objects.equals(fields, magazine.fields) &&
+                Objects.equals(options, magazine.options);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(issn, name, type, membership, editor, fields, options);
+    }
+
+    @Override
+    public String toString() {
+        return "Magazine{" +
+                "issn='" + issn + '\'' +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", membership=" + membership +
+                ", editor=" + editor +
+                ", fields=" + fields +
+                ", options=" + options +
+                '}';
     }
 }

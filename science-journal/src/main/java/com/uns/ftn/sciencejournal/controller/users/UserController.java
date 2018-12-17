@@ -21,7 +21,7 @@ public class UserController {
 
     @Autowired
     UserMapper userMapper;
-    
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userMapper.mapManyToDTO(userService.getAll()));
@@ -49,7 +49,8 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long id, @RequestBody UserDTO newUser) {
         if (!newUser.getId().equals(null) && !id.equals(null)) {
             User user = userService.updateUser(userMapper.mapFromDTO(newUser), id);

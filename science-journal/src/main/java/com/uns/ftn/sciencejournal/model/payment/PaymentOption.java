@@ -8,7 +8,7 @@ import java.util.Objects;
 public class PaymentOption {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CODE")
     private Integer paymentOptionCode;
 

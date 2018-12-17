@@ -5,7 +5,8 @@ import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.model.users.User;
 
 import javax.persistence.*;
-import java.util.Arrays;
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -14,10 +15,8 @@ import java.util.Set;
 @Table(name = "APPLICATION")
 public class Application {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "ID")
-    private Long paperId;
+    @EmbeddedId
+    private ApplicationPK applicationPK;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -33,7 +32,12 @@ public class Application {
     private Credentials author;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "COAUTHORS", joinColumns = @JoinColumn(name = "PAPER_ID"), inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID"))
+    @JoinTable(
+            name = "COAUTHORS",
+            joinColumns = {
+                    @JoinColumn(name = "PAPER_ID", referencedColumnName = "ID"),
+                    @JoinColumn(name = "PAPER_VERSION", referencedColumnName = "VERSION")},
+            inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID"))
     private Set<User> coauthors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -45,19 +49,25 @@ public class Application {
     private ScienceField field;
 
     @Column(name = "FILE", nullable = false)
-    private Byte[] file;
+    private String file;
 
     @Column(name = "STATE", nullable = false)
     @Enumerated(EnumType.STRING)
     private PaperApplicationState state;
 
-    @Column(name = "ACCEPTED")
+    @Column(name = "ACCEPTED", nullable = false)
     private Boolean accepted;
+
+    @Column(name = "TIMESTAMP", nullable = false)
+    private LocalDate timestamp;
 
     public Application() {
     }
 
-    public Application(String title, String paperAbstract, String keyTerms, Credentials author, Set<User> coauthors, Magazine magazine, ScienceField field, Byte[] file, PaperApplicationState state, Boolean accepted) {
+    public Application(Long paperId, Integer version, String title, String paperAbstract, String keyTerms,
+                       Credentials author, Set<User> coauthors, Magazine magazine, ScienceField field, String file,
+                       PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
+        this.applicationPK = new ApplicationPK(paperId, version);
         this.title = title;
         this.paperAbstract = paperAbstract;
         this.keyTerms = keyTerms;
@@ -68,56 +78,15 @@ public class Application {
         this.file = file;
         this.state = state;
         this.accepted = accepted;
+        this.timestamp = timestamp;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Application that = (Application) o;
-        return Objects.equals(paperId, that.paperId) &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(paperAbstract, that.paperAbstract) &&
-                Objects.equals(keyTerms, that.keyTerms) &&
-                Objects.equals(author, that.author) &&
-                Objects.equals(coauthors, that.coauthors) &&
-                Objects.equals(magazine, that.magazine) &&
-                Objects.equals(field, that.field) &&
-                Arrays.equals(file, that.file) &&
-                state == that.state &&
-                Objects.equals(accepted, that.accepted);
+    public ApplicationPK getApplicationPK() {
+        return applicationPK;
     }
 
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(paperId, title, paperAbstract, keyTerms, author, coauthors, magazine, field, state, accepted);
-        result = 31 * result + Arrays.hashCode(file);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Application{" +
-                "paperId=" + paperId +
-                ", title='" + title + '\'' +
-                ", paperAbstract='" + paperAbstract + '\'' +
-                ", keyTerms='" + keyTerms + '\'' +
-                ", author=" + author +
-                ", coauthors=" + coauthors +
-                ", magazine=" + magazine +
-                ", field=" + field +
-                ", file=" + Arrays.toString(file) +
-                ", state=" + state +
-                ", accepted=" + accepted +
-                '}';
-    }
-
-    public Long getPaperId() {
-        return paperId;
-    }
-
-    public void setPaperId(Long paperId) {
-        this.paperId = paperId;
+    public void setApplicationPK(ApplicationPK applicationPK) {
+        this.applicationPK = applicationPK;
     }
 
     public String getTitle() {
@@ -176,11 +145,11 @@ public class Application {
         this.field = field;
     }
 
-    public Byte[] getFile() {
+    public String getFile() {
         return file;
     }
 
-    public void setFile(Byte[] file) {
+    public void setFile(String file) {
         this.file = file;
     }
 
@@ -198,5 +167,105 @@ public class Application {
 
     public void setAccepted(Boolean accepted) {
         this.accepted = accepted;
+    }
+
+    public LocalDate getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDate timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Application that = (Application) o;
+        return Objects.equals(applicationPK, that.applicationPK) &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(paperAbstract, that.paperAbstract) &&
+                Objects.equals(keyTerms, that.keyTerms) &&
+                Objects.equals(author, that.author) &&
+                Objects.equals(coauthors, that.coauthors) &&
+                Objects.equals(magazine, that.magazine) &&
+                Objects.equals(field, that.field) &&
+                Objects.equals(file, that.file) &&
+                state == that.state &&
+                Objects.equals(accepted, that.accepted) &&
+                Objects.equals(timestamp, that.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(applicationPK, title, paperAbstract, keyTerms, author, coauthors, magazine, field,
+                file, state, accepted, timestamp);
+    }
+
+    @Override
+    public String toString() {
+        return "Application{" +
+                "applicationPK=" + applicationPK +
+                ", title='" + title + '\'' +
+                ", paperAbstract='" + paperAbstract + '\'' +
+                ", keyTerms='" + keyTerms + '\'' +
+                ", author=" + author +
+                ", coauthors=" + coauthors +
+                ", magazine=" + magazine +
+                ", field=" + field +
+                ", file='" + file + '\'' +
+                ", state=" + state +
+                ", accepted=" + accepted +
+                ", timestamp=" + timestamp +
+                '}';
+    }
+
+    @Embeddable
+    public class ApplicationPK implements Serializable {
+
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "ID")
+        protected Long id;
+
+        @Column(name = "VERSION")
+        protected Integer version;
+
+        public ApplicationPK() {
+        }
+
+        public ApplicationPK(Long id, Integer version) {
+            this.id = id;
+            this.version = version;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public Integer getVersion() {
+            return version;
+        }
+
+        public void setVersion(Integer version) {
+            this.version = version;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ApplicationPK that = (ApplicationPK) o;
+            return Objects.equals(id, that.id) &&
+                    Objects.equals(version, that.version);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, version);
+        }
     }
 }

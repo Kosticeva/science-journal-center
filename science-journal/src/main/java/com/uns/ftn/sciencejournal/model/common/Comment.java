@@ -3,6 +3,7 @@ package com.uns.ftn.sciencejournal.model.common;
 import com.uns.ftn.sciencejournal.model.enums.ReviewSummary;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -27,15 +28,20 @@ public class Comment {
     @Enumerated(EnumType.STRING)
     private ReviewSummary summary;
 
+    @Column(name = "TIMESTAMP")
+    private LocalDateTime timestamp;
+
     public Comment() {
     }
 
-    public Comment(Long id, Task task, String publicComment, String privateComment, ReviewSummary summary) {
+    public Comment(Long id, Task task, String publicComment, String privateComment,
+                   ReviewSummary summary, LocalDateTime timestamp) {
         this.id = id;
         this.task = task;
         this.publicComment = publicComment;
         this.privateComment = privateComment;
         this.summary = summary;
+        this.timestamp = timestamp;
     }
 
     @Override
@@ -47,12 +53,13 @@ public class Comment {
                 Objects.equals(task, comment.task) &&
                 Objects.equals(publicComment, comment.publicComment) &&
                 Objects.equals(privateComment, comment.privateComment) &&
-                summary == comment.summary;
+                summary == comment.summary &&
+                Objects.equals(timestamp, comment.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, task, publicComment, privateComment, summary);
+        return Objects.hash(id, task, publicComment, privateComment, summary, timestamp);
     }
 
     @Override
@@ -63,6 +70,7 @@ public class Comment {
                 ", publicComment='" + publicComment + '\'' +
                 ", privateComment='" + privateComment + '\'' +
                 ", summary=" + summary +
+                ", timestamp=" + timestamp +
                 '}';
     }
 
@@ -104,5 +112,13 @@ public class Comment {
 
     public void setSummary(ReviewSummary summary) {
         this.summary = summary;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

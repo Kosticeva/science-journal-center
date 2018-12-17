@@ -26,13 +26,23 @@ public class IssuePurchaseMapper {
     public IssuePurchase mapFromDTO(IssuePurchaseDTO dto) {
         IssuePurchase purchase = new IssuePurchase();
 
-        purchase.setIssue(issueRepository.getOne(dto.getIssue()));
-        purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
+        if (!(dto.getIssuePK() == null)) {
+            purchase.setIssue(issueRepository.getOne(dto.getIssuePK()));
+        }
+
+        if (!(dto.getPaymentOption() == null)) {
+            purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
+        }
+
         purchase.setSuccessful(dto.getSuccessful());
         purchase.setTimeOfPurchase(dto.getTimeOfPurchase());
         purchase.setTransactionId(dto.getId());
         purchase.setType(dto.getType());
-        purchase.setUser(credentialsRepository.getOne(dto.getUser()));
+        purchase.setAmount(dto.getAmount());
+
+        if (!(dto.getUser() == null)) {
+            purchase.setUser(credentialsRepository.getOne(dto.getUser()));
+        }
 
         return purchase;
     }
@@ -40,13 +50,14 @@ public class IssuePurchaseMapper {
     public IssuePurchaseDTO mapToDTO(IssuePurchase issuePurchase) {
         IssuePurchaseDTO dto = new IssuePurchaseDTO();
 
-        dto.setIssue(issuePurchase.getIssue().getId());
+        dto.setIssuePK(issuePurchase.getIssue().getIssuePK());
         dto.setPaymentOption(issuePurchase.getOption().getPaymentOptionCode());
         dto.setSuccessful(issuePurchase.getSuccessful());
         dto.setTimeOfPurchase(issuePurchase.getTimeOfPurchase());
         dto.setId(issuePurchase.getTransactionId());
         dto.setType(issuePurchase.getType());
         dto.setUser(issuePurchase.getUser().getUsername());
+        dto.setAmount(issuePurchase.getAmount());
 
         return dto;
     }

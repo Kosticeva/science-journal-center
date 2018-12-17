@@ -48,7 +48,8 @@ public class CommentController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDTO> updateComment(@PathVariable("id") Long id, @RequestBody CommentDTO newComment) {
         if (!newComment.getId().equals(null) && !id.equals(null)) {
             Comment comment = commentService.updateComment(commentMapper.mapFromDTO(newComment), id);

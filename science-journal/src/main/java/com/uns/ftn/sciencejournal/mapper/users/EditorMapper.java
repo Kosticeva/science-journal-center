@@ -2,6 +2,8 @@ package com.uns.ftn.sciencejournal.mapper.users;
 
 import com.uns.ftn.sciencejournal.dto.users.EditorDTO;
 import com.uns.ftn.sciencejournal.model.users.Editor;
+import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
+import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
 import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +17,20 @@ public class EditorMapper {
     @Autowired
     CredentialsRepository credentialsRepository;
 
+    @Autowired
+    MagazineRepository magazineRepository;
+
+    @Autowired
+    ScienceFieldRepository scienceFieldRepository;
+
     public Editor mapFromDTO(EditorDTO dto) {
         Editor editor = new Editor();
 
         editor.setId(dto.getId());
         editor.setTitle(dto.getTitle());
         editor.setUser(credentialsRepository.getOne(dto.getUser()));
+        editor.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+        editor.setField(scienceFieldRepository.getOne(dto.getField()));
 
         return editor;
     }
@@ -31,6 +41,8 @@ public class EditorMapper {
         dto.setId(editor.getId());
         dto.setTitle(editor.getTitle());
         dto.setUser(editor.getUser().getUsername());
+        dto.setMagazine(editor.getMagazine().getIssn());
+        dto.setField(editor.getField().getCode());
 
         return dto;
     }

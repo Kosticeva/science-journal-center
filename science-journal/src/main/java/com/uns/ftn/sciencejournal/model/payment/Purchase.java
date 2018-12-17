@@ -31,15 +31,28 @@ public abstract class Purchase {
     @JoinColumn(name = "PAYMENT_OPTION", nullable = false)
     private PaymentOption option;
 
+    @Column(name = "AMOUNT", nullable = false)
+    private Double amount;
+
     public Purchase() {
     }
 
-    public Purchase(LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful, PaymentOption option) {
+    public Purchase(LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful,
+                    PaymentOption option, Double amount) {
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
         this.type = type;
         this.successful = successful;
         this.option = option;
+        this.amount = amount;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
 
     public Long getTransactionId() {

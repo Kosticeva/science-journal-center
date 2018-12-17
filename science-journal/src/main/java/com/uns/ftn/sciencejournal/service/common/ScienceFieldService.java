@@ -23,7 +23,11 @@ public class ScienceFieldService {
 
     public ScienceField createScienceField(ScienceField scienceField) {
 
-        if (scienceField.getCode() != null) {
+        if (scienceField.getCode() == null || scienceField.getCode().equals("")) {
+            return null;
+        }
+
+        if (scienceField.getName() == null || scienceField.getName().equals("")) {
             return null;
         }
 
@@ -37,12 +41,17 @@ public class ScienceFieldService {
         }
 
         ScienceField scienceField = getById(id);
-        if (scienceField != null) {
-
-            return scienceFieldRepository.save(scienceField);
+        if (scienceField == null) {
+            return null;
         }
 
-        return null;
+        if (scienceField.getName() == null || scienceField.getName().equals("")) {
+            return null;
+        }
+
+        scienceField.setName(newScienceField.getName());
+        return scienceFieldRepository.save(scienceField);
+
     }
 
     public void deleteScienceField(String id) {

@@ -20,7 +20,7 @@ public class TaskController {
 
     @Autowired
     TaskMapper taskMapper;
-    
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TaskDTO>> getAllTasks() {
         return ResponseEntity.ok(taskMapper.mapManyToDTO(taskService.getAll()));
@@ -48,7 +48,8 @@ public class TaskController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TaskDTO> updateTask(@PathVariable("id") Long id, @RequestBody TaskDTO newTask) {
         if (!newTask.getId().equals(null) && !id.equals(null)) {
             Task task = taskService.updateTask(taskMapper.mapFromDTO(newTask), id);

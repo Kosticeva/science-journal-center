@@ -3,6 +3,7 @@ package com.uns.ftn.sciencejournal.mapper.common;
 import com.uns.ftn.sciencejournal.dto.common.PaperDTO;
 import com.uns.ftn.sciencejournal.model.common.Paper;
 import com.uns.ftn.sciencejournal.model.users.User;
+import com.uns.ftn.sciencejournal.repository.common.ApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.common.IssueRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
 import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 public class PaperMapper {
+
     @Autowired
     CredentialsRepository credentialsRepository;
 
@@ -28,6 +30,9 @@ public class PaperMapper {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ApplicationRepository applicationRepository;
+
     public Paper mapFromDTO(PaperDTO dto) {
         Paper paper = new Paper();
 
@@ -36,14 +41,17 @@ public class PaperMapper {
         paper.setPaperAbstract(dto.getPaperAbstract());
         paper.setKeyTerms(dto.getKeyTerms());
         paper.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
-        paper.setIssue(issueRepository.getOne(dto.getIssue()));
-        paper.setField(scienceFieldRepository.getOne(dto.getField()));
-        paper.setPrice(dto.getPrice());
 
         paper.setCoauthors(new HashSet<>());
         for (Long coauthor : dto.getCoauthors()) {
             paper.getCoauthors().add(userRepository.getOne(coauthor));
         }
+
+        paper.setIssue(issueRepository.getOne(dto.getIssue()));
+        paper.setField(scienceFieldRepository.getOne(dto.getField()));
+        paper.setFile(dto.getFile());
+        paper.setPrice(dto.getPrice());
+        paper.setLastRevision(applicationRepository.getOne(dto.getLastRevision()));
 
         return paper;
     }
@@ -56,14 +64,16 @@ public class PaperMapper {
         dto.setPaperAbstract(paper.getPaperAbstract());
         dto.setKeyTerms(paper.getKeyTerms());
         dto.setAuthor(paper.getAuthor().getUsername());
-        dto.setIssue(paper.getIssue().getId());
-        dto.setField(paper.getField().getCode());
-        dto.setPrice(paper.getPrice());
 
         dto.setCoauthors(new HashSet<>());
         for (User coauthor : paper.getCoauthors()) {
             dto.getCoauthors().add(coauthor.getUserId());
         }
+
+        dto.setField(paper.getField().getCode());
+        dto.setFile(paper.getFile());
+        dto.setPrice(paper.getPrice());
+        dto.setLastRevision(paper.getLastRevision().getApplicationPK());
 
         return dto;
     }

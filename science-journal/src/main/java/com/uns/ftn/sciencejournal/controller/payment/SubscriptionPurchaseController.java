@@ -37,9 +37,11 @@ public class SubscriptionPurchaseController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SubscriptionPurchaseDTO> createSubscriptionPurchase(@RequestBody SubscriptionPurchaseDTO newSubscriptionPurchase) {
+    public ResponseEntity<SubscriptionPurchaseDTO> createSubscriptionPurchase(
+            @RequestBody SubscriptionPurchaseDTO newSubscriptionPurchase) {
         if (newSubscriptionPurchase.getId().equals(null)) {
-            SubscriptionPurchase subscriptionPurchase = subscriptionPurchaseService.createSubscriptionPurchase(subscriptionPurchaseMapper.mapFromDTO(newSubscriptionPurchase));
+            SubscriptionPurchase subscriptionPurchase = subscriptionPurchaseService.createSubscriptionPurchase(
+                    subscriptionPurchaseMapper.mapFromDTO(newSubscriptionPurchase));
 
             if (!subscriptionPurchase.equals(null)) {
                 return ResponseEntity.ok(subscriptionPurchaseMapper.mapToDTO(subscriptionPurchase));
@@ -49,10 +51,13 @@ public class SubscriptionPurchaseController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SubscriptionPurchaseDTO> updateSubscriptionPurchase(@PathVariable("id") Long id, @RequestBody SubscriptionPurchaseDTO newSubscriptionPurchase) {
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SubscriptionPurchaseDTO> updateSubscriptionPurchase(
+            @PathVariable("id") Long id, @RequestBody SubscriptionPurchaseDTO newSubscriptionPurchase) {
         if (!newSubscriptionPurchase.getId().equals(null) && !id.equals(null)) {
-            SubscriptionPurchase subscriptionPurchase = subscriptionPurchaseService.updateSubscriptionPurchase(subscriptionPurchaseMapper.mapFromDTO(newSubscriptionPurchase), id);
+            SubscriptionPurchase subscriptionPurchase = subscriptionPurchaseService.updateSubscriptionPurchase(
+                    subscriptionPurchaseMapper.mapFromDTO(newSubscriptionPurchase), id);
 
             if (!subscriptionPurchase.equals(null)) {
                 return ResponseEntity.ok(subscriptionPurchaseMapper.mapToDTO(subscriptionPurchase));

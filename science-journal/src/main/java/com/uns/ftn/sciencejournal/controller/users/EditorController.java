@@ -18,7 +18,7 @@ public class EditorController {
 
     @Autowired
     EditorService editorService;
-    
+
     @Autowired
     EditorMapper editorMapper;
 
@@ -49,7 +49,8 @@ public class EditorController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EditorDTO> updateEditor(@PathVariable("id") Integer id, @RequestBody EditorDTO newEditor) {
         if (!newEditor.getId().equals(null) && !id.equals(null)) {
             Editor editor = editorService.updateEditor(editorMapper.mapFromDTO(newEditor), id);

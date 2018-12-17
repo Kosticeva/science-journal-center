@@ -2,6 +2,8 @@ package com.uns.ftn.sciencejournal.dto.common;
 
 import com.uns.ftn.sciencejournal.model.enums.ReviewSummary;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class CommentDTO {
@@ -16,15 +18,19 @@ public class CommentDTO {
 
     private ReviewSummary summary;
 
+    private LocalDateTime timestamp;
+
     public CommentDTO() {
     }
 
-    public CommentDTO(Long id, Long task, String publicComment, String privateComment, ReviewSummary summary) {
+    public CommentDTO(Long id, Long task, String publicComment, String privateComment,
+                      ReviewSummary summary, LocalDateTime timestamp) {
         this.id = id;
         this.task = task;
         this.publicComment = publicComment;
         this.privateComment = privateComment;
         this.summary = summary;
+        this.timestamp = timestamp;
     }
 
     @Override
@@ -36,12 +42,25 @@ public class CommentDTO {
                 Objects.equals(task, that.task) &&
                 Objects.equals(publicComment, that.publicComment) &&
                 Objects.equals(privateComment, that.privateComment) &&
-                summary == that.summary;
+                summary == that.summary &&
+                Objects.equals(timestamp, that.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, task, publicComment, privateComment, summary);
+        return Objects.hash(id, task, publicComment, privateComment, summary, timestamp);
+    }
+
+    @Override
+    public String toString() {
+        return "CommentDTO{" +
+                "id=" + id +
+                ", task=" + task +
+                ", publicComment='" + publicComment + '\'' +
+                ", privateComment='" + privateComment + '\'' +
+                ", summary=" + summary +
+                ", timestamp=" + timestamp +
+                '}';
     }
 
     public Long getId() {
@@ -82,5 +101,13 @@ public class CommentDTO {
 
     public void setSummary(ReviewSummary summary) {
         this.summary = summary;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

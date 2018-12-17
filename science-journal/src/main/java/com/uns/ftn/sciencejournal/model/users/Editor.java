@@ -1,38 +1,55 @@
 package com.uns.ftn.sciencejournal.model.users;
 
+import com.uns.ftn.sciencejournal.model.common.Magazine;
+import com.uns.ftn.sciencejournal.model.common.ScienceField;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "EDITOR")
-public class Editor {
+public class Editor extends Authority {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "ID")
-    private Integer id;
+    @ManyToOne
+    @JoinColumn(name = "MAGAZINE")
+    private Magazine magazine;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "USERNAME", unique = true)
-    private Credentials user;
-
-    @Column(name = "TITLE", length = 31, nullable = false)
-    private String title;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "FIELD")
+    private ScienceField field;
 
     public Editor() {
     }
 
-    public Editor(Credentials user, String title) {
-        this.user = user;
-        this.title = title;
+    public Editor(String title, Integer id, Credentials user, Magazine magazine, ScienceField field) {
+        super(title, id, user);
+        this.magazine = magazine;
+        this.field = field;
+    }
+
+    public Magazine getMagazine() {
+        return magazine;
+    }
+
+    public void setMagazine(Magazine magazine) {
+        this.magazine = magazine;
+    }
+
+    public ScienceField getField() {
+        return field;
+    }
+
+    public void setField(ScienceField field) {
+        this.field = field;
     }
 
     @Override
     public String toString() {
         return "Editor{" +
-                "id=" + id +
-                ", user=" + user +
+                "magazine=" + magazine +
+                ", field=" + field +
                 ", title='" + title + '\'' +
+                ", id=" + id +
+                ", user=" + user +
                 '}';
     }
 
@@ -41,37 +58,15 @@ public class Editor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Editor editor = (Editor) o;
-        return Objects.equals(id, editor.id) &&
-                Objects.equals(user, editor.user) &&
-                Objects.equals(title, editor.title);
+        return magazine.equals(editor.magazine) &&
+                id.equals(editor.id) &&
+                title.equals(editor.title) &&
+                user.equals(editor.user) &&
+                Objects.equals(field, editor.field);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, title);
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Credentials getUser() {
-        return user;
-    }
-
-    public void setUser(Credentials user) {
-        this.user = user;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+        return Objects.hash(magazine, field);
     }
 }

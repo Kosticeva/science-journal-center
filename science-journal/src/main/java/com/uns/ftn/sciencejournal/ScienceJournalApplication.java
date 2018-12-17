@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ScienceJournalApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ScienceJournalApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ScienceJournalApplication.class, args);
+    }
 }
