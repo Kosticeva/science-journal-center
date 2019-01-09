@@ -25,7 +25,7 @@ public class TaskMapper {
         task.setId(dto.getId());
         task.setUser(credentialsRepository.getOne(dto.getUser()));
         task.setDeadline(dto.getDeadline());
-        task.setPaper(applicationRepository.getOne(dto.getApplicationPK()));
+        task.setPaper(applicationRepository.getOne(dto.getApplication()));
         task.setSummary(dto.getSummary());
         task.setType(dto.getType());
         task.setFinished(dto.getFinished());
@@ -41,7 +41,7 @@ public class TaskMapper {
         dto.setId(task.getId());
         dto.setSummary(task.getSummary());
         dto.setType(task.getType());
-        dto.setApplicationPK(task.getPaper().getApplicationPK());
+        dto.setApplication(task.getPaper().getId());
         dto.setUser(task.getUser().getUsername());
 
         return dto;

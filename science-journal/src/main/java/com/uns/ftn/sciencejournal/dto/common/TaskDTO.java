@@ -14,7 +14,7 @@ public class TaskDTO {
 
     private LocalDateTime deadline;
 
-    private Application.ApplicationPK applicationPK;
+    private Long application;
 
     private String summary;
 
@@ -25,12 +25,12 @@ public class TaskDTO {
     public TaskDTO() {
     }
 
-    public TaskDTO(Long id, String user, LocalDateTime deadline, Application.ApplicationPK applicationPK,
+    public TaskDTO(Long id, String user, LocalDateTime deadline, Long application,
                    String summary, PaperApplicationState type, Boolean finished) {
         this.id = id;
         this.user = user;
         this.deadline = deadline;
-        this.applicationPK = applicationPK;
+        this.application = application;
         this.summary = summary;
         this.type = type;
         this.finished = finished;
@@ -60,12 +60,12 @@ public class TaskDTO {
         this.deadline = deadline;
     }
 
-    public Application.ApplicationPK getApplicationPK() {
-        return applicationPK;
+    public Long getApplication() {
+        return application;
     }
 
-    public void setApplicationPK(Application.ApplicationPK applicationPK) {
-        this.applicationPK = applicationPK;
+    public void setApplication(Long application) {
+        this.application = application;
     }
 
     public String getSummary() {
@@ -100,7 +100,7 @@ public class TaskDTO {
         return Objects.equals(id, taskDTO.id) &&
                 Objects.equals(user, taskDTO.user) &&
                 Objects.equals(deadline, taskDTO.deadline) &&
-                Objects.equals(applicationPK, taskDTO.applicationPK) &&
+                Objects.equals(application, taskDTO.application) &&
                 Objects.equals(summary, taskDTO.summary) &&
                 type == taskDTO.type &&
                 Objects.equals(finished, taskDTO.finished);
@@ -108,7 +108,7 @@ public class TaskDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, deadline, applicationPK, summary, type, finished);
+        return Objects.hash(id, user, deadline, application, summary, type, finished);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class TaskDTO {
                 "id=" + id +
                 ", user='" + user + '\'' +
                 ", deadline=" + deadline +
-                ", applicationPK=" + applicationPK +
+                ", application=" + application +
                 ", summary='" + summary + '\'' +
                 ", type=" + type +
                 ", finished=" + finished +

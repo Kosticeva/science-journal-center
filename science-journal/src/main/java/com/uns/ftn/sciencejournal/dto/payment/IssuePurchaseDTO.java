@@ -20,7 +20,7 @@ public class IssuePurchaseDTO {
 
     private Integer paymentOption;
 
-    private Issue.IssuePK issuePK;
+    private Long issuePK;
 
     private Double amount;
 
@@ -28,7 +28,7 @@ public class IssuePurchaseDTO {
     }
 
     public IssuePurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type,
-                            Boolean successful, Integer paymentOption, Issue.IssuePK issuePK, Double amount) {
+                            Boolean successful, Integer paymentOption, Long issuePK, Double amount) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
@@ -87,11 +87,11 @@ public class IssuePurchaseDTO {
         this.paymentOption = paymentOption;
     }
 
-    public Issue.IssuePK getIssuePK() {
+    public Long getIssuePK() {
         return issuePK;
     }
 
-    public void setIssuePK(Issue.IssuePK issuePK) {
+    public void setIssuePK(Long issuePK) {
         this.issuePK = issuePK;
     }
 

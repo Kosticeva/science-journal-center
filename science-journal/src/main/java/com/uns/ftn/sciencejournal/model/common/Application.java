@@ -13,10 +13,15 @@ import java.util.Set;
 
 @Entity
 @Table(name = "APPLICATION")
-public class Application {
+public class Application implements Serializable{
 
-    @EmbeddedId
-    private ApplicationPK applicationPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
+    private Long id;
+
+    @Column(name = "VERSION")
+    private Integer version;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -37,7 +42,7 @@ public class Application {
             joinColumns = {
                     @JoinColumn(name = "PAPER_ID", referencedColumnName = "ID"),
                     @JoinColumn(name = "PAPER_VERSION", referencedColumnName = "VERSION")},
-            inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID"))
+            inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID"))
     private Set<User> coauthors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -55,7 +60,7 @@ public class Application {
     @Enumerated(EnumType.STRING)
     private PaperApplicationState state;
 
-    @Column(name = "ACCEPTED", nullable = false)
+    @Column(name = "ACCEPTED")
     private Boolean accepted;
 
     @Column(name = "TIMESTAMP", nullable = false)
@@ -67,7 +72,6 @@ public class Application {
     public Application(Long paperId, Integer version, String title, String paperAbstract, String keyTerms,
                        Credentials author, Set<User> coauthors, Magazine magazine, ScienceField field, String file,
                        PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
-        this.applicationPK = new ApplicationPK(paperId, version);
         this.title = title;
         this.paperAbstract = paperAbstract;
         this.keyTerms = keyTerms;
@@ -79,14 +83,8 @@ public class Application {
         this.state = state;
         this.accepted = accepted;
         this.timestamp = timestamp;
-    }
-
-    public ApplicationPK getApplicationPK() {
-        return applicationPK;
-    }
-
-    public void setApplicationPK(ApplicationPK applicationPK) {
-        this.applicationPK = applicationPK;
+        this.id = paperId;
+        this.version = version;
     }
 
     public String getTitle() {
@@ -177,12 +175,29 @@ public class Application {
         this.timestamp = timestamp;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Application that = (Application) o;
-        return Objects.equals(applicationPK, that.applicationPK) &&
+        return Objects.equals(id, that.id) &&
+                Objects.equals(version, that.version) &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(paperAbstract, that.paperAbstract) &&
                 Objects.equals(keyTerms, that.keyTerms) &&
@@ -198,14 +213,14 @@ public class Application {
 
     @Override
     public int hashCode() {
-        return Objects.hash(applicationPK, title, paperAbstract, keyTerms, author, coauthors, magazine, field,
-                file, state, accepted, timestamp);
+        return Objects.hash(id, version, title, paperAbstract, keyTerms, author, coauthors, magazine, field, file, state, accepted, timestamp);
     }
 
     @Override
     public String toString() {
         return "Application{" +
-                "applicationPK=" + applicationPK +
+                "id=" + id +
+                ", version=" + version +
                 ", title='" + title + '\'' +
                 ", paperAbstract='" + paperAbstract + '\'' +
                 ", keyTerms='" + keyTerms + '\'' +
@@ -218,54 +233,5 @@ public class Application {
                 ", accepted=" + accepted +
                 ", timestamp=" + timestamp +
                 '}';
-    }
-
-    @Embeddable
-    public class ApplicationPK implements Serializable {
-
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "ID")
-        protected Long id;
-
-        @Column(name = "VERSION")
-        protected Integer version;
-
-        public ApplicationPK() {
-        }
-
-        public ApplicationPK(Long id, Integer version) {
-            this.id = id;
-            this.version = version;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public Integer getVersion() {
-            return version;
-        }
-
-        public void setVersion(Integer version) {
-            this.version = version;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ApplicationPK that = (ApplicationPK) o;
-            return Objects.equals(id, that.id) &&
-                    Objects.equals(version, that.version);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id, version);
-        }
     }
 }

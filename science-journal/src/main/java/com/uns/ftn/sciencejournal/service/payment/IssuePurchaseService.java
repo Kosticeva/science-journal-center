@@ -108,11 +108,11 @@ public class IssuePurchaseService {
             return false;
         }
 
-        if (issuePurchase.getIssue() == null || issuePurchase.getIssue().getIssuePK() == null) {
+        if (issuePurchase.getIssue() == null || issuePurchase.getIssue().getId() == null) {
             return false;
         }
 
-        if (issueRepository.getOne(issuePurchase.getIssue().getIssuePK()) == null) {
+        if (issueRepository.getOne(issuePurchase.getIssue().getId()) == null) {
             return false;
         }
 

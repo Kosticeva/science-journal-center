@@ -18,7 +18,7 @@ public class IssueService {
     MagazineRepository magazineRepository;
 
     public Issue getById(String issn, String edition) {
-        return issueRepository.findById(new Issue().new IssuePK(issn, edition)).orElse(null);
+        return issueRepository.findFirstByMagazineAndEdition(issn, edition);
     }
 
     public List<Issue> getAll() {
@@ -27,7 +27,7 @@ public class IssueService {
 
     public Issue createIssue(Issue issue) {
 
-        if (issue.getIssuePK() != null) {
+        if (issue.getId() != null) {
             return null;
         }
 
@@ -50,7 +50,7 @@ public class IssueService {
         }
 
         issue.setMagazine(newIssue.getMagazine());
-        issue.setIssuePK(issue.new IssuePK(newIssue.getMagazine().getIssn(), newIssue.getIssuePK().getEdition()));
+        issue.setEdition(newIssue.getEdition());
         issue.setPrice(newIssue.getPrice());
         issue.setDate(newIssue.getDate());
 
@@ -58,7 +58,7 @@ public class IssueService {
     }
 
     private boolean checkIssueValidity(Issue issue) {
-        if (issue.getIssuePK().getEdition() == null || issue.getIssuePK().getEdition().equals("")) {
+        if (issue.getEdition() == null || issue.getEdition().equals("")) {
             return false;
         }
 
@@ -86,7 +86,7 @@ public class IssueService {
             return;
         }
 
-        issueRepository.deleteById(new Issue().new IssuePK(issn, edition));
+        issueRepository.deleteById(issueRepository.findFirstByMagazineAndEdition(issn, edition).getId());
     }
 
 

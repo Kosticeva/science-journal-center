@@ -38,7 +38,7 @@ public class ReviewerController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ReviewerDTO> createReviewer(@RequestBody ReviewerDTO newReviewer) {
-        if (newReviewer.getId().equals(null)) {
+        if (newReviewer.getId() == null) {
             Reviewer reviewer = reviewerService.createReviewer(reviewerMapper.mapFromDTO(newReviewer));
 
             if (!reviewer.equals(null)) {

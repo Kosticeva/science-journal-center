@@ -50,7 +50,7 @@ public class IssuePurchaseMapper {
     public IssuePurchaseDTO mapToDTO(IssuePurchase issuePurchase) {
         IssuePurchaseDTO dto = new IssuePurchaseDTO();
 
-        dto.setIssuePK(issuePurchase.getIssue().getIssuePK());
+        dto.setIssuePK(issuePurchase.getIssue().getId());
         dto.setPaymentOption(issuePurchase.getOption().getPaymentOptionCode());
         dto.setSuccessful(issuePurchase.getSuccessful());
         dto.setTimeOfPurchase(issuePurchase.getTimeOfPurchase());

@@ -28,7 +28,7 @@ public class CredentialsService {
 
     public Credentials createCredentials(Credentials credentials) {
 
-        if (credentials.getUsername() != null) {
+        if (credentials.getUsername() == null) {
             return null;
         }
 

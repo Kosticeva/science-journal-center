@@ -63,17 +63,25 @@ public class PaperMapper {
         dto.setTitle(paper.getTitle());
         dto.setPaperAbstract(paper.getPaperAbstract());
         dto.setKeyTerms(paper.getKeyTerms());
-        dto.setAuthor(paper.getAuthor().getUsername());
+        if(paper.getAuthor() != null){
+            dto.setAuthor(paper.getAuthor().getUsername());
+        }
 
         dto.setCoauthors(new HashSet<>());
         for (User coauthor : paper.getCoauthors()) {
             dto.getCoauthors().add(coauthor.getUserId());
         }
 
-        dto.setField(paper.getField().getCode());
+        if(paper.getField() != null){
+            dto.setField(paper.getField().getCode());
+        }
+
         dto.setFile(paper.getFile());
         dto.setPrice(paper.getPrice());
-        dto.setLastRevision(paper.getLastRevision().getApplicationPK());
+
+        if(paper.getLastRevision() != null){
+            dto.setLastRevision(paper.getLastRevision().getId());
+        }
 
         return dto;
     }

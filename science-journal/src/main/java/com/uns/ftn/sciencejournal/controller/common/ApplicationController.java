@@ -26,11 +26,10 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationMapper.mapManyToDTO(applicationService.getAll()));
     }
 
-    @GetMapping(value = "/{id}/{versionid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationDTO> getApplicationById(@PathVariable("id") Long id,
-                                                             @PathVariable("versionid") Integer version) {
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApplicationDTO> getApplicationById(@PathVariable("id") Long id) {
         if (!id.equals(null)) {
-            return ResponseEntity.ok(applicationMapper.mapToDTO(applicationService.getById(id, version)));
+            return ResponseEntity.ok(applicationMapper.mapToDTO(applicationService.getById(id)));
         }
 
         return ResponseEntity.badRequest().build();
@@ -38,7 +37,7 @@ public class ApplicationController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApplicationDTO> createApplication(@RequestBody ApplicationDTO newApplication) {
-        if (newApplication.getPaperId().equals(null)) {
+        if (newApplication.getPaperId() == null) {
             Application application = applicationService.createApplication(applicationMapper.mapFromDTO(newApplication));
 
             if (!application.equals(null)) {
@@ -65,10 +64,10 @@ public class ApplicationController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping(value = "/{id}/{versionid}")
-    public ResponseEntity deleteApplication(@PathVariable("id") Long id, @PathVariable("versionid") Integer version) {
-        if (!id.equals(null) && !version.equals(null)) {
-            applicationService.deleteApplication(id, version);
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deleteApplication(@PathVariable("id") Long id) {
+        if (!id.equals(null)) {
+            applicationService.deleteApplication(id);
             return ResponseEntity.ok(null);
         }
 

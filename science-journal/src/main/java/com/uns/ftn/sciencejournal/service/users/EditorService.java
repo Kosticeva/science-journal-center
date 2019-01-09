@@ -91,11 +91,11 @@ public class EditorService {
             return false;
         }
 
-        if (editor.getField() == null || editor.getField().getCode().equals("")) {
+        if (editor.getField() != null && editor.getField().getCode().equals("")) {
             return false;
         }
 
-        if (scienceFieldRepository.getOne(editor.getField().getCode()) == null) {
+        if (editor.getField() != null && scienceFieldRepository.getOne(editor.getField().getCode()) == null) {
             return false;
         }
 

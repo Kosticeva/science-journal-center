@@ -20,7 +20,7 @@ public class PaperDTO {
 
     private Set<Long> coauthors;
 
-    private Issue.IssuePK issue;
+    private Long issue;
 
     private String field;
 
@@ -28,14 +28,14 @@ public class PaperDTO {
 
     private Double price;
 
-    private Application.ApplicationPK lastRevision;
+    private Long lastRevision;
 
     public PaperDTO() {
     }
 
     public PaperDTO(String doi, String title, String paperAbstract, String keyTerms, String author,
-                    Set<Long> coauthors, Issue.IssuePK issue, String field, String file, Double price,
-                    Application.ApplicationPK lastRevision) {
+                    Set<Long> coauthors, Long issue, String field, String file, Double price,
+                    Long lastRevision) {
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
@@ -97,11 +97,11 @@ public class PaperDTO {
         this.coauthors = coauthors;
     }
 
-    public Issue.IssuePK getIssue() {
+    public Long getIssue() {
         return issue;
     }
 
-    public void setIssue(Issue.IssuePK issue) {
+    public void setIssue(Long issue) {
         this.issue = issue;
     }
 
@@ -129,11 +129,11 @@ public class PaperDTO {
         this.price = price;
     }
 
-    public Application.ApplicationPK getLastRevision() {
+    public Long getLastRevision() {
         return lastRevision;
     }
 
-    public void setLastRevision(Application.ApplicationPK lastRevision) {
+    public void setLastRevision(Long lastRevision) {
         this.lastRevision = lastRevision;
     }
 

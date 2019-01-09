@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TaskService {
+public class TaskServicer {
 
     @Autowired
     TaskRepository taskRepository;
@@ -92,11 +92,11 @@ public class TaskService {
             return false;
         }
 
-        if (task.getPaper() == null || task.getPaper().getApplicationPK() == null) {
+        if (task.getPaper() == null || task.getPaper().getId() == null) {
             return false;
         }
 
-        if (applicationRepository.getOne(task.getPaper().getApplicationPK()) == null) {
+        if (applicationRepository.getOne(task.getPaper().getId()) == null) {
             return false;
         }
 

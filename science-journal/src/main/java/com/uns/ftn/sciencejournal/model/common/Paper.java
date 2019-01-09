@@ -13,7 +13,7 @@ import java.util.Set;
 public class Paper {
 
     @Id
-    @Column(name = "DOI", unique = true)
+    @Column(name = "DOI", unique = true, length = 20)
     private String doi;
 
     @Column(name = "TITLE", nullable = false)
@@ -36,7 +36,7 @@ public class Paper {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns({
-            @JoinColumn(name = "ISSUE_ISSN", referencedColumnName = "ISSN"),
+            @JoinColumn(name = "ISSUE_MAGAZINE", referencedColumnName = "MAGAZINE"),
             @JoinColumn(name = "ISSUE_EDITION", referencedColumnName = "EDITION")
     })
     private Issue issue;

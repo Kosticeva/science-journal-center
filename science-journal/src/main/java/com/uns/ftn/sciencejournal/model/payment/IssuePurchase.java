@@ -14,7 +14,7 @@ public class IssuePurchase extends Purchase {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns({
-            @JoinColumn(name = "ISSUE_ISSN", referencedColumnName = "ISSN"),
+            @JoinColumn(name = "ISSUE_MAGAZINE", referencedColumnName = "MAGAZINE"),
             @JoinColumn(name = "ISSUE_EDITION", referencedColumnName = "EDITION")
     })
     private Issue issue;

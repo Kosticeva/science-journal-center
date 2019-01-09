@@ -29,7 +29,9 @@ public class MagazineMapper {
     public Magazine mapFromDTO(MagazineDTO dto) {
         Magazine magazine = new Magazine();
 
-        magazine.setEditor(editorRepository.getOne(dto.getEditor()));
+        if(dto.getEditor() != null)
+            magazine.setEditor(editorRepository.getOne(dto.getEditor()));
+
         magazine.setIssn(dto.getIssn());
         magazine.setMembership(dto.getMembership());
         magazine.setName(dto.getName());
@@ -51,7 +53,9 @@ public class MagazineMapper {
     public MagazineDTO mapToDTO(Magazine magazine) {
         MagazineDTO dto = new MagazineDTO();
 
-        dto.setEditor(magazine.getEditor().getId());
+        if(magazine.getEditor() != null)
+            dto.setEditor(magazine.getEditor().getId());
+
         dto.setIssn(magazine.getIssn());
         dto.setMembership(magazine.getMembership());
         dto.setName(magazine.getName());

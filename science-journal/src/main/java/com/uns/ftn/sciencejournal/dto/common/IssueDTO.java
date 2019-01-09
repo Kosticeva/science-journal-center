@@ -5,6 +5,8 @@ import java.util.Objects;
 
 public class IssueDTO {
 
+    private Long id;
+
     private String magazine;
 
     private String edition;
@@ -16,11 +18,12 @@ public class IssueDTO {
     public IssueDTO() {
     }
 
-    public IssueDTO(String magazine, String edition, LocalDate date, Double price) {
+    public IssueDTO(Long id, String magazine, String edition, LocalDate date, Double price) {
         this.magazine = magazine;
         this.edition = edition;
         this.date = date;
         this.price = price;
+        this.id = id;
     }
 
     public String getMagazine() {
@@ -55,12 +58,21 @@ public class IssueDTO {
         this.price = price;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IssueDTO issueDTO = (IssueDTO) o;
-        return Objects.equals(magazine, issueDTO.magazine) &&
+        return Objects.equals(id, issueDTO.id) &&
+                Objects.equals(magazine, issueDTO.magazine) &&
                 Objects.equals(edition, issueDTO.edition) &&
                 Objects.equals(date, issueDTO.date) &&
                 Objects.equals(price, issueDTO.price);
@@ -68,13 +80,14 @@ public class IssueDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(magazine, edition, date, price);
+        return Objects.hash(id, magazine, edition, date, price);
     }
 
     @Override
     public String toString() {
         return "IssueDTO{" +
-                "magazine='" + magazine + '\'' +
+                "id=" + id +
+                ", magazine='" + magazine + '\'' +
                 ", edition='" + edition + '\'' +
                 ", date=" + date +
                 ", price=" + price +

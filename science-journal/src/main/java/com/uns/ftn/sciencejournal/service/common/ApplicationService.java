@@ -31,8 +31,8 @@ public class ApplicationService {
     @Autowired
     ScienceFieldRepository scienceFieldRepository;
 
-    public Application getById(Long id, Integer version) {
-        return applicationRepository.findById(new Application().new ApplicationPK(id, version)).orElse(null);
+    public Application getById(Long id) {
+        return applicationRepository.findById(id).orElse(null);
     }
 
     public List<Application> getAll() {
@@ -45,7 +45,7 @@ public class ApplicationService {
             return null;
         }
 
-        application.getApplicationPK().setVersion(0);
+        application.setVersion(0);
         application.setTimestamp(LocalDate.now());
         application.setAccepted(null);
 
@@ -58,7 +58,7 @@ public class ApplicationService {
             return null;
         }
 
-        Application application = getById(id, newApplication.getApplicationPK().getVersion());
+        Application application = getById(id);
         if (application == null) {
             return null;
         }
@@ -69,8 +69,7 @@ public class ApplicationService {
 
         application.setAccepted(newApplication.getAccepted());
         application.setTimestamp(LocalDate.now());
-        application.setApplicationPK(application.new ApplicationPK(newApplication.getApplicationPK().getId(),
-                application.getApplicationPK().getVersion() + 1));
+        application.setVersion(application.getVersion()+1);
         application.setState(newApplication.getState());
 
         application.setFile(newApplication.getFile());
@@ -141,12 +140,12 @@ public class ApplicationService {
         return true;
     }
 
-    public void deleteApplication(Long id, Integer version) {
-        if (id == null || version == null) {
+    public void deleteApplication(Long id) {
+        if (id == null) {
             return;
         }
 
-        applicationRepository.deleteById(new Application().new ApplicationPK(id, version));
+        applicationRepository.deleteById(id);
     }
 
 

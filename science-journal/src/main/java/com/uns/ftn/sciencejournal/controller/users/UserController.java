@@ -38,7 +38,7 @@ public class UserController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO newUser) {
-        if (newUser.getId().equals(null)) {
+        if (newUser.getId() == null) {
             User user = userService.createUser(userMapper.mapFromDTO(newUser));
 
             if (!user.equals(null)) {

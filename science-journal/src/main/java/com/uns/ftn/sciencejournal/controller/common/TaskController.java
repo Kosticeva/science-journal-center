@@ -3,7 +3,7 @@ package com.uns.ftn.sciencejournal.controller.common;
 import com.uns.ftn.sciencejournal.dto.common.TaskDTO;
 import com.uns.ftn.sciencejournal.mapper.common.TaskMapper;
 import com.uns.ftn.sciencejournal.model.common.Task;
-import com.uns.ftn.sciencejournal.service.common.TaskService;
+import com.uns.ftn.sciencejournal.service.common.TaskServicer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-    TaskService taskService;
+    TaskServicer taskService;
 
     @Autowired
     TaskMapper taskMapper;
@@ -37,7 +37,7 @@ public class TaskController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO newTask) {
-        if (newTask.getId().equals(null)) {
+        if (newTask.getId() == null) {
             Task task = taskService.createTask(taskMapper.mapFromDTO(newTask));
 
             if (!task.equals(null)) {

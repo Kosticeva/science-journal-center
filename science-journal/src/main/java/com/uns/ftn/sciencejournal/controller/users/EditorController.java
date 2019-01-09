@@ -38,7 +38,7 @@ public class EditorController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EditorDTO> createEditor(@RequestBody EditorDTO newEditor) {
-        if (newEditor.getId().equals(null)) {
+        if (newEditor.getId() == null) {
             Editor editor = editorService.createEditor(editorMapper.mapFromDTO(newEditor));
 
             if (!editor.equals(null)) {

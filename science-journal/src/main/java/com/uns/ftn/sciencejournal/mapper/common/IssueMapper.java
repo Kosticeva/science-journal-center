@@ -18,9 +18,9 @@ public class IssueMapper {
     public Issue mapFromDTO(IssueDTO dto) {
         Issue issue = new Issue();
 
-        issue.setIssuePK(issue.new IssuePK(dto.getMagazine(), dto.getEdition()));
+        issue.setId(dto.getId());
         issue.setMagazine(magazineRepository.getOne(dto.getMagazine()));
-        issue.getIssuePK().setEdition(dto.getEdition());
+        issue.setEdition(dto.getEdition());
         issue.setDate(dto.getDate());
         issue.setPrice(dto.getPrice());
 
@@ -31,9 +31,10 @@ public class IssueMapper {
         IssueDTO dto = new IssueDTO();
 
         dto.setMagazine(issue.getMagazine().getIssn());
-        dto.setEdition(issue.getIssuePK().getEdition());
+        dto.setEdition(issue.getEdition());
         dto.setDate(issue.getDate());
         dto.setPrice(issue.getPrice());
+        dto.setId(issue.getId());
 
         return dto;
     }

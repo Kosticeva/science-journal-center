@@ -1,7 +1,6 @@
 package com.uns.ftn.sciencejournal.model.common;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,12 +8,15 @@ import java.util.Objects;
 @Table(name = "ISSUE", uniqueConstraints = @UniqueConstraint(columnNames = {"MAGAZINE", "EDITION"}))
 public class Issue {
 
-    @EmbeddedId
-    public IssuePK issuePK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @Column(name = "EDITION", length = 20)
+    private String edition;
+
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "MAGAZINE")
-    @MapsId("ISSN")
     private Magazine magazine;
 
     @Column(name = "PRINT_DATE", nullable = false)
@@ -26,19 +28,28 @@ public class Issue {
     public Issue() {
     }
 
-    public Issue(IssuePK issuePK, Magazine magazine, LocalDate date, Double price) {
-        this.issuePK = issuePK;
+    public Issue(Long id, String edition, Magazine magazine, LocalDate date, Double price) {
+        this.id = id;
+        this.edition = edition;
         this.magazine = magazine;
         this.date = date;
         this.price = price;
     }
 
-    public IssuePK getIssuePK() {
-        return issuePK;
+    public Long getId() {
+        return id;
     }
 
-    public void setIssuePK(IssuePK issuePK) {
-        this.issuePK = issuePK;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEdition() {
+        return edition;
+    }
+
+    public void setEdition(String edition) {
+        this.edition = edition;
     }
 
     public Magazine getMagazine() {
@@ -70,72 +81,26 @@ public class Issue {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Issue issue = (Issue) o;
-        return Objects.equals(issuePK, issue.issuePK) &&
+        return Objects.equals(id, issue.id) &&
+                Objects.equals(edition, issue.edition) &&
                 Objects.equals(magazine, issue.magazine) &&
                 Objects.equals(date, issue.date) &&
                 Objects.equals(price, issue.price);
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, edition, magazine, date, price);
+    }
+
+    @Override
     public String toString() {
         return "Issue{" +
-                "issuePK=" + issuePK +
+                "id=" + id +
+                ", edition='" + edition + '\'' +
                 ", magazine=" + magazine +
                 ", date=" + date +
                 ", price=" + price +
                 '}';
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(issuePK, magazine, date, price);
-    }
-
-    @Embeddable
-    public class IssuePK implements Serializable {
-
-        @Column(name = "ISSN")
-        protected String issn;
-
-        @Column(name = "EDITION")
-        protected String edition;
-
-        public IssuePK() {
-        }
-
-        public IssuePK(String issn, String edition) {
-            this.issn = issn;
-            this.edition = edition;
-        }
-
-        public String getIssn() {
-            return issn;
-        }
-
-        public void setIssn(String issn) {
-            this.issn = issn;
-        }
-
-        public String getEdition() {
-            return edition;
-        }
-
-        public void setEdition(String edition) {
-            this.edition = edition;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            IssuePK issuePK = (IssuePK) o;
-            return Objects.equals(issn, issuePK.issn) &&
-                    Objects.equals(edition, issuePK.edition);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(issn, edition);
-        }
     }
 }

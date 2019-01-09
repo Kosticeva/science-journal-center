@@ -32,7 +32,7 @@ public class ApplicationMapper {
     public Application mapFromDTO(ApplicationDTO dto) {
         Application application = new Application();
 
-        application.setApplicationPK(application.new ApplicationPK(dto.getPaperId(), dto.getVersion()));
+        application.setId(dto.getPaperId());
         application.setTitle(dto.getTitle());
         application.setPaperAbstract(dto.getPaperAbstract());
         application.setKeyTerms(dto.getKeyTerms());
@@ -57,8 +57,8 @@ public class ApplicationMapper {
     public ApplicationDTO mapToDTO(Application application) {
         ApplicationDTO dto = new ApplicationDTO();
 
-        dto.setPaperId(application.getApplicationPK().getId());
-        dto.setVersion(application.getApplicationPK().getVersion());
+        dto.setPaperId(application.getId());
+        dto.setVersion(application.getVersion());
         dto.setTitle(application.getTitle());
         dto.setPaperAbstract(application.getPaperAbstract());
         dto.setKeyTerms(application.getKeyTerms());

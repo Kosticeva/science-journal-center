@@ -37,7 +37,7 @@ public class MagazineService {
 
     public Magazine createMagazine(Magazine magazine) {
 
-        if (magazine.getIssn() != null) {
+        if (magazine.getIssn() == null) {
             return null;
         }
 
@@ -85,11 +85,11 @@ public class MagazineService {
             return false;
         }
 
-        if (magazine.getEditor() == null || magazine.getEditor().getId() == null) {
+        if (magazine.getEditor() != null && magazine.getEditor().getId() == null) {
             return false;
         }
 
-        if (editorRepository.getOne(magazine.getEditor().getId()) == null) {
+        if (magazine.getEditor() != null && editorRepository.getOne(magazine.getEditor().getId()) == null) {
             return false;
         }
 
@@ -103,7 +103,7 @@ public class MagazineService {
             }
         }
 
-        if (magazine.getOptions() == null || magazine.getOptions().size() == 0) {
+        if (magazine.getOptions() == null) {
             return false;
         }
 

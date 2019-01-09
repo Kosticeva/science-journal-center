@@ -14,7 +14,7 @@ import java.util.Set;
 public class Magazine {
 
     @Id
-    @Column(name = "ISSN", length = 8)
+    @Column(name = "ISSN", length = 13)
     private String issn;
 
     @Column(name = "NAME", length = 127, nullable = false)
@@ -38,7 +38,7 @@ public class Magazine {
 
     @ManyToMany
     @JoinTable(name = "MAGAZINE_PAYMENT_OPTIONS", joinColumns = @JoinColumn(name = "MAGAZINE"),
-            inverseJoinColumns = @JoinColumn(name = "OPTION"))
+            inverseJoinColumns = @JoinColumn(name = "P_OPTION"))
     private Set<PaymentOption> options = new HashSet<>();
 
     public Magazine() {
