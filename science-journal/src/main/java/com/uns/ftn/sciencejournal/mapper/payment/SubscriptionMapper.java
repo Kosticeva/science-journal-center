@@ -25,10 +25,10 @@ public class SubscriptionMapper {
         subscription.setCancelled(dto.getCancelled());
         subscription.setDate(dto.getDate());
         subscription.setId(dto.getId());
-        subscription.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+        if(dto.getMagazine() != null) subscription.setMagazine(magazineRepository.getOne(dto.getMagazine()));
         subscription.setPaid(dto.getPaid());
         subscription.setType(dto.getType());
-        subscription.setUser(credentialsRepository.getOne(dto.getUser()));
+        if(dto.getUser() != null) subscription.setUser(credentialsRepository.getOne(dto.getUser()));
 
         return subscription;
     }
@@ -39,10 +39,10 @@ public class SubscriptionMapper {
         dto.setCancelled(subscription.getCancelled());
         dto.setDate(subscription.getDate());
         dto.setId(subscription.getId());
-        dto.setMagazine(subscription.getMagazine().getIssn());
+        if(subscription.getMagazine() != null) dto.setMagazine(subscription.getMagazine().getIssn());
         dto.setPaid(subscription.getPaid());
         dto.setType(subscription.getType());
-        dto.setUser(subscription.getUser().getUsername());
+        if(subscription.getUser() != null) dto.setUser(subscription.getUser().getUsername());
 
         return dto;
     }

@@ -13,7 +13,7 @@ import java.util.Set;
 public class Paper {
 
     @Id
-    @Column(name = "DOI", unique = true, length = 20)
+    @Column(name = "DOI", length = 20)
     private String doi;
 
     @Column(name = "TITLE", nullable = false)
@@ -25,23 +25,20 @@ public class Paper {
     @Column(name = "KEYWORDS", length = 1023, nullable = false)
     private String keyTerms;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY/*, optional = false*/)
     @JoinColumn(name = "AUTHOR")
     private Credentials author;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "COAUTHORS", joinColumns = @JoinColumn(name = "PAPER"),
+    @JoinTable(name = "PAPER_COAUTHORS", joinColumns = @JoinColumn(name = "PAPER"),
             inverseJoinColumns = @JoinColumn(name = "AUTHOR"))
     private Set<User> coauthors = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumns({
-            @JoinColumn(name = "ISSUE_MAGAZINE", referencedColumnName = "MAGAZINE"),
-            @JoinColumn(name = "ISSUE_EDITION", referencedColumnName = "EDITION")
-    })
+    @ManyToOne(fetch = FetchType.LAZY/*, optional = false*/)
+    @JoinColumn(name = "ISSUE")
     private Issue issue;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY/*, optional = false*/)
     @JoinColumn(name = "FIELD")
     private ScienceField field;
 
@@ -51,18 +48,18 @@ public class Paper {
     @Column(name = "PRICE")
     private Double price;
 
-    @OneToOne(optional = false)
+    @Column(name = "CURRENCY")
+    private String currency;
+
+    @OneToOne(/*optional = false*/)
     @JoinColumns({
-            @JoinColumn(name = "LAST_REVISION_ID", referencedColumnName = "ID"),
-            @JoinColumn(name = "LAST_REVISION_VERSION", referencedColumnName = "VERSION")})
+            @JoinColumn(name = "LAST_REVISION_ID", referencedColumnName = "ID")})
     private Application lastRevision;
 
     public Paper() {
     }
 
-    public Paper(String doi, String title, String paperAbstract, String keyTerms, Credentials author,
-                 Set<User> coauthors, Issue issue, ScienceField field, String file, Double price,
-                 Application lastRevision) {
+    public Paper(String doi, String title, String paperAbstract, String keyTerms, Credentials author, Set<User> coauthors, Issue issue, ScienceField field, String file, Double price, String currency, Application lastRevision) {
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
@@ -73,6 +70,7 @@ public class Paper {
         this.field = field;
         this.file = file;
         this.price = price;
+        this.currency = currency;
         this.lastRevision = lastRevision;
     }
 
@@ -91,12 +89,13 @@ public class Paper {
                 Objects.equals(field, paper.field) &&
                 Objects.equals(file, paper.file) &&
                 Objects.equals(price, paper.price) &&
+                Objects.equals(currency, paper.currency) &&
                 Objects.equals(lastRevision, paper.lastRevision);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue, field, file, price, lastRevision);
+        return Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue, field, file, price, currency, lastRevision);
     }
 
     @Override
@@ -112,8 +111,17 @@ public class Paper {
                 ", field=" + field +
                 ", file='" + file + '\'' +
                 ", price=" + price +
+                ", currency='" + currency + '\'' +
                 ", lastRevision=" + lastRevision +
                 '}';
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getDoi() {

@@ -1,12 +1,15 @@
 package com.uns.ftn.sciencejournal.service.common;
 
 import com.uns.ftn.sciencejournal.model.common.Task;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.common.ApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.common.TaskRepository;
 import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +23,16 @@ public class TaskServicer {
 
     @Autowired
     ApplicationRepository applicationRepository;
+
+    public List<Task> getAllForUser(String username) {
+        Credentials user = credentialsRepository.findFirstByUsername(username);
+
+        if(user == null) {
+            return new ArrayList<>();
+        }
+
+        return taskRepository.findByUserAndDeadlineBeforeAndFinished(user, LocalDateTime.now(), false);
+    }
 
     public Task getById(Long id) {
         return taskRepository.findById(id).orElse(null);

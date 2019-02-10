@@ -1,73 +1,137 @@
 package com.uns.ftn.sciencejournal.service.utils;
 
 import com.google.gson.Gson;
-import com.uns.ftn.sciencejournal.model.PaperSearchModel;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ElasticSearchJsonUtil {
 
-    private final String QUERY_ATTR = "query";
-    private final String QUERY_ATTR_TYPE = "bool";
+    public String generateJsonFromBoolQuery(String boolQuery) {
+        Gson gson = new Gson();
 
-    private final String PHRASE_ATTR = "match_phrase";
-    private final String CONDITION_ATTR = "match";
+        JsonElement queryBase = parse(boolQuery);
+        JsonElement query = new JsonObject();
+        query.getAsJsonObject().add(ElasticSearchJsonConstants.QUERY_ATTR, queryBase);
 
-    private final String TYPE_MARK_AND = "must";
-    private final String TYPE_MARK_OR = "should";
+        //",\"highlight\":{\"pre_tags\": [\"<b>\"],\"post_tags\": [\"</b>\"],\"fields\":{\"content\":{}}}";
+        JsonElement highlightFields = new JsonObject();
+        highlightFields.getAsJsonObject().add("content", new JsonObject());
+        JsonElement highlight = new JsonObject();
+        JsonArray preTags = new JsonArray();
+        preTags.add("<b>");
 
-    private final String SIZE_PARAM = "size";
+        JsonArray postTags = new JsonArray();
+        postTags.add("</b>");
 
-    public String generateAndQuery(Map<String, String> andParams) {
-        return generateQuery(andParams, TYPE_MARK_AND);
+        highlight.getAsJsonObject().add("pre_tags", preTags);
+        highlight.getAsJsonObject().add("post_tags", postTags);
+        highlight.getAsJsonObject().add("fields", highlightFields);
+
+        query.getAsJsonObject().add("highlight", highlight);
+
+        return gson.toJson(query);
     }
 
-    public String generateOrQuery(Map<String, String> orParams) {
-        return generateQuery(orParams, TYPE_MARK_OR);
-    }
+    private JsonElement parse(String query) {
+        JsonElement subQuery = null;
 
-    private String generateQuery(Map<String, String> params, String type) {
-        //StringBuilder builder = new StringBuilder(String.format("\"%s\": { \"%s\": {\"%s\": [\n", QUERY_ATTR, QUERY_ATTR_TYPE, type));
-        StringBuilder builder = new StringBuilder(String.format("\"%s\": {\n", QUERY_ATTR));
+        while(true) {
+            BoolOperator lastOperator = BoolQueryTokenParser.getLastOperator(query);
+            if (lastOperator == null) {
+                List<String> tokens = new ArrayList<>();
+                tokens.add(query);
 
-        int counter = 0;
-        for (String key : params.keySet()) {
-            if (params.get(key).trim().startsWith("\"")) {
-                builder.append(generateQueryAttribute(key, params.get(key), PHRASE_ATTR));
+                return generateJsonBoolElement(tokens, new BoolOperator(BoolOperator.Operator.AND, 0), subQuery);
             } else {
-                builder.append(generateQueryAttribute(key, params.get(key), CONDITION_ATTR));
-            }
-
-            counter++;
-            if(counter < params.keySet().size()){
-                builder.append(",\n");
+                subQuery = parseSameOperators(query, lastOperator, subQuery);
+                BoolOperator differentOperator = BoolQueryTokenParser.getDifferentLastOperator(query, lastOperator);
+                if(differentOperator == null) {
+                    return subQuery;
+                }
+                query = BoolQueryTokenParser.getTokenBeforeOperator(query, differentOperator);
             }
         }
-
-        builder.append("\n}");
-        return builder.toString();
     }
 
-    private String generateQueryAttribute(String key, String value, String condition) {
-        return String.format("\t\"%s\": { \"%s\": \"%s\" }", condition, key, value);
+    private JsonElement parseSameOperators(String query, BoolOperator lastOperator, JsonElement subQuery) {
+        List<String> tokens = new ArrayList<>();
+
+        while(true) {
+            BoolOperator nextToLastOperator = BoolQueryTokenParser.getLastOperator(BoolQueryTokenParser.getTokenBeforeOperator(query, lastOperator));
+            String lastToken = BoolQueryTokenParser.getTokenAfterOperator(query, lastOperator);
+
+            if(nextToLastOperator == null) {
+                String nextToLastToken = BoolQueryTokenParser.getTokenBeforeOperator(query, lastOperator);
+                tokens.add(lastToken);
+                tokens.add(nextToLastToken);
+
+                return generateJsonBoolElement(tokens, lastOperator, subQuery);
+            }else{
+                tokens.add(lastToken);
+
+                if(nextToLastOperator.equals(lastOperator)) {
+                    query = BoolQueryTokenParser.getTokenBeforeOperator(query, lastOperator);
+                    lastOperator = nextToLastOperator;
+                }else{
+                    String nextToLastToken = BoolQueryTokenParser.getTokenAfterOperator(BoolQueryTokenParser.getTokenBeforeOperator(query, lastOperator), nextToLastOperator);
+                    tokens.add(nextToLastToken);
+
+                    return generateJsonBoolElement(tokens, lastOperator, subQuery);
+                }
+            }
+        }
     }
 
-    public String generateSize(int size) {
-        return "\"" + SIZE_PARAM + "\": " + size;
+    private JsonElement generateJsonBoolElement(List<String> tokens, BoolOperator boolOperator, JsonElement subQuery) {
+        JsonElement boolObject = new JsonObject();
+        JsonElement operatorObject = new JsonObject();
+
+        JsonArray operatorArray = generateJsonArrayFromTokens(tokens);
+        if(subQuery != null) {
+            operatorArray.add(subQuery);
+        }
+
+        if(boolOperator.getOperator() == BoolOperator.Operator.AND) {
+            operatorObject.getAsJsonObject().add(ElasticSearchJsonConstants.TYPE_MARK_AND, operatorArray);
+        }else{
+            operatorObject.getAsJsonObject().add(ElasticSearchJsonConstants.TYPE_MARK_OR, operatorArray);
+        }
+
+        boolObject.getAsJsonObject().add(ElasticSearchJsonConstants.QUERY_ATTR_TYPE, operatorObject);
+
+        return boolObject;
     }
 
-    public List<Object> getHitsFromJson(String json){
-        JsonParser parser = JsonParserFactory.getJsonParser();
-        Map<String, Object> firstLevel = parser.parseMap(json);
-        Map<String, Object> secondLevel = (Map<String, Object>)firstLevel.get("hits");
-        return (List<Object>)secondLevel.get("hits");
+    private JsonArray generateJsonArrayFromTokens(List<String> tokens) {
+        JsonElement operatorArray = new JsonArray();
+        for(String token: tokens) {
+            String parameter = BoolQueryTokenParser.convertSerbianParameterNameToEsIndexName(
+                    BoolQueryTokenParser.getTokenParameter(token));
+
+            if(parameter == null) {
+                continue;
+            }
+
+            String value = BoolQueryTokenParser.getTokenValue(token);
+            JsonElement boolParameter = new JsonObject();
+
+            JsonElement operator = new JsonObject();
+            if(BoolQueryTokenParser.checkIfTokenValueIsPhrase(value)) {
+                boolParameter.getAsJsonObject().addProperty(parameter, BoolQueryTokenParser.removeQuotationMarksFromPhrase(value));
+                operator.getAsJsonObject().add(ElasticSearchJsonConstants.PHRASE_ATTR, boolParameter);
+            }else{
+                boolParameter.getAsJsonObject().addProperty(parameter, value);
+                operator.getAsJsonObject().add(ElasticSearchJsonConstants.CONDITION_ATTR, boolParameter);
+            }
+
+            operatorArray.getAsJsonArray().add(operator);
+        }
+
+        return operatorArray.getAsJsonArray();
     }
 
-    public String convertPaperSearchModelToJson(PaperSearchModel model){
-        Gson gson = new Gson();
-        return gson.toJson(model);
-    }
 }

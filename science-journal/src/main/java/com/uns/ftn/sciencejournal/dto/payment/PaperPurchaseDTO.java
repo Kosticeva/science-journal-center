@@ -1,19 +1,15 @@
 package com.uns.ftn.sciencejournal.dto.payment;
 
-import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class PaperPurchaseDTO {
 
-    private Long id;
+    private String id;
 
     private LocalDateTime timeOfPurchase;
 
     private String user;
-
-    private PurchaseType type;
 
     private Boolean successful;
 
@@ -23,19 +19,20 @@ public class PaperPurchaseDTO {
 
     private Double amount;
 
+    private String currency;
+
     public PaperPurchaseDTO() {
     }
 
-    public PaperPurchaseDTO(Double amount, Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type,
-                            Boolean successful, Integer paymentOption, String paper) {
+    public PaperPurchaseDTO(String id, LocalDateTime timeOfPurchase, String user, Boolean successful, Integer paymentOption, String paper, Double amount, String currency) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
-        this.type = type;
         this.successful = successful;
         this.paymentOption = paymentOption;
         this.paper = paper;
         this.amount = amount;
+        this.currency = currency;
     }
 
     public Double getAmount() {
@@ -46,11 +43,11 @@ public class PaperPurchaseDTO {
         this.amount = amount;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -68,14 +65,6 @@ public class PaperPurchaseDTO {
 
     public void setUser(String user) {
         this.user = user;
-    }
-
-    public PurchaseType getType() {
-        return type;
-    }
-
-    public void setType(PurchaseType type) {
-        this.type = type;
     }
 
     public Boolean getSuccessful() {
@@ -102,6 +91,14 @@ public class PaperPurchaseDTO {
         this.paper = paper;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,29 +107,29 @@ public class PaperPurchaseDTO {
         return Objects.equals(id, that.id) &&
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
                 Objects.equals(user, that.user) &&
-                type == that.type &&
                 Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
                 Objects.equals(paper, that.paper) &&
-                Objects.equals(amount, that.amount);
+                Objects.equals(amount, that.amount) &&
+                Objects.equals(currency, that.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, paper, amount);
+        return Objects.hash(id, timeOfPurchase, user, successful, paymentOption, paper, amount, currency);
     }
 
     @Override
     public String toString() {
         return "PaperPurchaseDTO{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", timeOfPurchase=" + timeOfPurchase +
                 ", user='" + user + '\'' +
-                ", type=" + type +
                 ", successful=" + successful +
                 ", paymentOption=" + paymentOption +
                 ", paper='" + paper + '\'' +
                 ", amount=" + amount +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 }

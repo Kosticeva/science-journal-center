@@ -1,46 +1,37 @@
 <div class="container m-10">
-  <input type="text" [(ngModel)]="taskId" />
-  <form (submit)="submit()">
-    <div class="form-group" *ngFor="let field of formData">
-      <label for="{{field.id}}">{{field.label}}</label>
-      <input *ngIf="field.type==='string'" class="form-control" name="{{field.id}}" type="text" id="{{field.id}}" placeholder="{{field.label}}..." [(ngModel)]="field.value"/>
-      <input *ngIf="field.type==='password'" class="form-control" name="{{field.id}}" type="password" id="{{field.id}}" placeholder="{{field.label}}..." [(ngModel)]="field.value"/>
-      <input *ngIf="field.type==='email'" class="form-control" name="{{field.id}}" type="email" id="{{field.id}}" placeholder="{{field.label}}..." [(ngModel)]="field.value"/>
-    </div>
-    <!--<div class="form-group">
+  <form>
+      <div class="form-group">
+          <label for="username">Username</label>
+          <input class="form-control" type="text" id="username" name="username" placeholder="korisnicko ime..." [(ngModel)]="credentials.username"/>
+        </div>
+    <div class="form-group">
       <label for="email">E-mail</label>
-      <input class="form-control" type="email" id="email" placeholder="email..."/>
+      <input class="form-control" type="email" id="email" name="email" placeholder="email..." [(ngModel)]="user.email"/>
+    </div>
+    <div class="form-group">
+      <label for="password">Lozinka</label>
+      <input class="form-control" type="password" id="password" name="password" placeholder="lozinka..." [(ngModel)]="credentials.password"/>
     </div>
     <div class="form-group d-flex justify-content-between">
-      <span>
-        <label for="password">Password</label>
-        <input class="form-control" type="password" id="password" placeholder="password..."/>
-      </span>
-      <span>
-        <label for="confpassword">Confirm password</label>
-        <input class="form-control" type="password" id="confpassword" placeholder="password..."/>
-      </span>
-    </div>
-    <div class="form-group d-flex justify-content-between">
-      <span>
+      <span class="w-50">
         <label for="fname">First name</label>
-        <input class="form-control" type="text" id="fname" placeholder="first name..."/>
+        <input class="form-control" type="text" id="fname" name="fname" placeholder="first name..."  [(ngModel)]="user.fName"/>
       </span>
-      <span>
+      <span class="w-50">
         <label for="lname">Last name</label>
-        <input class="form-control" type="text" id="lname" placeholder="last name.."/>
+        <input class="form-control" type="text" id="lname" name="lname" placeholder="last name.." [(ngModel)]="user.lName"/>
       </span>
     </div>
     <div class="form-group d-flex justify-content-between">
-      <span>
+      <span class="w-50">
         <label for="city">City</label>
-        <input class="form-control" type="text" id="city" placeholder="city..."/>
+        <input class="form-control" type="text" id="city" name="city" placeholder="city..." [(ngModel)]="user.city"/>
       </span>
-      <span>
+      <span class="w-50">
         <label for="country">Country</label>
-        <input class="form-control" type="text" id="country" placeholder="country.."/>
+        <input class="form-control" type="text" id="country" name="country" placeholder="country.." [(ngModel)]="user.country"/>
       </span>
-    </div>-->
-    <button class="btn">OK</button>
+    </div>
+    <button class="btn" (click)="register()">Registruj se</button>
   </form>
 </div>

@@ -25,15 +25,27 @@ public class Issue {
     @Column(name = "PRICE", nullable = false)
     private Double price;
 
+    @Column(name = "CURRENCY", nullable = false)
+    private String currency;
+
     public Issue() {
     }
 
-    public Issue(Long id, String edition, Magazine magazine, LocalDate date, Double price) {
+    public Issue(Long id, String edition, Magazine magazine, LocalDate date, Double price, String currency) {
         this.id = id;
         this.edition = edition;
         this.magazine = magazine;
         this.date = date;
         this.price = price;
+        this.currency = currency;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public Long getId() {
@@ -85,12 +97,13 @@ public class Issue {
                 Objects.equals(edition, issue.edition) &&
                 Objects.equals(magazine, issue.magazine) &&
                 Objects.equals(date, issue.date) &&
-                Objects.equals(price, issue.price);
+                Objects.equals(price, issue.price) &&
+                Objects.equals(currency, issue.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, edition, magazine, date, price);
+        return Objects.hash(id, edition, magazine, date, price, currency);
     }
 
     @Override
@@ -101,6 +114,7 @@ public class Issue {
                 ", magazine=" + magazine +
                 ", date=" + date +
                 ", price=" + price +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 }

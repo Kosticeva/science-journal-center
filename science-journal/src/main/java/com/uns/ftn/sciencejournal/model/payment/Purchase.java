@@ -10,9 +10,8 @@ import java.time.LocalDateTime;
 public abstract class Purchase {
 
     @Id
-    @GeneratedValue
-    @Column(name = "TRANSACTION_ID")
-    private Long transactionId;
+    @Column(name = "TRANSACTION_ID", length = 64)
+    private String transactionId;
 
     @Column(name = "TIMESTAMP", nullable = false)
     private LocalDateTime timeOfPurchase;
@@ -21,7 +20,7 @@ public abstract class Purchase {
     @JoinColumn(name = "USER")
     private Credentials user;
 
-    @Column(name = "MERCHANDISE", nullable = false)
+    @Column(name = "TYPE")
     private PurchaseType type;
 
     @Column(name = "SUCCESSFUL")
@@ -34,17 +33,21 @@ public abstract class Purchase {
     @Column(name = "AMOUNT", nullable = false)
     private Double amount;
 
+    @Column(name = "CURRENCY", nullable = false)
+    private String currency;
+
     public Purchase() {
     }
 
-    public Purchase(LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful,
-                    PaymentOption option, Double amount) {
+    public Purchase(String transactionId, LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful, PaymentOption option, Double amount, String currency) {
+        this.transactionId = transactionId;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
         this.type = type;
         this.successful = successful;
         this.option = option;
         this.amount = amount;
+        this.currency = currency;
     }
 
     public Double getAmount() {
@@ -55,11 +58,11 @@ public abstract class Purchase {
         this.amount = amount;
     }
 
-    public Long getTransactionId() {
+    public String getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(Long transactionId) {
+    public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
     }
 
@@ -101,5 +104,13 @@ public abstract class Purchase {
 
     public void setOption(PaymentOption option) {
         this.option = option;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

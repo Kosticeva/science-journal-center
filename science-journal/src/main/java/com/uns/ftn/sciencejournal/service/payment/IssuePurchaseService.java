@@ -1,6 +1,7 @@
 package com.uns.ftn.sciencejournal.service.payment;
 
 import com.uns.ftn.sciencejournal.model.payment.IssuePurchase;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.common.IssueRepository;
 import com.uns.ftn.sciencejournal.repository.payment.IssuePurchaseRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class IssuePurchaseService {
@@ -25,6 +28,15 @@ public class IssuePurchaseService {
 
     @Autowired
     PaymentOptionRepository paymentOptionRepository;
+
+    public List<IssuePurchase> getAllFromUser(String username) {
+        Credentials user = credentialsRepository.findFirstByUsername(username);
+        if(user == null) {
+            return new ArrayList<>();
+        }
+
+        return issuePurchaseRepository.getByUser(user);
+    }
 
     public IssuePurchase getById(Long id) {
         return issuePurchaseRepository.findById(id).orElse(null);
@@ -54,6 +66,7 @@ public class IssuePurchaseService {
 
         issuePurchase.setTimeOfPurchase(LocalDateTime.now());
         issuePurchase.setSuccessful(null);
+        issuePurchase.setTransactionId(UUID.randomUUID().toString());
 
         return issuePurchaseRepository.save(issuePurchase);
     }

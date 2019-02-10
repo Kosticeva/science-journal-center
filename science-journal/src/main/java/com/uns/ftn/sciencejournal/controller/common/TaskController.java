@@ -1,5 +1,6 @@
 package com.uns.ftn.sciencejournal.controller.common;
 
+import com.uns.ftn.sciencejournal.configuration.JwtTokenProvider;
 import com.uns.ftn.sciencejournal.dto.common.TaskDTO;
 import com.uns.ftn.sciencejournal.mapper.common.TaskMapper;
 import com.uns.ftn.sciencejournal.model.common.Task;
@@ -9,10 +10,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/tasks")
+@CrossOrigin(origins = "http://localhost:4201")
 public class TaskController {
 
     @Autowired
@@ -20,6 +23,16 @@ public class TaskController {
 
     @Autowired
     TaskMapper taskMapper;
+
+    @Autowired
+    JwtTokenProvider provider;
+
+    @GetMapping(value = "/my", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<TaskDTO>> getAllFromUser(HttpServletRequest request) {
+        String username = provider.parseToken(request);
+
+        return ResponseEntity.ok().body(taskMapper.mapManyToDTO(taskService.getAllForUser(username)));
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TaskDTO>> getAllTasks() {

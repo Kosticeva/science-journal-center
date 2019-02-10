@@ -1,117 +1,68 @@
 package com.uns.ftn.sciencejournal.model;
 
-import com.uns.ftn.sciencejournal.model.enums.SearchType;
-
 import java.util.List;
+import java.util.Objects;
 
 public class SearchQuery {
 
-    private String magazine;
-
-    private String paper;
-
-    private String authorFName;
-
-    private String authorLName;
-
-    private List<String> keyWords;
-
-    private List<String> scienceFields;
-
-    private SearchType type;
-
-    private int resultCount;
+    private List<SearchFieldQuery> queriesByFields;
+    private String operatorsBetweenFields;
+    private int size;
 
     public SearchQuery() {
     }
 
-    public SearchQuery(String magazine, String paper, String authorFName, String authorLName,
-                       List<String> keyWords, List<String> scienceFields, SearchType type, int resultCount) {
-        this.magazine = magazine;
-        this.paper = paper;
-        this.authorFName = authorFName;
-        this.authorLName = authorLName;
-        this.keyWords = keyWords;
-        this.scienceFields = scienceFields;
-        this.type = type;
-        this.resultCount = resultCount;
+    public SearchQuery(List<SearchFieldQuery> queriesByFields, String operatorsBetweenFields, int size) {
+        this.queriesByFields = queriesByFields;
+        this.operatorsBetweenFields = operatorsBetweenFields;
+        this.size = size;
     }
 
-    public String getMagazine() {
-        return magazine;
+    public List<SearchFieldQuery> getQueriesByFields() {
+        return queriesByFields;
     }
 
-    public void setMagazine(String magazine) {
-        this.magazine = magazine;
+    public void setQueriesByFields(List<SearchFieldQuery> queriesByFields) {
+        this.queriesByFields = queriesByFields;
     }
 
-    public String getPaper() {
-        return paper;
+    public String getOperatorsBetweenFields() {
+        return operatorsBetweenFields;
     }
 
-    public void setPaper(String paper) {
-        this.paper = paper;
+    public void setOperatorsBetweenFields(String operatorsBetweenFields) {
+        this.operatorsBetweenFields = operatorsBetweenFields;
     }
 
-    public String getAuthorFName() {
-        return authorFName;
+    public int getSize() {
+        return size;
     }
 
-    public void setAuthorFName(String authorFName) {
-        this.authorFName = authorFName;
+    public void setSize(int size) {
+        this.size = size;
     }
 
-    public String getAuthorLName() {
-        return authorLName;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SearchQuery that = (SearchQuery) o;
+        return Objects.equals(queriesByFields, that.queriesByFields) &&
+                Objects.equals(operatorsBetweenFields, that.operatorsBetweenFields) &&
+                Objects.equals(size, that.size);
     }
 
-    public void setAuthorLName(String authorLName) {
-        this.authorLName = authorLName;
-    }
-
-    public List<String> getKeyWords() {
-        return keyWords;
-    }
-
-    public void setKeyWords(List<String> keyWords) {
-        this.keyWords = keyWords;
-    }
-
-    public List<String> getScienceFields() {
-        return scienceFields;
-    }
-
-    public void setScienceFields(List<String> scienceFields) {
-        this.scienceFields = scienceFields;
-    }
-
-    public SearchType getType() {
-        return type;
-    }
-
-    public void setType(SearchType type) {
-        this.type = type;
-    }
-
-    public int getResultCount() {
-        return resultCount;
-    }
-
-    public void setResultCount(int resultCount) {
-        this.resultCount = resultCount;
+    @Override
+    public int hashCode() {
+        return Objects.hash(queriesByFields, operatorsBetweenFields, size);
     }
 
     @Override
     public String toString() {
         return "SearchQuery{" +
-                "magazine='" + magazine + '\'' +
-                ", paper='" + paper + '\'' +
-                ", authorFName='" + authorFName + '\'' +
-                ", authorLName='" + authorLName + '\'' +
-                ", keyWords=" + keyWords +
-                ", scienceFields=" + scienceFields +
-                ", type=" + type +
-                ", count=" + resultCount +
+                "queriesByFields=" + queriesByFields +
+                ", operatorsBetweenFields='" + operatorsBetweenFields + '\'' +
+                ", size=" + size +
                 '}';
     }
 }

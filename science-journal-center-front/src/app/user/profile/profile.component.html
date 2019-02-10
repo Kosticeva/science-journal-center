@@ -1,3 +1,170 @@
-<p>
-  profile works!
-</p>
+<div class="container">
+  <br />
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': page==0}" routerLink="../profile" (click)="page=0">Osnovne informacije</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': page==1}" routerLink="../profile" (click)="page=1">Zadaci</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': page==2}" routerLink="../profile" (click)="page=2">Kupovine</a>
+    </li>
+  </ul>
+  <div *ngIf="page==0">
+    <h4>Osnovne informacije</h4>
+    <br />
+    <table *ngIf="user">
+      <tbody>
+        <tr>
+          <th scope="col">Korisnicko ime</th>
+          <td>{{loginService.getUser()}}</td>
+        </tr>
+        <tr>
+          <th scope="col">Ime</th>
+          <td>{{user.fName}}</td>
+        </tr>
+        <tr>
+          <th scope="col">Prezime</th>
+          <td>{{user.lName}}</td>
+        </tr>
+        <tr>
+          <th scope="col">E-mail adresa</th>
+          <td>{{user.email}}</td>
+        </tr>
+        <tr>
+          <th scope="col">Grad i drzava</th>
+          <td>{{user.city}}, {{user.country}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="page==1">
+    <br />
+    <h4>Zadaci</h4>
+    <table class="table table-light">
+      <thead>
+        <tr>
+          <th scope="col">Opis</th>
+          <th scope="col">Tip</th>
+          <th scope="col">Prijava</th>
+          <th scope="col">Rok</th>
+          <th scope="col">Akcije</th>
+        </tr>
+      </thead>
+      <tbody>
+        <div *ngFor="let task of tasks">
+          <tr>
+            <td>{{task.summary}}</td>
+            <td>{{task.type}}</td>
+            <td><a role="button" (click)="viewApplication(task.application)" class="btn btn-primary">Prijava sa sifrom {{task.application}}</a></td>
+            <td>Zavrsiti do: <b>{{task.deadline}}</b></td>
+            <td><span class="btn-group">
+              <button (click)="finishTask(task)">Zavrsi</button>
+            </span></td>
+          </tr>
+          <tr *ngIf="viewingApplication === task.application">
+            <td colspan="5">
+              <table>
+                <tr>
+                  <th>Naslov</th>
+                  <td>{{viewingApplication.title}}</td>
+                </tr>
+                <tr>
+                  <th>Apstrakt</th>
+                  <td>{{viewingApplication.paperAbstract}}</td>
+                </tr>
+                <tr>
+                  <th>Kljucne reci</th>
+                  <td>{{viewingApplication.keyWords}}</td>
+                </tr>
+                <tr>
+                  <th>Autori</th>
+                  <td>{{viewAuthors(viewingApplication)}}</td>
+                </tr>
+                <tr>
+                  <th>Casopis</th>
+                  <td>{{viewingApplication.magazine}}</td>
+                </tr>
+                <tr>
+                  <th>Oblast</th>
+                  <td>{{viewingApplication.field}}</td>
+                </tr>
+                <tr>
+                  <th>Akcije</th>
+                  <td>
+                    <button (click)="publish(viewingApplication)">
+                      Objavi
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </div>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="page==2">
+    <br />
+    <h4>Kupljeni radovi</h4>
+    <table class="table table-light">
+      <thead>
+        <tr>
+          <th scope="col">Rad</th>
+          <th scope="col">Iznos</th>
+          <th scope="col">Valuta</th>
+          <th scope="col">Vreme kupovine</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paper of paperPurchases">
+          <td>{{paper.paper}}</td>
+          <td>{{paper.amount}}</td>
+          <td>{{paper.currency}}</td>
+          <td>{{paper.timeOfPurchase}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <h4>Kupljena izdanja</h4>
+    <table class="table table-light">
+      <thead>
+        <tr>
+          <th scope="col">Izdanje</th>
+          <th scope="col">Iznos</th>
+          <th scope="col">Valuta</th>
+          <th scope="col">Vreme kupovine</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let issue of issuePurchases">
+          <td>{{issue.issuePK}}</td>
+          <td>{{issue.amount}}</td>
+          <td>{{issue.currency}}</td>
+          <td>{{issue.timeOfPurchase}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <h4>Pretplate</h4>
+    <table class="table table-light">
+      <thead>
+        <tr>
+          <th scope="col">Casopis</th>
+          <th scope="col">Iznos</th>
+          <th scope="col">Valuta</th>
+          <th scope="col">Vreme kupovine</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let subscription of subscriptionPurchases">
+          <td>{{subscription.subscription}}</td>
+          <td>{{subscription.amount}}</td>
+          <td>{{subscription.currency}}</td>
+          <td>{{subscription.timeOfPurchase}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

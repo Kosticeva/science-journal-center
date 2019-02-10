@@ -1,5 +1,7 @@
 package com.uns.ftn.sciencejournal.controller.payment;
 
+import com.uns.ftn.sciencejournal.configuration.JwtTokenProvider;
+import com.uns.ftn.sciencejournal.dto.payment.IssuePurchaseDTO;
 import com.uns.ftn.sciencejournal.dto.payment.SubscriptionPurchaseDTO;
 import com.uns.ftn.sciencejournal.mapper.payment.SubscriptionPurchaseMapper;
 import com.uns.ftn.sciencejournal.model.payment.SubscriptionPurchase;
@@ -9,11 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
 @RestController
 @RequestMapping(path = "/api/subscriptionPurchases")
+@CrossOrigin(origins = "http://localhost:4201")
 public class SubscriptionPurchaseController {
 
     @Autowired
@@ -21,6 +25,15 @@ public class SubscriptionPurchaseController {
 
     @Autowired
     SubscriptionPurchaseMapper subscriptionPurchaseMapper;
+
+    @Autowired
+    JwtTokenProvider provider;
+
+    @GetMapping(value = "/my", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<SubscriptionPurchaseDTO>> getSubscriptionPurchasesForLoggedUser(HttpServletRequest request) {
+        String username = provider.parseToken(request);
+        return ResponseEntity.ok().body(subscriptionPurchaseMapper.mapManyToDTO(subscriptionPurchaseService.getAllFromUser(username)));
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<SubscriptionPurchaseDTO>> getAllSubscriptionPurchases() {
@@ -39,7 +52,7 @@ public class SubscriptionPurchaseController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SubscriptionPurchaseDTO> createSubscriptionPurchase(
             @RequestBody SubscriptionPurchaseDTO newSubscriptionPurchase) {
-        if (newSubscriptionPurchase.getId().equals(null)) {
+        if (newSubscriptionPurchase.getId() == null) {
             SubscriptionPurchase subscriptionPurchase = subscriptionPurchaseService.createSubscriptionPurchase(
                     subscriptionPurchaseMapper.mapFromDTO(newSubscriptionPurchase));
 

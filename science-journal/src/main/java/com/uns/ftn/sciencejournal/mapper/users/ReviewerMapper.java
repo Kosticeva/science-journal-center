@@ -31,7 +31,7 @@ public class ReviewerMapper {
 
         reviewer.setId(dto.getId());
         reviewer.setTitle(dto.getTitle());
-        reviewer.setUser(credentialsRepository.getOne(dto.getUser()));
+        if(dto.getUser() != null) reviewer.setUser(credentialsRepository.getOne(dto.getUser()));
 
         reviewer.setMagazines(new HashSet<>());
         for (String issn : dto.getMagazines()) {
@@ -52,7 +52,7 @@ public class ReviewerMapper {
 
         dto.setId(reviewer.getId());
         dto.setTitle(reviewer.getTitle());
-        dto.setUser(reviewer.getUser().getUsername());
+        if(reviewer.getUser() != null) dto.setUser(reviewer.getUser().getUsername());
 
         dto.setMagazines(new HashSet<>());
         for (Magazine magazine : reviewer.getMagazines()) {

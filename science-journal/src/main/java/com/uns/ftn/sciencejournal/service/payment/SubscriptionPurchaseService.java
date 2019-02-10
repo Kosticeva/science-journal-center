@@ -1,9 +1,7 @@
 package com.uns.ftn.sciencejournal.service.payment;
 
-import com.uns.ftn.sciencejournal.model.payment.PaperPurchase;
-import com.uns.ftn.sciencejournal.model.payment.Subscription;
 import com.uns.ftn.sciencejournal.model.payment.SubscriptionPurchase;
-import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionPurchaseRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionRepository;
@@ -12,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SubscriptionPurchaseService {
@@ -28,6 +28,15 @@ public class SubscriptionPurchaseService {
 
     @Autowired
     PaymentOptionRepository paymentOptionRepository;
+
+    public List<SubscriptionPurchase> getAllFromUser(String username) {
+        Credentials user = credentialsRepository.findFirstByUsername(username);
+        if (user == null) {
+            return new ArrayList<>();
+        }
+
+        return subscriptionPurchaseRepository.getByUser(user);
+    }
 
     public SubscriptionPurchase getById(Long id) {
         return subscriptionPurchaseRepository.findById(id).orElse(null);
@@ -49,6 +58,7 @@ public class SubscriptionPurchaseService {
 
         subscriptionPurchase.setTimeOfPurchase(LocalDateTime.now());
         subscriptionPurchase.setSuccessful(null);
+        subscriptionPurchase.setTransactionId(UUID.randomUUID().toString());
 
         return subscriptionPurchaseRepository.save(subscriptionPurchase);
     }
@@ -87,13 +97,13 @@ public class SubscriptionPurchaseService {
             return false;
         }
 
-        if (subscriptionPurchase.getOption() == null || subscriptionPurchase.getOption().getPaymentOptionCode() == null) {
+        /*if (subscriptionPurchase.getOption() == null || subscriptionPurchase.getOption().getPaymentOptionCode() == null) {
             return false;
         }
 
         if (paymentOptionRepository.getOne(subscriptionPurchase.getOption().getPaymentOptionCode()) == null) {
             return false;
-        }
+        }*/
 
         if (subscriptionPurchase.getUser() == null || subscriptionPurchase.getUser().getUsername() == null) {
             return false;

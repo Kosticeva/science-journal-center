@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 public class DOIUtils {
 
     public static String generateDOI(Paper paper) {
-        return LocalDateTime.now().toString();
+        return paper.getDoi();
     }
 }

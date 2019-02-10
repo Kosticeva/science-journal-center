@@ -1,15 +1,20 @@
 package com.uns.ftn.sciencejournal.service.common;
 
 import com.uns.ftn.sciencejournal.model.common.Application;
+import com.uns.ftn.sciencejournal.model.enums.PaperApplicationState;
 import com.uns.ftn.sciencejournal.model.users.User;
 import com.uns.ftn.sciencejournal.repository.common.ApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
 import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.UserRepository;
+import com.uns.ftn.sciencejournal.service.storage.MagazineStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,6 +36,9 @@ public class ApplicationService {
     @Autowired
     ScienceFieldRepository scienceFieldRepository;
 
+    @Autowired
+    MagazineStorageService magazineStorageService;
+
     public Application getById(Long id) {
         return applicationRepository.findById(id).orElse(null);
     }
@@ -39,20 +47,31 @@ public class ApplicationService {
         return applicationRepository.findAll();
     }
 
-    public Application createApplication(Application application) {
+    public Application createApplication(Application application, MultipartFile file) {
 
-        if (checkDependencyValidity(application) == false) {
+        if (!checkDependencyValidity(application)) {
             return null;
         }
 
         application.setVersion(0);
         application.setTimestamp(LocalDate.now());
         application.setAccepted(null);
+        application.setState(PaperApplicationState.REVIEWER_PROPOSAL);
+        application.setFile(file.getOriginalFilename());
 
-        return applicationRepository.save(application);
+        Application dbApplication = applicationRepository.save(application);
+        Path pathToApplicationOnServer = magazineStorageService.storeApplication(dbApplication, file);
+        if(pathToApplicationOnServer == null){
+            return null;
+        }
+
+        dbApplication.setFile(pathToApplicationOnServer.toString());
+
+        applicationRepository.save(dbApplication);
+        return dbApplication;
     }
 
-    public Application updateApplication(Application newApplication, Long id) {
+    public Application updateApplication(Application newApplication, Long id, MultipartFile file) {
 
         if (id == null) {
             return null;
@@ -82,7 +101,16 @@ public class ApplicationService {
         application.setMagazine(newApplication.getMagazine());
         application.setField(newApplication.getField());
 
-        return applicationRepository.save(application);
+        Application dbApplication = applicationRepository.save(application);
+        Path pathToApplicationOnServer = magazineStorageService.storeApplication(dbApplication, file);
+        if(pathToApplicationOnServer == null){
+            return null;
+        }
+
+        dbApplication.setFile(pathToApplicationOnServer.toString());
+
+        applicationRepository.save(dbApplication);
+        return dbApplication;
     }
 
     private boolean checkDependencyValidity(Application application) {
@@ -95,11 +123,7 @@ public class ApplicationService {
             return false;
         }
 
-        if (application.getFile() == null || application.getFile().equals("")) {
-            return false;
-        }
-
-        if (application.getKeyTerms() == null || application.getFile().equals("")) {
+        if (application.getKeyTerms() == null || application.getKeyTerms().equals("")) {
             return false;
         }
 
@@ -127,7 +151,7 @@ public class ApplicationService {
             return false;
         }
 
-        if (application.getCoauthors() == null || application.getCoauthors().size() == 0) {
+        if (application.getCoauthors() == null) {
             return false;
         }
 
@@ -145,8 +169,7 @@ public class ApplicationService {
             return;
         }
 
+        magazineStorageService.removeApplication(applicationRepository.getOne(id));
         applicationRepository.deleteById(id);
     }
-
-
 }

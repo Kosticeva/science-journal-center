@@ -15,15 +15,18 @@ public class IssueDTO {
 
     private Double price;
 
+    private String currency;
+
     public IssueDTO() {
     }
 
-    public IssueDTO(Long id, String magazine, String edition, LocalDate date, Double price) {
+    public IssueDTO(Long id, String magazine, String edition, LocalDate date, Double price, String currency) {
+        this.id = id;
         this.magazine = magazine;
         this.edition = edition;
         this.date = date;
         this.price = price;
-        this.id = id;
+        this.currency = currency;
     }
 
     public String getMagazine() {
@@ -66,6 +69,14 @@ public class IssueDTO {
         this.id = id;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,12 +86,13 @@ public class IssueDTO {
                 Objects.equals(magazine, issueDTO.magazine) &&
                 Objects.equals(edition, issueDTO.edition) &&
                 Objects.equals(date, issueDTO.date) &&
-                Objects.equals(price, issueDTO.price);
+                Objects.equals(price, issueDTO.price) &&
+                Objects.equals(currency, issueDTO.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, magazine, edition, date, price);
+        return Objects.hash(id, magazine, edition, date, price, currency);
     }
 
     @Override
@@ -91,6 +103,7 @@ public class IssueDTO {
                 ", edition='" + edition + '\'' +
                 ", date=" + date +
                 ", price=" + price +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 }

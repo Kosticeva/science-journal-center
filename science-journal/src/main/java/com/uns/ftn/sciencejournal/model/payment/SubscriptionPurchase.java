@@ -18,9 +18,8 @@ public class SubscriptionPurchase extends Purchase {
     public SubscriptionPurchase() {
     }
 
-    public SubscriptionPurchase(LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful,
-                                PaymentOption option, Subscription subscription, Double amount) {
-        super(timeOfPurchase, user, type, successful, option, amount);
+    public SubscriptionPurchase(String transactionId, LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful, PaymentOption option, Double amount, String currency, Subscription subscription) {
+        super(transactionId, timeOfPurchase, user, type, successful, option, amount, currency);
         this.subscription = subscription;
     }
 

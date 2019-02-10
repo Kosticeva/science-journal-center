@@ -1,6 +1,7 @@
 package com.uns.ftn.sciencejournal.configuration;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -9,7 +10,13 @@ public class WebConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeRequests().antMatchers("/**").permitAll();
+        httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/api/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/credentials", "/api/users", "/api/dummy", "/api/dummy/end").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .anyRequest().authenticated();
+
+        httpSecurity
+                .addFilter(new JWTAuthorizationFilter(authenticationManager()));
 
         httpSecurity.csrf().disable();
         httpSecurity.headers().frameOptions().disable();

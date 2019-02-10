@@ -10,7 +10,7 @@ public interface StorageService {
 
     void init();
 
-    Path store(MultipartFile file);
+    Path store(MultipartFile file, Path destination);
 
     Stream<Path> loadAll();
 
@@ -19,5 +19,11 @@ public interface StorageService {
     Resource loadAsResource(String filename);
 
     void deleteAll();
+
+    void deleteDirectory(Path directory);
+
+    Path createDirectory(String directoryName, Path parent);
+
+    Path copyFile(Path source, Path destination);
 
 }

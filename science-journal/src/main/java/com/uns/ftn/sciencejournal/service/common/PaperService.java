@@ -1,17 +1,21 @@
 package com.uns.ftn.sciencejournal.service.common;
 
 import com.uns.ftn.sciencejournal.mapper.ElasticSearchPaperMapper;
+import com.uns.ftn.sciencejournal.model.common.Application;
 import com.uns.ftn.sciencejournal.model.common.Paper;
 import com.uns.ftn.sciencejournal.model.users.User;
 import com.uns.ftn.sciencejournal.repository.common.*;
 import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.UserRepository;
 import com.uns.ftn.sciencejournal.service.search.ElasticSearchPlugin;
+import com.uns.ftn.sciencejournal.service.storage.MagazineStorageService;
 import com.uns.ftn.sciencejournal.service.utils.DOIUtils;
-import com.uns.ftn.sciencejournal.service.utils.ElasticSearchJsonUtil;
+import com.uns.ftn.sciencejournal.service.utils.OldElasticSearchJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 @Service
@@ -41,6 +45,9 @@ public class PaperService {
     @Autowired
     ElasticSearchPaperMapper elasticSearchPaperMapper;
 
+    @Autowired
+    MagazineStorageService magazineStorageService;
+
     public Paper getById(String id) {
         return paperRepository.findById(id).orElse(null);
     }
@@ -55,10 +62,20 @@ public class PaperService {
         }
 
         paper.setDoi(DOIUtils.generateDOI(paper));
-        Paper dbPaper = paperRepository.save(paper);
 
-        ElasticSearchJsonUtil util = new ElasticSearchJsonUtil();
-        elasticSearchPlugin.addToIndex(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(dbPaper)), dbPaper.getDoi());
+        Paper dbPaper = paperRepository.save(paper);
+        Path pathToPaperOnServer = magazineStorageService.publishPaper(paper);
+        if(pathToPaperOnServer == null){
+            return null;
+        }
+
+        dbPaper.setFile(pathToPaperOnServer.toString());
+
+        paperRepository.save(dbPaper);
+
+        OldElasticSearchJsonUtil util = new OldElasticSearchJsonUtil();
+        elasticSearchPlugin.addToIndex(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(paper)), paper.getDoi());
+
         return dbPaper;
     }
 
@@ -82,6 +99,7 @@ public class PaperService {
         paper.setKeyTerms(newPaper.getKeyTerms());
         paper.setTitle(newPaper.getTitle());
         paper.setPrice(newPaper.getPrice());
+        paper.setCurrency(newPaper.getCurrency());
 
         paper.setAuthor(newPaper.getAuthor());
         paper.setCoauthors(newPaper.getCoauthors());
@@ -90,8 +108,18 @@ public class PaperService {
         paper.setLastRevision(newPaper.getLastRevision());
 
         Paper dbPaper = paperRepository.save(paper);
-        ElasticSearchJsonUtil util = new ElasticSearchJsonUtil();
-        elasticSearchPlugin.addToIndex(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(dbPaper)), dbPaper.getDoi());
+        Path pathToPaperOnServer = magazineStorageService.publishPaper(paper);
+        if(pathToPaperOnServer == null){
+            return null;
+        }
+
+        dbPaper.setFile(pathToPaperOnServer.toString());
+
+        paperRepository.save(dbPaper);
+
+        OldElasticSearchJsonUtil util = new OldElasticSearchJsonUtil();
+        elasticSearchPlugin.addToIndex(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(paper)), paper.getDoi());
+
         return dbPaper;
     }
 
@@ -109,11 +137,15 @@ public class PaperService {
             return false;
         }
 
-        if (paper.getKeyTerms() == null || paper.getFile().equals("")) {
+        if (paper.getKeyTerms() == null || paper.getKeyTerms().equals("")) {
             return false;
         }
 
         if (paper.getPrice() == null) {
+            return false;
+        }
+
+        if(paper.getCurrency() == null || paper.getCurrency().equals("")){
             return false;
         }
 
@@ -149,7 +181,7 @@ public class PaperService {
             return false;
         }
 
-        if (paper.getCoauthors() == null || paper.getCoauthors().size() == 0) {
+        if (paper.getCoauthors() == null) {
             return false;
         }
 
@@ -163,9 +195,12 @@ public class PaperService {
     }
 
     public void deletePaper(String id) {
-        if (id != null) {
-            paperRepository.deleteById(id);
-            elasticSearchPlugin.removeFromIndex(id);
+        if (id == null) {
+            return;
         }
+
+        elasticSearchPlugin.removeFromIndex(id);
+        magazineStorageService.removePaper(paperRepository.getOne(id));
+        paperRepository.deleteById(id);
     }
 }

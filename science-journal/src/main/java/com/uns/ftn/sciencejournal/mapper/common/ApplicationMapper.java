@@ -37,15 +37,15 @@ public class ApplicationMapper {
         application.setPaperAbstract(dto.getPaperAbstract());
         application.setKeyTerms(dto.getKeyTerms());
 
-        application.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
+        if(dto.getAuthor() != null) application.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
 
         application.setCoauthors(new HashSet<>());
         for (Long coauthor : dto.getCoauthors()) {
             application.getCoauthors().add(userRepository.getOne(coauthor));
         }
 
-        application.setMagazine(magazineRepository.getOne(dto.getMagazine()));
-        application.setField(scienceFieldRepository.getOne(dto.getField()));
+        if(dto.getMagazine() != null) application.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+        if(dto.getField() != null) application.setField(scienceFieldRepository.getOne(dto.getField()));
         application.setFile(dto.getFile());
         application.setState(dto.getState());
         application.setAccepted(dto.getAccepted());
@@ -62,15 +62,16 @@ public class ApplicationMapper {
         dto.setTitle(application.getTitle());
         dto.setPaperAbstract(application.getPaperAbstract());
         dto.setKeyTerms(application.getKeyTerms());
-        dto.setAuthor(application.getAuthor().getUsername());
+        if(application.getAuthor() != null) dto.setAuthor(application.getAuthor().getUsername());
 
         dto.setCoauthors(new HashSet<>());
         for (User coauthor : application.getCoauthors()) {
             dto.getCoauthors().add(coauthor.getUserId());
         }
 
-        dto.setMagazine(application.getMagazine().getIssn());
-        dto.setField(application.getField().getCode());
+        if(application.getMagazine() != null) dto.setMagazine(application.getMagazine().getIssn());
+        if(application.getField() != null) dto.setField(application.getField().getCode());
+
         dto.setFile(application.getFile());
         dto.setState(application.getState());
         dto.setAccepted(application.getAccepted());

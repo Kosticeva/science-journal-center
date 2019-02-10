@@ -27,26 +27,26 @@ public class ElasticSearchPaperMapper {
 
         paperSearchModel.setDoi(paper.getDoi());
         paperSearchModel.setTitle(paper.getTitle());
-        paperSearchModel.setField(paper.getField().getName());
+        if(paper.getField() != null) paperSearchModel.setField(paper.getField().getName());
         paperSearchModel.setKeywords(parseKeywords(paper.getKeyTerms()));
         paperSearchModel.setContent(PDFUtils.readFromPDF(paper.getFile()));
-        paperSearchModel.setMagazine(paperSearchModel.new PaperMagazineSearchModel(
-                paper.getIssue().getMagazine().getIssn(), paper.getIssue().getMagazine().getName()));
+
+        if(paper.getIssue() != null && paper.getIssue().getMagazine() != null) {
+            paperSearchModel.setMagazine(paperSearchModel.new PaperMagazineSearchModel(
+                    paper.getIssue().getMagazine().getIssn(), paper.getIssue().getMagazine().getName()));
+        }
 
         List<PaperSearchModel.PaperAuthorSearchModel> authors = new ArrayList<>();
-        GoogleCoordinatesService service = new GoogleCoordinatesService();
-        
+
         User author = paper.getAuthor().getUserDetails();
         authors.add(paperSearchModel.new PaperAuthorSearchModel(
                 author.getfName(), author.getlName(),
-                author.getUserId(), service.getCoordinatesFromAddress(author.getCity(), author.getCountry())
-        ));
+                author.getUserId(), paperSearchModel.new Location(author.getLatitude().toString(), author.getLongitude().toString())));
 
         for(User coauthor: paper.getCoauthors()){
             authors.add(paperSearchModel.new PaperAuthorSearchModel(
                     coauthor.getfName(), coauthor.getlName(),
-                    coauthor.getUserId(), service.getCoordinatesFromAddress(coauthor.getCity(), coauthor.getCountry())
-            ));
+                    coauthor.getUserId(), paperSearchModel.new Location(coauthor.getLatitude().toString(), coauthor.getLongitude().toString())));
         }
         
         paperSearchModel.setAuthors(authors);
@@ -57,8 +57,7 @@ public class ElasticSearchPaperMapper {
         for(Task task: reviewTasks){
             User reviewer = task.getUser().getUserDetails();
             reviewers.add(paperSearchModel.new PaperReviewerSearchModel(
-                    task.getUser().getUsername(), service.getCoordinatesFromAddress(reviewer.getCity(), reviewer.getCountry())
-            ));
+                    task.getUser().getUsername(), paperSearchModel.new Location(reviewer.getLatitude().toString(), reviewer.getLongitude().toString())));
         }
         
         return paperSearchModel;

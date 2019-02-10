@@ -1,7 +1,9 @@
 package com.uns.ftn.sciencejournal.service.users;
 
+import com.uns.ftn.sciencejournal.model.PaperSearchModel;
 import com.uns.ftn.sciencejournal.model.users.User;
 import com.uns.ftn.sciencejournal.repository.users.UserRepository;
+import com.uns.ftn.sciencejournal.service.utils.GoogleCoordinatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ public class UserService {
             return null;
         }
 
+        user = setCoordinatesFromAddress(user);
+
         return userRepository.save(user);
     }
 
@@ -54,6 +58,7 @@ public class UserService {
         user.setEmail(newUser.getEmail());
         user.setfName(newUser.getfName());
         user.setlName(newUser.getlName());
+        user = setCoordinatesFromAddress(user);
 
         return userRepository.save(user);
     }
@@ -80,6 +85,14 @@ public class UserService {
         }
 
         return true;
+    }
+
+    private User setCoordinatesFromAddress(User user){
+        GoogleCoordinatesService service = new GoogleCoordinatesService();
+        PaperSearchModel.Location location = service.getCoordinatesFromAddress(user.getCity(), user.getCountry());
+        user.setLatitude(Double.parseDouble(location.getLat()));
+        user.setLongitude(Double.parseDouble(location.getLon()));
+        return user;
     }
 
     public void deleteUser(Long id) {

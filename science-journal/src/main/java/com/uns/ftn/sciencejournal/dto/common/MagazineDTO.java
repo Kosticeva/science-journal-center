@@ -21,11 +21,12 @@ public class MagazineDTO {
 
     private Set<Integer> options;
 
+    private String currency;
+
     public MagazineDTO() {
     }
 
-    public MagazineDTO(String issn, String name, MagazinePaymentType type, Double membership,
-                       Integer editor, Set<String> fields, Set<Integer> options) {
+    public MagazineDTO(String issn, String name, MagazinePaymentType type, Double membership, Integer editor, Set<String> fields, Set<Integer> options, String currency) {
         this.issn = issn;
         this.name = name;
         this.type = type;
@@ -33,6 +34,7 @@ public class MagazineDTO {
         this.editor = editor;
         this.fields = fields;
         this.options = options;
+        this.currency = currency;
     }
 
     @Override
@@ -46,12 +48,13 @@ public class MagazineDTO {
                 Objects.equals(membership, that.membership) &&
                 Objects.equals(editor, that.editor) &&
                 Objects.equals(fields, that.fields) &&
-                Objects.equals(options, that.options);
+                Objects.equals(options, that.options) &&
+                Objects.equals(currency, that.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issn, name, type, membership, editor, fields, options);
+        return Objects.hash(issn, name, type, membership, editor, fields, options, currency);
     }
 
     @Override
@@ -64,7 +67,16 @@ public class MagazineDTO {
                 ", editor=" + editor +
                 ", fields=" + fields +
                 ", options=" + options +
+                ", currency='" + currency + '\'' +
                 '}';
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getIssn() {

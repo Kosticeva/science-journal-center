@@ -1,6 +1,7 @@
 package com.uns.ftn.sciencejournal.mapper.payment;
 
 import com.uns.ftn.sciencejournal.dto.payment.IssuePurchaseDTO;
+import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 import com.uns.ftn.sciencejournal.model.payment.IssuePurchase;
 import com.uns.ftn.sciencejournal.repository.common.IssueRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
@@ -26,23 +27,17 @@ public class IssuePurchaseMapper {
     public IssuePurchase mapFromDTO(IssuePurchaseDTO dto) {
         IssuePurchase purchase = new IssuePurchase();
 
-        if (!(dto.getIssuePK() == null)) {
-            purchase.setIssue(issueRepository.getOne(dto.getIssuePK()));
-        }
+        if(dto.getIssuePK() != null) purchase.setIssue(issueRepository.getOne(dto.getIssuePK()));
 
-        if (!(dto.getPaymentOption() == null)) {
-            purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
-        }
+        if (dto.getPaymentOption() != null) purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
 
         purchase.setSuccessful(dto.getSuccessful());
         purchase.setTimeOfPurchase(dto.getTimeOfPurchase());
         purchase.setTransactionId(dto.getId());
-        purchase.setType(dto.getType());
+        purchase.setType(PurchaseType.ISSUE);
         purchase.setAmount(dto.getAmount());
 
-        if (!(dto.getUser() == null)) {
-            purchase.setUser(credentialsRepository.getOne(dto.getUser()));
-        }
+        if (dto.getUser() == null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
 
         return purchase;
     }
@@ -51,12 +46,11 @@ public class IssuePurchaseMapper {
         IssuePurchaseDTO dto = new IssuePurchaseDTO();
 
         dto.setIssuePK(issuePurchase.getIssue().getId());
-        dto.setPaymentOption(issuePurchase.getOption().getPaymentOptionCode());
+        if(issuePurchase.getOption() != null) dto.setPaymentOption(issuePurchase.getOption().getPaymentOptionCode());
         dto.setSuccessful(issuePurchase.getSuccessful());
         dto.setTimeOfPurchase(issuePurchase.getTimeOfPurchase());
         dto.setId(issuePurchase.getTransactionId());
-        dto.setType(issuePurchase.getType());
-        dto.setUser(issuePurchase.getUser().getUsername());
+        if(issuePurchase.getUser() != null) dto.setUser(issuePurchase.getUser().getUsername());
         dto.setAmount(issuePurchase.getAmount());
 
         return dto;

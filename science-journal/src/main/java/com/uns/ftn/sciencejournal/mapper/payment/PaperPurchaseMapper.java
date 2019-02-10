@@ -1,6 +1,7 @@
 package com.uns.ftn.sciencejournal.mapper.payment;
 
 import com.uns.ftn.sciencejournal.dto.payment.PaperPurchaseDTO;
+import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 import com.uns.ftn.sciencejournal.model.payment.PaperPurchase;
 import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
@@ -26,13 +27,13 @@ public class PaperPurchaseMapper {
     public PaperPurchase mapFromDTO(PaperPurchaseDTO dto) {
         PaperPurchase purchase = new PaperPurchase();
 
-        purchase.setPaper(paperRepository.getOne(dto.getPaper()));
-        purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
+        if(dto.getPaper() != null) purchase.setPaper(paperRepository.getOne(dto.getPaper()));
+        if(dto.getPaymentOption() != null) purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
         purchase.setSuccessful(dto.getSuccessful());
         purchase.setTimeOfPurchase(dto.getTimeOfPurchase());
         purchase.setTransactionId(dto.getId());
-        purchase.setType(dto.getType());
-        purchase.setUser(credentialsRepository.getOne(dto.getUser()));
+        purchase.setType(PurchaseType.PAPER);
+        if(dto.getUser() != null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
 
         return purchase;
     }
@@ -40,13 +41,12 @@ public class PaperPurchaseMapper {
     public PaperPurchaseDTO mapToDTO(PaperPurchase paperPurchase) {
         PaperPurchaseDTO dto = new PaperPurchaseDTO();
 
-        dto.setPaper(paperPurchase.getPaper().getDoi());
-        dto.setPaymentOption(paperPurchase.getOption().getPaymentOptionCode());
+        if(paperPurchase.getPaper() != null) dto.setPaper(paperPurchase.getPaper().getDoi());
+        if(paperPurchase.getOption() != null) dto.setPaymentOption(paperPurchase.getOption().getPaymentOptionCode());
         dto.setSuccessful(paperPurchase.getSuccessful());
         dto.setTimeOfPurchase(paperPurchase.getTimeOfPurchase());
         dto.setId(paperPurchase.getTransactionId());
-        dto.setType(paperPurchase.getType());
-        dto.setUser(paperPurchase.getUser().getUsername());
+        if(paperPurchase.getUser() != null) dto.setUser(paperPurchase.getUser().getUsername());
 
         return dto;
     }

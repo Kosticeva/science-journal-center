@@ -25,8 +25,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumns({
-            @JoinColumn(name = "APPLICATION_ID", referencedColumnName = "ID"),
-            @JoinColumn(name = "APPLICATION_VERSION", referencedColumnName = "VERSION")})
+            @JoinColumn(name = "APPLICATION_ID", referencedColumnName = "ID")})
     private Application paper;
 
     @Column(name = "SUMMARY", nullable = false)

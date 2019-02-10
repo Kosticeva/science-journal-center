@@ -30,12 +30,12 @@ public class PaperDTO {
 
     private Long lastRevision;
 
+    private String currency;
+
     public PaperDTO() {
     }
 
-    public PaperDTO(String doi, String title, String paperAbstract, String keyTerms, String author,
-                    Set<Long> coauthors, Long issue, String field, String file, Double price,
-                    Long lastRevision) {
+    public PaperDTO(String doi, String title, String paperAbstract, String keyTerms, String author, Set<Long> coauthors, Long issue, String field, String file, Double price, Long lastRevision, String currency) {
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
@@ -47,6 +47,15 @@ public class PaperDTO {
         this.file = file;
         this.price = price;
         this.lastRevision = lastRevision;
+        this.currency = currency;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getDoi() {
@@ -152,13 +161,13 @@ public class PaperDTO {
                 Objects.equals(field, paperDTO.field) &&
                 Objects.equals(file, paperDTO.file) &&
                 Objects.equals(price, paperDTO.price) &&
-                Objects.equals(lastRevision, paperDTO.lastRevision);
+                Objects.equals(lastRevision, paperDTO.lastRevision) &&
+                Objects.equals(currency, paperDTO.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue,
-                field, file, price, lastRevision);
+        return Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue, field, file, price, lastRevision, currency);
     }
 
     @Override
@@ -175,6 +184,7 @@ public class PaperDTO {
                 ", file='" + file + '\'' +
                 ", price=" + price +
                 ", lastRevision=" + lastRevision +
+                ", currency='" + currency + '\'' +
                 '}';
     }
 }

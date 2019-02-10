@@ -197,30 +197,30 @@ public class PaperSearchModel {
     }
 
     public class Location {
-        private String latitude;
-        private String longitude;
+        private String lat;
+        private String lon;
 
         public Location() {}
 
-        public Location(String latitude, String longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
+        public Location(String lat, String lon) {
+            this.lat = lat;
+            this.lon = lon;
         }
 
-        public String getLatitude() {
-            return latitude;
+        public String getLat() {
+            return lat;
         }
 
-        public void setLatitude(String latitude) {
-            this.latitude = latitude;
+        public void setLat(String lat) {
+            this.lat = lat;
         }
 
-        public String getLongitude() {
-            return longitude;
+        public String getLon() {
+            return lon;
         }
 
-        public void setLongitude(String longitude) {
-            this.longitude = longitude;
+        public void setLon(String lon) {
+            this.lon = lon;
         }
     }
 }

@@ -1,18 +1,26 @@
 package com.uns.ftn.sciencejournal.controller.common;
 
 import com.uns.ftn.sciencejournal.dto.common.ApplicationDTO;
+import com.uns.ftn.sciencejournal.dto.common.TaskDTO;
 import com.uns.ftn.sciencejournal.mapper.common.ApplicationMapper;
+import com.uns.ftn.sciencejournal.mapper.common.TaskMapper;
 import com.uns.ftn.sciencejournal.model.common.Application;
 import com.uns.ftn.sciencejournal.service.common.ApplicationService;
+import com.uns.ftn.sciencejournal.service.common.TaskServicer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/applications")
+@CrossOrigin(origins = "http://localhost:4201")
 public class ApplicationController {
 
     @Autowired
@@ -20,6 +28,12 @@ public class ApplicationController {
 
     @Autowired
     ApplicationMapper applicationMapper;
+
+    @Autowired
+    TaskServicer taskServicer;
+
+    @Autowired
+    TaskMapper taskMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ApplicationDTO>> getAllApplications() {
@@ -35,26 +49,47 @@ public class ApplicationController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApplicationDTO> createApplication(@RequestBody ApplicationDTO newApplication) {
-        if (newApplication.getPaperId() == null) {
-            Application application = applicationService.createApplication(applicationMapper.mapFromDTO(newApplication));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApplicationDTO> createApplication(@RequestParam("title") String title,
+                                                            @RequestParam("abstract") String pAbstract,
+                                                            @RequestParam("keyterms") String keyterms,
+                                                            @RequestParam("author") String author,
+                                                            @RequestParam("coauthors") Long[] coauthors,
+                                                            @RequestParam("magazine") String issn,
+                                                            @RequestParam("field") String field,
+                                                            @RequestParam("file") MultipartFile file) {
+        ApplicationDTO newApplication = new ApplicationDTO();
+        newApplication.setTitle(title);
+        newApplication.setPaperAbstract(pAbstract);
+        newApplication.setKeyTerms(keyterms);
+        newApplication.setAuthor(author);
+        newApplication.setCoauthors(new HashSet<>(Arrays.asList(coauthors)));
+        newApplication.setMagazine(issn);
+        newApplication.setField(field);
+        Application application = applicationService.createApplication(applicationMapper.mapFromDTO(newApplication), file);
 
-            if (!application.equals(null)) {
-                return ResponseEntity.ok(applicationMapper.mapToDTO(application));
-            }
+        if (!(application == null)) {
+            TaskDTO task = new TaskDTO();
+            task.setApplication(application.getId());
+            task.setDeadline(LocalDateTime.now().plusDays(3));
+            task.setUser(application.getMagazine().getEditor().getUser().getUsername());
+            task.setSummary("Odabir recenzenata");
+            task.setType(application.getState());
+            task.setFinished(false);
+            taskServicer.createTask(taskMapper.mapFromDTO(task));
+            return ResponseEntity.ok(applicationMapper.mapToDTO(application));
         }
 
         return ResponseEntity.badRequest().build();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApplicationDTO> updateApplication(@PathVariable("id") Long id,
-                                                            @RequestBody ApplicationDTO newApplication) {
+                                                            @RequestParam("metadata") ApplicationDTO newApplication,
+                                                            @RequestParam("file") MultipartFile file) {
         if (!newApplication.getPaperId().equals(null) && !id.equals(null)) {
             Application application = applicationService.updateApplication(
-                    applicationMapper.mapFromDTO(newApplication), id);
+                    applicationMapper.mapFromDTO(newApplication), id, file);
 
             if (!application.equals(null)) {
                 return ResponseEntity.ok(applicationMapper.mapToDTO(application));

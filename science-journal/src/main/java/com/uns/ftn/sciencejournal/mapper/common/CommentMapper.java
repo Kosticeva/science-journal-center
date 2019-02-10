@@ -22,7 +22,8 @@ public class CommentMapper {
         comment.setPrivateComment(dto.getPrivateComment());
         comment.setPublicComment(dto.getPublicComment());
         comment.setSummary(dto.getSummary());
-        comment.setTask(taskRepository.getOne(dto.getTask()));
+
+        if(dto.getTask() != null) comment.setTask(taskRepository.getOne(dto.getTask()));
         comment.setTimestamp(dto.getTimestamp());
 
         return comment;
@@ -35,7 +36,8 @@ public class CommentMapper {
         dto.setPrivateComment(comment.getPrivateComment());
         dto.setPublicComment(comment.getPublicComment());
         dto.setSummary(comment.getSummary());
-        dto.setTask(comment.getTask().getId());
+
+        if(comment.getTask() != null) dto.setTask(comment.getTask().getId());
         dto.setTimestamp(comment.getTimestamp());
 
         return dto;

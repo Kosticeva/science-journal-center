@@ -1,5 +1,6 @@
 package com.uns.ftn.sciencejournal.controller.payment;
 
+import com.uns.ftn.sciencejournal.configuration.JwtTokenProvider;
 import com.uns.ftn.sciencejournal.dto.payment.IssuePurchaseDTO;
 import com.uns.ftn.sciencejournal.mapper.payment.IssuePurchaseMapper;
 import com.uns.ftn.sciencejournal.model.payment.IssuePurchase;
@@ -9,11 +10,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
 @RestController
 @RequestMapping(path = "/api/issuePurchases")
+@CrossOrigin(origins = "http://localhost:4201")
 public class IssuePurchaseController {
 
     @Autowired
@@ -21,6 +24,15 @@ public class IssuePurchaseController {
 
     @Autowired
     IssuePurchaseMapper issuePurchaseMapper;
+
+    @Autowired
+    JwtTokenProvider provider;
+
+    @GetMapping(value = "/my", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<IssuePurchaseDTO>> getIssuePurchasesForLoggedUser(HttpServletRequest request) {
+        String username = provider.parseToken(request);
+        return ResponseEntity.ok().body(issuePurchaseMapper.mapManyToDTO(issuePurchaseService.getAllFromUser(username)));
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<IssuePurchaseDTO>> getAllIssuePurchases() {

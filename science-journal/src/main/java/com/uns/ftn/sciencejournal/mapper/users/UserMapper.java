@@ -19,6 +19,8 @@ public class UserMapper {
         user.setfName(dto.getfName());
         user.setlName(dto.getlName());
         user.setUserId(dto.getId());
+        user.setLatitude(dto.getLatitude());
+        user.setLongitude(dto.getLongitude());
 
         return user;
     }
@@ -32,6 +34,8 @@ public class UserMapper {
         dto.setfName(user.getfName());
         dto.setlName(user.getlName());
         dto.setId(user.getUserId());
+        dto.setLatitude(user.getLatitude());
+        dto.setLongitude(user.getLongitude());
 
         return dto;
     }

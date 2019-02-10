@@ -12,59 +12,73 @@ import { TasksComponent } from "../common/tasks/tasks.component";
 import { CommentComponent } from "../common/comment/comment.component";
 import { SearchComponent } from "../common/search/search.component";
 import { HomeComponent } from "../common/home/home.component";
+import { AuthGuardService, AuthNotGuardService } from "../helpers/auth-guard.service";
 
 export const routes: Routes = [
  {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [AuthNotGuardService]
  },
  {
      path: 'register',
-     component: RegisterComponent
+     component: RegisterComponent,
+     canActivate: [AuthNotGuardService]
  },
  {
-     path: 'profile/:id',
-     component: ProfileComponent
- },
- {
-     path: 'magazine/:id',
-     component: MagazineComponent
+     path: 'profile',
+     component: ProfileComponent,
+     canActivate: [AuthGuardService]
  },
  {
     path: 'magazine/new',
-    component: NewMagazineComponent
+    component: NewMagazineComponent,
+    canActivate: [AuthGuardService]
  },
  {
-     path: 'paper/:id',
-     component: PaperComponent
+     path: 'magazine/:id',
+     component: MagazineComponent,
+     canActivate: [AuthGuardService]
  },
  {
     path: 'paper/new',
-    component: NewPaperComponent
+    component: NewPaperComponent,
+    canActivate: [AuthGuardService]
  },
  {
-     path: 'issue/:magazine/:edition',
-     component: IssueComponent
+     path: 'paper/:id',
+     component: PaperComponent,
+     canActivate: [AuthGuardService]
  },
  {
      path: 'issue/new',
-     component: NewIssueComponent
+     component: NewIssueComponent,
+     canActivate: [AuthGuardService]
+ },
+ {
+     path: 'issue/:magazine/:edition',
+     component: IssueComponent,
+     canActivate: [AuthGuardService]
  },
  {
      path: 'tasks',
-     component: TasksComponent
+     component: TasksComponent,
+     canActivate: [AuthGuardService]
  },
  {
      path: 'comment/:id',
-     component: CommentComponent
+     component: CommentComponent,
+     canActivate: [AuthGuardService]
  },
  {
-     path: 'search',
-     component: SearchComponent
+    path: 'search',
+    component: SearchComponent,
+    canActivate: [AuthGuardService]
  },
  {
      path: 'home',
-     component: HomeComponent
+     component: HomeComponent,
+     canActivate: [AuthGuardService]
  },
  {
     path: '',

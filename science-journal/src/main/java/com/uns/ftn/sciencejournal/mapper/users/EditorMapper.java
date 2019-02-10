@@ -28,11 +28,10 @@ public class EditorMapper {
 
         editor.setId(dto.getId());
         editor.setTitle(dto.getTitle());
-        editor.setUser(credentialsRepository.getOne(dto.getUser()));
-        editor.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+        if(dto.getUser() != null) editor.setUser(credentialsRepository.getOne(dto.getUser()));
+        if(dto.getMagazine() != null) editor.setMagazine(magazineRepository.getOne(dto.getMagazine()));
 
-        if(dto.getField() != null)
-            editor.setField(scienceFieldRepository.getOne(dto.getField()));
+        if(dto.getField() != null) editor.setField(scienceFieldRepository.getOne(dto.getField()));
 
         return editor;
     }
@@ -42,11 +41,10 @@ public class EditorMapper {
 
         dto.setId(editor.getId());
         dto.setTitle(editor.getTitle());
-        dto.setUser(editor.getUser().getUsername());
-        dto.setMagazine(editor.getMagazine().getIssn());
+        if(editor.getUser() != null) dto.setUser(editor.getUser().getUsername());
+        if(editor.getMagazine() != null) dto.setMagazine(editor.getMagazine().getIssn());
 
-        if(editor.getField() != null)
-            dto.setField(editor.getField().getCode());
+        if(editor.getField() != null) dto.setField(editor.getField().getCode());
 
         return dto;
     }

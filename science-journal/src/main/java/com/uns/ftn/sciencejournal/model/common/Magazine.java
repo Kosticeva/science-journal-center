@@ -27,6 +27,9 @@ public class Magazine {
     @Column(name = "MEMBERSHIP_PRICE")
     private Double membership;
 
+    @Column(name = "MEMBERSHIP_CURRENCY")
+    private String currency;
+
     @OneToOne(optional = true)
     @JoinColumn(name = "CHIEF_EDITOR", unique = true)
     private Editor editor;
@@ -44,15 +47,23 @@ public class Magazine {
     public Magazine() {
     }
 
-    public Magazine(String issn, String name, MagazinePaymentType type, Double membership, Editor editor,
-                    Set<ScienceField> fields, Set<PaymentOption> options) {
+    public Magazine(String issn, String name, MagazinePaymentType type, Double membership, String currency, Editor editor, Set<ScienceField> fields, Set<PaymentOption> options) {
         this.issn = issn;
         this.name = name;
         this.type = type;
         this.membership = membership;
+        this.currency = currency;
         this.editor = editor;
         this.fields = fields;
         this.options = options;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getIssn() {
@@ -120,6 +131,7 @@ public class Magazine {
                 Objects.equals(name, magazine.name) &&
                 type == magazine.type &&
                 Objects.equals(membership, magazine.membership) &&
+                Objects.equals(currency, magazine.currency) &&
                 Objects.equals(editor, magazine.editor) &&
                 Objects.equals(fields, magazine.fields) &&
                 Objects.equals(options, magazine.options);
@@ -127,7 +139,7 @@ public class Magazine {
 
     @Override
     public int hashCode() {
-        return Objects.hash(issn, name, type, membership, editor, fields, options);
+        return Objects.hash(issn, name, type, membership, currency, editor, fields, options);
     }
 
     @Override
@@ -137,6 +149,7 @@ public class Magazine {
                 ", name='" + name + '\'' +
                 ", type=" + type +
                 ", membership=" + membership +
+                ", currency='" + currency + '\'' +
                 ", editor=" + editor +
                 ", fields=" + fields +
                 ", options=" + options +

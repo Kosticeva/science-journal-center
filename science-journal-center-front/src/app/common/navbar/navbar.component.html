@@ -1,24 +1,24 @@
 <ul class="nav d-flex justify-content-between bg-light">
   <span class="d-flex justify-content-start">
     <li class="nav-item">
-      <a class="nav-link text-dark" href="#/home"><i class="fa fa-home fa-lg"></i></a>
+      <a class="nav-link text-dark" href="#/home" *ngIf="loginService.getUser()"><i class="fa fa-home fa-lg"></i></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#/profile/123">Profil</a>
+      <a class="nav-link" routerLink="profile" *ngIf="loginService.getUser()">Profil</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#/paper/new">Objavi rad</a>
+      <a class="nav-link" routerLink="paper/new" *ngIf="loginService.getUser()">Objavi rad</a>
     </li>
   </span>
   <span class="d-flex justify-content-end">
-    <!--<li class="nav-item">
-      <a class="nav-link" href="#/login">Uloguj se</a>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="login" *ngIf="!loginService.getUser()">Uloguj se</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#/register">Registruj se</a>
-    </li>-->
+      <a class="nav-link" routerLink="register" *ngIf="!loginService.getUser()">Registruj se</a>
+    </li>
     <li class="nav-item">
-      <a class="nav-link" href="#/logout">Izloguj se</a>
+      <a class="nav-link" (click)="logout()" routerLink="login" *ngIf="loginService.getUser()">Izloguj se</a>
     </li>
   </span>
 </ul>

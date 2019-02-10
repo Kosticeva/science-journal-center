@@ -33,7 +33,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Path store(MultipartFile file) {
+    public Path store(MultipartFile file, Path destination) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         try {
             if (file.isEmpty()) {
@@ -45,11 +45,24 @@ public class FileSystemStorageService implements StorageService {
                         "Cannot store file with relative path outside current directory "
                                 + filename);
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(filename),
+            Files.copy(file.getInputStream(), this.load(destination),
                     StandardCopyOption.REPLACE_EXISTING);
-            return this.rootLocation.resolve(filename);
+            return this.load(destination);
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + filename, e);
+        }
+    }
+
+    @Override
+    public Path createDirectory(String directoryName, Path parent) {
+        try {
+            if (parent == null) {
+                return Files.createDirectories(load(directoryName));
+            } else {
+                return Files.createDirectories(parent.resolve(directoryName));
+            }
+        }catch (IOException io) {
+            throw new StorageException("Directory not found", io);
         }
     }
 
@@ -68,6 +81,10 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Path load(String filename) {
         return rootLocation.resolve(filename);
+    }
+
+    public Path load(Path filePath) {
+        return rootLocation.resolve(filePath);
     }
 
     @Override
@@ -93,11 +110,29 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
+    public void deleteDirectory(Path directory) {
+        try {
+            FileSystemUtils.deleteRecursively(directory);
+        }catch (IOException io) {
+            System.out.print(io.getMessage());
+        }
+    }
+
+    @Override
     public void init() {
         try {
             Files.createDirectories(rootLocation);
         } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
+        }
+    }
+
+    @Override
+    public Path copyFile(Path source, Path destination) {
+        try {
+            return Files.copy(source, destination.resolve(source.getFileName().toFile().getName()));
+        }catch (IOException io) {
+            throw new StorageException("File not found", io);
         }
     }
 }

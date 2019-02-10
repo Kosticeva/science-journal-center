@@ -1,20 +1,15 @@
 package com.uns.ftn.sciencejournal.dto.payment;
 
-import com.uns.ftn.sciencejournal.model.common.Issue;
-import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class IssuePurchaseDTO {
 
-    private Long id;
+    private String id;
 
     private LocalDateTime timeOfPurchase;
 
     private String user;
-
-    private PurchaseType type;
 
     private Boolean successful;
 
@@ -24,26 +19,35 @@ public class IssuePurchaseDTO {
 
     private Double amount;
 
+    private String currency;
+
     public IssuePurchaseDTO() {
     }
 
-    public IssuePurchaseDTO(Long id, LocalDateTime timeOfPurchase, String user, PurchaseType type,
-                            Boolean successful, Integer paymentOption, Long issuePK, Double amount) {
+    public IssuePurchaseDTO(String id, LocalDateTime timeOfPurchase, String user, Boolean successful, Integer paymentOption, Long issuePK, Double amount, String currency) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.user = user;
-        this.type = type;
         this.successful = successful;
         this.paymentOption = paymentOption;
         this.issuePK = issuePK;
         this.amount = amount;
+        this.currency = currency;
     }
 
-    public Long getId() {
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -61,14 +65,6 @@ public class IssuePurchaseDTO {
 
     public void setUser(String user) {
         this.user = user;
-    }
-
-    public PurchaseType getType() {
-        return type;
-    }
-
-    public void setType(PurchaseType type) {
-        this.type = type;
     }
 
     public Boolean getSuccessful() {
@@ -104,20 +100,6 @@ public class IssuePurchaseDTO {
     }
 
     @Override
-    public String toString() {
-        return "IssuePurchaseDTO{" +
-                "id=" + id +
-                ", timeOfPurchase=" + timeOfPurchase +
-                ", user='" + user + '\'' +
-                ", type=" + type +
-                ", successful=" + successful +
-                ", paymentOption=" + paymentOption +
-                ", issuePK=" + issuePK +
-                ", amount=" + amount +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -125,15 +107,29 @@ public class IssuePurchaseDTO {
         return Objects.equals(id, that.id) &&
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
                 Objects.equals(user, that.user) &&
-                type == that.type &&
                 Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
                 Objects.equals(issuePK, that.issuePK) &&
-                Objects.equals(amount, that.amount);
+                Objects.equals(amount, that.amount) &&
+                Objects.equals(currency, that.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, type, successful, paymentOption, issuePK, amount);
+        return Objects.hash(id, timeOfPurchase, user, successful, paymentOption, issuePK, amount, currency);
+    }
+
+    @Override
+    public String toString() {
+        return "IssuePurchaseDTO{" +
+                "id='" + id + '\'' +
+                ", timeOfPurchase=" + timeOfPurchase +
+                ", user='" + user + '\'' +
+                ", successful=" + successful +
+                ", paymentOption=" + paymentOption +
+                ", issuePK=" + issuePK +
+                ", amount=" + amount +
+                ", currency='" + currency + '\'' +
+                '}';
     }
 }

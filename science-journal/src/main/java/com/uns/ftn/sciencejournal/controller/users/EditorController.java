@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/editors")
+@CrossOrigin(origins = "http://localhost:4201")
 public class EditorController {
 
     @Autowired

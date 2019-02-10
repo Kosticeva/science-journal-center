@@ -1,43 +1,161 @@
 <div class="container">
   <br />
-  <div class="row">
-    <form class="col">
-      <input class="form-control w-75" placeholder="Pretrazi..." type="text" />
-    </form>
+  <div *ngIf="results.length == 0">
+    <div *ngIf="!boolChosen">
+      <div class="row" >
+        <div class="col d-flex justify-content-between">
+          <h2>Filteri</h2>
+          <button class="btn btn-lg btn-primary" (click)="addFilter()" [disabled]="searchQuery.queriesByFields.length > 0 && (searchQuery.queriesByFields.length === fields.length || searchQuery.queriesByFields[searchQuery.queriesByFields.length-1].field==='')">Dodaj filter</button>
+        </div>
+      </div>
+      <div class="row" *ngFor="let filter of searchQuery.queriesByFields">
+        <div class="col">
+          <div class="form-group row d-flex justify-content-between pl-2 pt-2 pr-3">
+              <label class="form-control-label col-1" for="{{filter.field}}">Pojam</label>
+              <input class="form-control col-5" type="text" id="{{filter.field}}" name="{{filter.field}}" placeholder="pojam..." [(ngModel)]="filter.term"/>
+              <label class="form-control-label col-1" for="{{filter.field}}-select">Polje</label>
+              <select class="form-control col-2" id="{{filter.field}}-select" name="{{filter.field}}-select" [(ngModel)]="filter.field">
+                <option *ngFor="let option of fields" [hidden]="checkIfFieldAlreadyTaken(option.value)" value="{{option.value}}">{{option.name}}</option>
+              </select>
+              <label class="form-control-label col-1" for="{{filter.field}}-option">Obavezno?</label>
+              <select class="form-control col-1" id="{{filter.field}}-option" name="{{filter.field}}-option" [(ngModel)]="filter.must">
+                <option value="DA">Da</option>
+                <option value="NE">Ne</option>
+              </select>
+              <button class="btn btn-danger" (click)="removeFilter(filter)"><i class="fa fa-close"></i></button>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="col d-flex justify-content-between">
+          <h4 class="w-50">Broj zeljenih rezultata: </h4>
+          <input type="number" class="form-control w-25" id="size" name="size" [(ngModel)]="searchQuery.size" />
+        </div>
+      </div>
+    </div>
+    <div *ngIf="boolChosen">
+      <div class="row">
+        <div class="col">
+          <h4>Unesi upit pomoću Bulovih operatora <b>AND <em>( && )</em></b> i <b>OR <em>( || )</em></b> </h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group pl-2 pr-3">
+            <textarea class="form-control" [(ngModel)]="boolQuery"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col">
+        <button class="w-100 btn btn-lg btn-primary" (click)="go()">Pretrazi</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col d-flex justify-content-center">
+        <a routerLink="../search" (click)="boolChosen = !boolChosen">Promeni vid zadavanja upita</a>
+      </div>
+    </div>
   </div>
   <br />
-  <div class="row">
-    <h3 class="col">Rezultati</h3>
-  </div>
-  <div class="row">
-    <div class="col">
-      <ul class="list-group">
-        <li class="list-group-item container" *ngFor="let item of results">
-          <div class="row">
-            <div class="col-9">
-              <h4>{{item.title}}</h4>
-            </div>
-            <div class="col-3">
-              <h4><i>{{item.author}}</i></h4>
+  <div *ngIf="results.length > 0">
+    <div class="row">
+      <div class="col-3">
+        <div *ngIf="!boolChosen">
+          <div class="row" >
+            <div class="col d-flex justify-content-between">
+              <h4>Filteri</h4>
+              <button class="btn btn-primary" (click)="addFilter()" [disabled]="searchQuery.queriesByFields.length > 0 && (searchQuery.queriesByFields.length === fields.length || searchQuery.queriesByFields[searchQuery.queriesByFields.length-1].field==='')">Dodaj filter</button>
             </div>
           </div>
-          <div class="row">
-            <div class="col-9">
-              <p>{{item.abstract}}</p>
+          <div class="row form-group pt-1" *ngFor="let filter of searchQuery.queriesByFields">
+            <div class="col">
+                <input class="form-control form-control-sm w-100" type="text" id="{{filter.field}}" name="{{filter.field}}" title="Pojam" placeholder="pojam..." [(ngModel)]="filter.term"/>
+                <span class="d-flex justify-content-between pt-1">
+                  <select class="form-control form-control-sm w-50" id="{{filter.field}}-select" title="Polje" name="{{filter.field}}-select" [(ngModel)]="filter.field">
+                    <option *ngFor="let option of fields" [hidden]="checkIfFieldAlreadyTaken(option.value)" value="{{option.value}}">{{option.name}}</option>
+                  </select>
+                  <select class="form-control form-control-sm w-25" id="{{filter.field}}-option" title="Obavezno?" name="{{filter.field}}-option" [(ngModel)]="filter.must">
+                    <option value="DA">Da</option>
+                    <option value="NE">Ne</option>
+                  </select>
+                  <button class="btn btn-danger btn-sm w-25" (click)="removeFilter(filter)"><i class="fa fa-close"></i></button>
+                </span>
             </div>
-            <div class="col-3">
-              <span><b>Cena: {{item.price}} {{item.currency}}</b></span>
-              <br />
-              <button class="btn btn-lg btn-primary" (click)="generateSession(item)">Kupi</button>
+            <hr />
+          </div>
+          <div class="row">
+            <div class="col d-flex justify-content-between">
+              <h6 class="w-75">Broj zeljenih rezultata: </h6>
+              <input type="number" class="form-control form-control-sm w-25" id="size" name="size" [(ngModel)]="searchQuery.size" />
+            </div>
+          </div>
+        </div>
+        <div *ngIf="boolChosen">
+          <div class="row">
+            <div class="col">
+              <h4>Unesi upit pomoću Bulovih operatora <b>AND <em>( && )</em></b> i <b>OR <em>( || )</em></b> </h4>
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <h5>Objavljeno {{item.published}} u magazinu ISSN {{item.issn1}}-{{item.issn2}}</h5>
+              <div class="form-group pl-2 pr-3">
+                <textarea class="form-control" [(ngModel)]="boolQuery"></textarea>
+              </div>
             </div>
           </div>
-        </li>
-      </ul>
-    </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col">
+            <button class="w-100 btn btn-primary" (click)="go()">Pretrazi</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col d-flex justify-content-center">
+            <a routerLink="../search" (click)="boolChosen = !boolChosen">Promeni vid zadavanja upita</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-9">
+        <div class="row">
+            <h3 class="col">Rezultati</h3>
+          </div>
+          <div class="row">
+            <div class="col">
+              <ul class="list-group">
+                <li class="list-group-item container" *ngFor="let item of results">
+                  <div class="row">
+                    <div class="col-9">
+                      <h4>{{item.title}}</h4>
+                      <h6>DOI: {{item.doi}}</h6>
+                    </div>
+                    <div class="col-3">
+                      <h4><i>{{item.author}}</i></h4>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-9">
+                      <p id="item-{{item.doi}}"></p>
+                    </div>
+                    <div class="col-3">
+                      <span><b>Cena: {{item.price}} {{item.currency}}</b></span>
+                      <br />
+                      <button class="btn btn-lg btn-primary" (click)="generateSession(item.linkForPurchase)">Kupi</button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <h5>Objavljeno u magazinu {{item.issue}}</h5>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+      </div>
   </div>
 </div>

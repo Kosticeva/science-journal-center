@@ -23,9 +23,8 @@ public class IssuePurchase extends Purchase {
         super();
     }
 
-    public IssuePurchase(Issue issue, LocalDateTime timeOfPurchase, Credentials user, PurchaseType type,
-                         Boolean successful, PaymentOption option, Double amount) {
-        super(timeOfPurchase, user, type, successful, option, amount);
+    public IssuePurchase(String transactionId, LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful, PaymentOption option, Double amount, String currency, Issue issue) {
+        super(transactionId, timeOfPurchase, user, type, successful, option, amount, currency);
         this.issue = issue;
     }
 

@@ -5,6 +5,7 @@ import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +13,18 @@ import java.util.List;
 @Service
 public class CredentialsService {
 
-    @Autowired
     CredentialsRepository credentialsRepository;
 
-    @Autowired
     UserRepository userRepository;
+
+    BCryptPasswordEncoder encoder;
+
+    @Autowired
+    public CredentialsService(CredentialsRepository credentialsRepository, UserRepository userRepository) {
+        this.credentialsRepository = credentialsRepository;
+        this.userRepository = userRepository;
+        this.encoder = new BCryptPasswordEncoder();
+    }
 
     public Credentials getById(String id) {
         return credentialsRepository.findById(id).orElse(null);
@@ -36,6 +44,8 @@ public class CredentialsService {
             return null;
         }
 
+        credentials.setPassword(encodePassword(credentials.getPassword()));
+
         return credentialsRepository.save(credentials);
     }
 
@@ -54,7 +64,7 @@ public class CredentialsService {
             return null;
         }
 
-        credentials.setPassword(newCredentials.getPassword());
+        credentials.setPassword(encodePassword(newCredentials.getPassword()));
         credentials.setUserDetails(newCredentials.getUserDetails());
 
         return credentialsRepository.save(credentials);
@@ -82,5 +92,7 @@ public class CredentialsService {
         }
     }
 
-
+    private String encodePassword(String rawPassword) {
+        return encoder.encode(rawPassword);
+    }
 }

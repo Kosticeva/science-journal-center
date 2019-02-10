@@ -19,10 +19,12 @@ public class IssueMapper {
         Issue issue = new Issue();
 
         issue.setId(dto.getId());
-        issue.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+
+        if(dto.getMagazine() != null) issue.setMagazine(magazineRepository.getOne(dto.getMagazine()));
         issue.setEdition(dto.getEdition());
         issue.setDate(dto.getDate());
         issue.setPrice(dto.getPrice());
+        issue.setCurrency(dto.getCurrency());
 
         return issue;
     }
@@ -30,11 +32,12 @@ public class IssueMapper {
     public IssueDTO mapToDTO(Issue issue) {
         IssueDTO dto = new IssueDTO();
 
-        dto.setMagazine(issue.getMagazine().getIssn());
+        if(issue.getMagazine() != null) dto.setMagazine(issue.getMagazine().getIssn());
         dto.setEdition(issue.getEdition());
         dto.setDate(issue.getDate());
         dto.setPrice(issue.getPrice());
         dto.setId(issue.getId());
+        dto.setCurrency(issue.getCurrency());
 
         return dto;
     }

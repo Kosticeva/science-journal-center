@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/scienceFields")
+@CrossOrigin(origins = "http://localhost:4201")
 public class ScienceFieldController {
 
     @Autowired
@@ -20,6 +21,11 @@ public class ScienceFieldController {
 
     @Autowired
     ScienceFieldMapper scienceFieldMapper;
+
+    @GetMapping(value = "/magazine/{issn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ScienceFieldDTO>> getAllFieldsForMagazine(@PathVariable String issn) {
+        return ResponseEntity.ok().body(scienceFieldMapper.mapManyToDTO(scienceFieldService.getFieldsFromMagazine(issn)));
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ScienceFieldDTO>> getAllScienceFields() {

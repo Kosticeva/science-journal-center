@@ -1,6 +1,7 @@
 package com.uns.ftn.sciencejournal.mapper.payment;
 
 import com.uns.ftn.sciencejournal.dto.payment.SubscriptionPurchaseDTO;
+import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 import com.uns.ftn.sciencejournal.model.payment.SubscriptionPurchase;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionRepository;
@@ -26,13 +27,15 @@ public class SubscriptionPurchaseMapper {
     public SubscriptionPurchase mapFromDTO(SubscriptionPurchaseDTO dto) {
         SubscriptionPurchase purchase = new SubscriptionPurchase();
 
-        purchase.setSubscription(subscriptionRepository.getOne(dto.getSubscription()));
-        purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
+        if(dto.getSubscription() != null) purchase.setSubscription(subscriptionRepository.getOne(dto.getSubscription()));
+        if(dto.getPaymentOption() != null) purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
         purchase.setSuccessful(dto.getSuccessful());
         purchase.setTimeOfPurchase(dto.getTimeOfPurchase());
         purchase.setTransactionId(dto.getId());
-        purchase.setType(dto.getType());
-        purchase.setUser(credentialsRepository.getOne(dto.getUser()));
+        purchase.setType(PurchaseType.SUBSCRIPTION);
+        purchase.setCurrency(dto.getCurrency());
+        purchase.setAmount(dto.getAmount());
+        if(dto.getUser() != null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
 
         return purchase;
     }
@@ -40,13 +43,12 @@ public class SubscriptionPurchaseMapper {
     public SubscriptionPurchaseDTO mapToDTO(SubscriptionPurchase subscriptionPurchase) {
         SubscriptionPurchaseDTO dto = new SubscriptionPurchaseDTO();
 
-        dto.setSubscription(subscriptionPurchase.getSubscription().getId());
-        dto.setPaymentOption(subscriptionPurchase.getOption().getPaymentOptionCode());
+        if(subscriptionPurchase.getSubscription() != null) dto.setSubscription(subscriptionPurchase.getSubscription().getId());
+        if(subscriptionPurchase.getOption() != null) dto.setPaymentOption(subscriptionPurchase.getOption().getPaymentOptionCode());
         dto.setSuccessful(subscriptionPurchase.getSuccessful());
         dto.setTimeOfPurchase(subscriptionPurchase.getTimeOfPurchase());
         dto.setId(subscriptionPurchase.getTransactionId());
-        dto.setType(subscriptionPurchase.getType());
-        dto.setUser(subscriptionPurchase.getUser().getUsername());
+        if(subscriptionPurchase.getUser() != null) dto.setUser(subscriptionPurchase.getUser().getUsername());
 
         return dto;
     }

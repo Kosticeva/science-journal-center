@@ -20,7 +20,7 @@ public class CredentialsMapper {
 
         credentials.setPassword(dto.getPassword());
         credentials.setUsername(dto.getUsername());
-        credentials.setUserDetails(userRepository.getOne(dto.getUserDetails()));
+        if(dto.getUserDetails() != null) credentials.setUserDetails(userRepository.getOne(dto.getUserDetails()));
 
         return credentials;
     }
@@ -29,8 +29,8 @@ public class CredentialsMapper {
         CredentialsDTO dto = new CredentialsDTO();
 
         dto.setPassword(credentials.getPassword());
-        dto.setUserDetails(credentials.getUserDetails().getUserId());
         dto.setUsername(credentials.getUsername());
+        if(credentials.getUserDetails() != null) dto.setUserDetails(credentials.getUserDetails().getUserId());
 
         return dto;
     }

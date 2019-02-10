@@ -15,17 +15,23 @@ public class UserDTO {
     private String country;
 
     private String email;
+    
+    private Double latitude;
+    
+    private Double longitude;
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String fName, String lName, String city, String country, String email) {
+    public UserDTO(Long id, String fName, String lName, String city, String country, String email, Double latitude, Double longitude) {
         this.id = id;
         this.fName = fName;
         this.lName = lName;
         this.city = city;
         this.country = country;
         this.email = email;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     @Override
@@ -38,12 +44,14 @@ public class UserDTO {
                 Objects.equals(lName, userDTO.lName) &&
                 Objects.equals(city, userDTO.city) &&
                 Objects.equals(country, userDTO.country) &&
-                Objects.equals(email, userDTO.email);
+                Objects.equals(email, userDTO.email) &&
+                Objects.equals(latitude, userDTO.latitude) &&
+                Objects.equals(longitude, userDTO.longitude);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, fName, lName, city, country, email);
+        return Objects.hash(id, fName, lName, city, country, email, latitude, longitude);
     }
 
     @Override
@@ -55,7 +63,25 @@ public class UserDTO {
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 ", email='" + email + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
                 '}';
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     public Long getId() {

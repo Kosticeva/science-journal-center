@@ -36,6 +36,7 @@ public class MagazineMapper {
         magazine.setMembership(dto.getMembership());
         magazine.setName(dto.getName());
         magazine.setType(dto.getType());
+        magazine.setCurrency(dto.getCurrency());
 
         magazine.setFields(new HashSet<>());
         for (String field : dto.getFields()) {
@@ -53,13 +54,13 @@ public class MagazineMapper {
     public MagazineDTO mapToDTO(Magazine magazine) {
         MagazineDTO dto = new MagazineDTO();
 
-        if(magazine.getEditor() != null)
-            dto.setEditor(magazine.getEditor().getId());
+        if(magazine.getEditor() != null) dto.setEditor(magazine.getEditor().getId());
 
         dto.setIssn(magazine.getIssn());
         dto.setMembership(magazine.getMembership());
         dto.setName(magazine.getName());
         dto.setType(magazine.getType());
+        dto.setCurrency(magazine.getCurrency());
 
         dto.setFields(new HashSet<>());
         for (ScienceField field : magazine.getFields()) {

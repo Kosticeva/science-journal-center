@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/api/papers")
+@CrossOrigin(origins = "http://localhost:4201")
 public class PaperController {
 
     @Autowired
@@ -35,12 +36,12 @@ public class PaperController {
         return ResponseEntity.badRequest().build();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<PaperDTO> createPaper(@RequestBody PaperDTO newPaper) {
-        if (!newPaper.getDoi().equals(null)) {
+        if (!(newPaper.getDoi() == null)) {
             Paper paper = paperService.createPaper(paperMapper.mapFromDTO(newPaper));
 
-            if (!paper.equals(null)) {
+            if (paper != null) {
                 return ResponseEntity.ok(paperMapper.mapToDTO(paper));
             }
         }

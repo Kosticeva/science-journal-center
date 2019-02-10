@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, FormBuilder } from '@angular/forms';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -21,6 +21,8 @@ import { TasksComponent } from './common/tasks/tasks.component';
 import { CommentComponent } from './common/comment/comment.component';
 import { ProfileComponent } from './user/profile/profile.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
+import { BasicAuthInterceptor } from './helpers/basic-auth.interceptor';
+import { AuthGuardService, AuthNotGuardService } from './helpers/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,12 @@ import { AppRoutingModule } from './app-routing/app-routing.module';
     TooltipModule.forRoot(),
     AppRoutingModule
   ],
-  providers: [FormBuilder],
+  providers: [
+    FormBuilder, 
+    { provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true },
+    AuthGuardService,
+    AuthNotGuardService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -40,18 +40,20 @@ public class PaperMapper {
         paper.setTitle(dto.getTitle());
         paper.setPaperAbstract(dto.getPaperAbstract());
         paper.setKeyTerms(dto.getKeyTerms());
-        paper.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
+
+        if(dto.getAuthor() != null) paper.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
 
         paper.setCoauthors(new HashSet<>());
         for (Long coauthor : dto.getCoauthors()) {
             paper.getCoauthors().add(userRepository.getOne(coauthor));
         }
 
-        paper.setIssue(issueRepository.getOne(dto.getIssue()));
-        paper.setField(scienceFieldRepository.getOne(dto.getField()));
+        if(dto.getIssue() != null) paper.setIssue(issueRepository.getOne(dto.getIssue()));
+        if(dto.getField() != null) paper.setField(scienceFieldRepository.getOne(dto.getField()));
         paper.setFile(dto.getFile());
         paper.setPrice(dto.getPrice());
-        paper.setLastRevision(applicationRepository.getOne(dto.getLastRevision()));
+        paper.setCurrency(dto.getCurrency());
+        if(dto.getLastRevision() != null) paper.setLastRevision(applicationRepository.getOne(dto.getLastRevision()));
 
         return paper;
     }
@@ -61,6 +63,7 @@ public class PaperMapper {
 
         dto.setDoi(paper.getDoi());
         dto.setTitle(paper.getTitle());
+        dto.setIssue(paper.getIssue().getId());
         dto.setPaperAbstract(paper.getPaperAbstract());
         dto.setKeyTerms(paper.getKeyTerms());
         if(paper.getAuthor() != null){
@@ -72,16 +75,13 @@ public class PaperMapper {
             dto.getCoauthors().add(coauthor.getUserId());
         }
 
-        if(paper.getField() != null){
-            dto.setField(paper.getField().getCode());
-        }
+        if(paper.getField() != null) dto.setField(paper.getField().getCode());
 
         dto.setFile(paper.getFile());
         dto.setPrice(paper.getPrice());
+        dto.setCurrency(paper.getCurrency());
 
-        if(paper.getLastRevision() != null){
-            dto.setLastRevision(paper.getLastRevision().getId());
-        }
+        if(paper.getLastRevision() != null) dto.setLastRevision(paper.getLastRevision().getId());
 
         return dto;
     }

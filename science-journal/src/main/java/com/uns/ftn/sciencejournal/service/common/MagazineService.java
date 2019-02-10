@@ -7,6 +7,7 @@ import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
 import com.uns.ftn.sciencejournal.repository.users.EditorRepository;
+import com.uns.ftn.sciencejournal.service.storage.MagazineStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,9 @@ public class MagazineService {
     @Autowired
     PaymentOptionRepository paymentOptionRepository;
 
+    @Autowired
+    MagazineStorageService magazineStorageService;
+
     public Magazine getById(String id) {
         return magazineRepository.findById(id).orElse(null);
     }
@@ -45,7 +49,12 @@ public class MagazineService {
             return null;
         }
 
-        return magazineRepository.save(magazine);
+        Magazine dbMagazine = magazineRepository.save(magazine);
+        if(magazineStorageService.initMagazineRepository(dbMagazine) == null) {
+            return null;
+        }
+
+        return dbMagazine;
     }
 
     public Magazine updateMagazine(Magazine newMagazine, String id) {
@@ -68,6 +77,7 @@ public class MagazineService {
         magazine.setEditor(newMagazine.getEditor());
         magazine.setFields(newMagazine.getFields());
         magazine.setOptions(newMagazine.getOptions());
+        magazine.setCurrency(newMagazine.getCurrency());
 
         return magazineRepository.save(magazine);
     }
@@ -82,6 +92,10 @@ public class MagazineService {
         }
 
         if (magazine.getMembership() == null) {
+            return false;
+        }
+
+        if(magazine.getCurrency() == null || magazine.getCurrency().equals("")) {
             return false;
         }
 
@@ -117,9 +131,12 @@ public class MagazineService {
     }
 
     public void deleteMagazine(String id) {
-        if (id != null) {
-            magazineRepository.deleteById(id);
+        if (id == null) {
+            return;
         }
+
+        magazineStorageService.removeMagazineRepository(magazineRepository.getOne(id));
+        magazineRepository.deleteById(id);
     }
 
 

@@ -1,27 +1,16 @@
 package com.uns.ftn.sciencejournal.service.utils;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.uns.ftn.sciencejournal.model.PaperSearchModel;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import javax.ws.rs.PathParam;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GoogleCoordinatesService {
@@ -30,7 +19,7 @@ public class GoogleCoordinatesService {
     private static String GOOGLE_API_KEY = "AIzaSyChqtYEEgRO0gPZJRwkKCnT8Ew-BRMgXPQ";
     private static RestTemplate template = new RestTemplate();
 
-    public PaperSearchModel.Location getCoordinatesFromAddress(String city, String country){
+    public PaperSearchModel.Location getCoordinatesFromAddress(String city, String country) {
         try {
             String uri = GOOGLE_API_URL + "?address=" +
                     URLEncoder.encode(city, "UTF-8") + "," + URLEncoder.encode(country, "UTF-8") +
@@ -40,20 +29,20 @@ public class GoogleCoordinatesService {
             Map<String, String> coordinates = extractCoordinatesFromJson(jsonResponse.getBody());
             PaperSearchModel model = new PaperSearchModel();
             return model.new Location(coordinates.get("lat"), coordinates.get("lng"));
-        }catch (UnsupportedEncodingException|URISyntaxException ex){
+        } catch (UnsupportedEncodingException | URISyntaxException ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    public Map<String, String> extractCoordinatesFromJson(String json){
+    public Map<String, String> extractCoordinatesFromJson(String json) {
         Gson gson = new Gson();
 
         JsonObject location = gson.fromJson(json, JsonObject.class)
-                                .get("results").getAsJsonArray()
-                                .get(0).getAsJsonObject()
-                                .get("geometry").getAsJsonObject()
-                                .get("location").getAsJsonObject();
+                .get("results").getAsJsonArray()
+                .get(0).getAsJsonObject()
+                .get("geometry").getAsJsonObject()
+                .get("location").getAsJsonObject();
 
         String latitude = location.get("lat").getAsString();
         String longitude = location.get("lng").getAsString();

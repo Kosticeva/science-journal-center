@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class OrderDTO {
 
-    private Long merchantOrderId;
+    private String merchantOrderId;
 
     private LocalDateTime merchantTimestamp;
 
@@ -15,7 +15,7 @@ public class OrderDTO {
 
     private Double amount;
 
-    public OrderDTO(Long merchantOrderId, LocalDateTime merchantTimestamp, String payerId, String merchantId, Double amount) {
+    public OrderDTO(String merchantOrderId, LocalDateTime merchantTimestamp, String payerId, String merchantId, Double amount) {
         this.merchantOrderId = merchantOrderId;
         this.merchantTimestamp = merchantTimestamp;
         this.payerId = payerId;
@@ -26,11 +26,11 @@ public class OrderDTO {
     public OrderDTO() {
     }
 
-    public Long getMerchantOrderId() {
+    public String getMerchantOrderId() {
         return merchantOrderId;
     }
 
-    public void setMerchantOrderId(Long merchantOrderId) {
+    public void setMerchantOrderId(String merchantOrderId) {
         this.merchantOrderId = merchantOrderId;
     }
 

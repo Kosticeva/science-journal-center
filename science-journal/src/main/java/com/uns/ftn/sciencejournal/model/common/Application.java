@@ -38,11 +38,10 @@ public class Application implements Serializable{
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "COAUTHORS",
+            name = "APPLICATION_COAUTHORS",
             joinColumns = {
-                    @JoinColumn(name = "PAPER_ID", referencedColumnName = "ID"),
-                    @JoinColumn(name = "PAPER_VERSION", referencedColumnName = "VERSION")},
-            inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID"))
+                    @JoinColumn(name = "PAPER", referencedColumnName = "ID")},
+            inverseJoinColumns = @JoinColumn(name = "AUTHOR", referencedColumnName = "ID"))
     private Set<User> coauthors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

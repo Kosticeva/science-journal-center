@@ -1,15 +1,16 @@
 package com.uns.ftn.sciencejournal.service.search;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.uns.ftn.sciencejournal.dto.PaperResultDTO;
+import com.uns.ftn.sciencejournal.model.SearchFieldQuery;
 import com.uns.ftn.sciencejournal.model.SearchQuery;
-import com.uns.ftn.sciencejournal.model.common.Issue;
 import com.uns.ftn.sciencejournal.model.common.Paper;
-import com.uns.ftn.sciencejournal.model.common.ScienceField;
-import com.uns.ftn.sciencejournal.model.enums.SearchType;
 import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
 import com.uns.ftn.sciencejournal.service.utils.ElasticSearchJsonUtil;
+import com.uns.ftn.sciencejournal.service.utils.OldElasticSearchJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,91 +27,141 @@ public class SearchService {
     @Autowired
     PaperRepository paperRepository;
 
-    public List<Paper> searchPapers(SearchQuery query) {
-        ElasticSearchJsonUtil jsonUtil = new ElasticSearchJsonUtil();
-        Map<String, String> params = generateParamMap(query);
+    public List<PaperResultDTO> searchPapers(SearchQuery query) {
 
-        StringBuilder json = new StringBuilder("{\n");
-        if (query.getType() == SearchType.AND) {
-            json.append(jsonUtil.generateAndQuery(params));
-        } else {
-            json.append(jsonUtil.generateOrQuery(params));
+        if(query.getQueriesByFields().size() == 0){
+            return new ArrayList<>();
         }
 
-        json.append(",\n");
-        if(query.getResultCount() == 0){
-            query.setResultCount(2);
+        if(query.getQueriesByFields().size() != query.getOperatorsBetweenFields().length()){
+            return new ArrayList<>();
         }
-        json.append(jsonUtil.generateSize(query.getResultCount()));
-        json.append("}");
-        System.out.println(json.toString());
-        String response = elasticSearchPlugin.searchFor(json.toString());
-        System.out.println(response);
+
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+        String json = jsonUtil.generateQueries(collectMustParameters(query), collectShouldParameters(query), query.getSize());
+
+
+        String response = elasticSearchPlugin.searchFor(json);
         return mapObjectToPaper(jsonUtil.getHitsFromJson(response));
     }
 
-    private List<Paper> mapObjectToPaper(List<Object> objects){
-        List<Paper> finalList = new ArrayList<>();
-        //JsonParser parser = JsonParserFactory.getJsonParser();
-        for(Object jsonNode: objects){
-            Paper paper = new Paper();
-            Map<String, Object> source = (Map<String, Object>) ((Map<String, Object>)jsonNode).get("_source");
-            paper.setDoi(source.get("doi").toString());
-            paper.setTitle(source.get("title").toString());
-            List<Object> keywords = JsonParserFactory.getJsonParser().parseList(
-                    source.get("keywords").toString()
-                            .replace("[", "[\"")
-                            .replace("]", "\"]")
-                            .replace(",", "\",\""));
+    public List<PaperResultDTO> searchPapersQuery(String query) {
+        ElasticSearchJsonUtil jsonUtil = new ElasticSearchJsonUtil();
+        String json = jsonUtil.generateJsonFromBoolQuery(query);
+
+        String response = elasticSearchPlugin.searchFor(json);
+        OldElasticSearchJsonUtil oldJsonUtil = new OldElasticSearchJsonUtil();
+        return mapObjectToPaper(oldJsonUtil.getHitsFromJson(response));
+    }
+
+    private Map<String, String> collectMustParameters(SearchQuery query){
+        List<SearchFieldQuery> queries = new ArrayList<>();
+
+        for(int i=0; i<query.getOperatorsBetweenFields().length(); i++){
+            if(query.getOperatorsBetweenFields().charAt(i) == '0'){
+                queries.add(query.getQueriesByFields().get(i));
+            }
+        }
+
+        return mapParameterFieldsToMap(queries);
+    }
+
+    private Map<String, String> collectShouldParameters(SearchQuery query){
+        List<SearchFieldQuery> queries = new ArrayList<>();
+
+        for(int i=0; i<query.getOperatorsBetweenFields().length(); i++){
+            if(query.getOperatorsBetweenFields().charAt(i) == '1'){
+                queries.add(query.getQueriesByFields().get(i));
+            }
+        }
+
+        return mapParameterFieldsToMap(queries);
+    }
+
+    private Map<String, String> mapParameterFieldsToMap(List<SearchFieldQuery> queries) {
+        Map<String, String> objects = new HashMap<>();
+
+        for(SearchFieldQuery query: queries){
+            switch (query.getField()){
+                case NASLOV:
+                    objects.put("title", query.getTerm());
+                    break;
+                case CASOPIS:
+                    objects.put("magazine.title", query.getTerm());
+                    break;
+                case SADRZAJ:
+                    objects.put("content", query.getTerm());
+                    break;
+                case KLJUCNE_RECI:
+                    objects.put("keywords", query.getTerm());
+                    break;
+                case NAUCNA_OBLAST:
+                    objects.put("field", query.getTerm());
+                    break;
+                case AUTOR_IME:
+                    objects.put("authors.firstName", query.getTerm());
+                    break;
+                case AUTOR_PREZIME:
+                    objects.put("authors.lastName", query.getTerm());
+                    break;
+            }
+        }
+
+        return objects;
+    }
+
+    private List<PaperResultDTO> mapObjectToPaper(JsonArray objects) {
+        List<PaperResultDTO> finalList = new ArrayList<>();
+        for (JsonElement element: objects) {
+            JsonObject hit = element.getAsJsonObject().get("_source").getAsJsonObject();
+            Paper paper = paperRepository.getOne(hit.get("doi").getAsString());
+
+            PaperResultDTO resultDTO = new PaperResultDTO();
+            resultDTO.setDoi(paper.getDoi());
+            resultDTO.setTitle(paper.getTitle());
+            resultDTO.setIssue(String.format("%s (izdanje %s)", paper.getIssue().getMagazine().getName(), paper.getIssue().getEdition()));
+            resultDTO.setPrice(paper.getPrice());
+            resultDTO.setCurrency(paper.getCurrency());
+            resultDTO.setLinkForPurchase(String.format("http://localhost:8090/api/paperPurchases/buy/%s", paper.getDoi()));
+
+            JsonArray authors = hit.get("authors").getAsJsonArray();
             StringBuilder builder = new StringBuilder();
-            for(Object word: keywords){
-                builder.append(word.toString() + ",");
+
+            for(JsonElement author: authors) {
+                builder.append(author.getAsJsonObject().get("lastName").getAsString());
+                builder.append(" ");
+                builder.append(author.getAsJsonObject().get("firstName").getAsString());
+                builder.append(", ");
             }
 
-            paper.setKeyTerms(builder.toString());
-            finalList.add(paper);
+            resultDTO.setAuthor(builder.toString().substring(0, builder.toString().length()-2));
+
+            JsonElement test = element.getAsJsonObject().get("highlight");
+            StringBuilder highlightBuilder = new StringBuilder();
+
+            if(test == null){
+                String content = hit.get("content").getAsString();
+                if(content.length() > 100) {
+                    highlightBuilder.append(content.substring(0, 100));
+                }else {
+                    highlightBuilder.append(content);
+                }
+            }else{
+                JsonArray highlights = test.getAsJsonObject().get("content").getAsJsonArray();
+                if(highlights.get(0).getAsString().charAt(0) == highlights.get(0).getAsString().toLowerCase().charAt(0)) {
+                    highlightBuilder.append(" ... ");
+                }
+
+                for(int i = 0; i<highlights.size(); i++){
+                    highlightBuilder.append(highlights.get(i).getAsString());
+                    highlightBuilder.append(" ... ");
+                }
+            }
+
+            resultDTO.setHighlight(highlightBuilder.toString());
+            finalList.add(resultDTO);
         }
 
         return finalList;
-    }
-
-    private Map<String, String> generateParamMap(SearchQuery query) {
-        Map<String, String> queries = new HashMap<>();
-
-        if (query.getAuthorFName() != null && !query.getAuthorFName().equals("")) {
-            queries.put("authors.first_name", query.getAuthorFName());
-        }
-
-        if (query.getAuthorLName() != null && !query.getAuthorLName().equals("")) {
-            queries.put("authors.last_name", query.getAuthorLName());
-        }
-
-        if (query.getKeyWords() != null && query.getKeyWords().size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (String word : query.getKeyWords()) {
-                builder.append(word);
-                builder.append(" ");
-            }
-            queries.put("keywords", builder.toString());
-        }
-
-        if (query.getMagazine() != null && !query.getMagazine().equals("")) {
-            queries.put("magazine.title", query.getMagazine());
-        }
-
-        if (query.getPaper() != null && !query.getPaper().equals("")) {
-            queries.put("title", query.getPaper());
-        }
-
-        if (query.getScienceFields() != null && query.getScienceFields().size() > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (String field : query.getScienceFields()) {
-                builder.append(field);
-                builder.append(" ");
-            }
-            queries.put("science_field", builder.toString());
-        }
-
-        return queries;
     }
 }

@@ -3,6 +3,7 @@ package com.uns.ftn.sciencejournal.service.common;
 import com.uns.ftn.sciencejournal.model.common.Issue;
 import com.uns.ftn.sciencejournal.repository.common.IssueRepository;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
+import com.uns.ftn.sciencejournal.service.storage.MagazineStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,9 @@ public class IssueService {
 
     @Autowired
     MagazineRepository magazineRepository;
+
+    @Autowired
+    MagazineStorageService magazineStorageService;
 
     public Issue getById(String issn, String edition) {
         return issueRepository.findFirstByMagazineAndEdition(issn, edition);
@@ -31,7 +35,12 @@ public class IssueService {
             return null;
         }
 
-        return issueRepository.save(issue);
+        Issue dbIssue = issueRepository.save(issue);
+        if(magazineStorageService.initIssueRepository(dbIssue) == null){
+            return null;
+        }
+
+        return dbIssue;
     }
 
     public Issue updateIssue(Issue newIssue, String issn, String edition) {
@@ -53,6 +62,7 @@ public class IssueService {
         issue.setEdition(newIssue.getEdition());
         issue.setPrice(newIssue.getPrice());
         issue.setDate(newIssue.getDate());
+        issue.setCurrency(newIssue.getCurrency());
 
         return issueRepository.save(issue);
     }
@@ -63,6 +73,10 @@ public class IssueService {
         }
 
         if (issue.getPrice() == null) {
+            return false;
+        }
+
+        if(issue.getCurrency() == null || issue.getCurrency().equals("")) {
             return false;
         }
 
@@ -86,8 +100,8 @@ public class IssueService {
             return;
         }
 
+        magazineStorageService.removeIssueRepository(issueRepository.findFirstByMagazineAndEdition(issn, edition));
         issueRepository.deleteById(issueRepository.findFirstByMagazineAndEdition(issn, edition).getId());
     }
-
 
 }
