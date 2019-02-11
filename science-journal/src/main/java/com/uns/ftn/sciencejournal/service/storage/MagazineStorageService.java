@@ -5,9 +5,15 @@ import com.uns.ftn.sciencejournal.model.common.Issue;
 import com.uns.ftn.sciencejournal.model.common.Magazine;
 import com.uns.ftn.sciencejournal.model.common.Paper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -61,6 +67,17 @@ public class MagazineStorageService {
             return storageService.store(file, getApplicationStoragePath(application));
         }catch (StorageException exc) {
             System.out.println(exc.getMessage());
+            return null;
+        }
+    }
+
+    public Resource downloadPaper(Paper paper) {
+        Path filePath = Paths.get("./" + paper.getFile());
+
+        Resource resource = new FileSystemResource(filePath.normalize().toFile());
+        if(resource.exists()) {
+            return resource;
+        } else {
             return null;
         }
     }

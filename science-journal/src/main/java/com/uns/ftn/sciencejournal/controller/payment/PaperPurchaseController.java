@@ -72,7 +72,7 @@ public class PaperPurchaseController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PaperPurchaseDTO> createPaperPurchase(@RequestBody PaperPurchaseDTO newPaperPurchase) {
-        if (newPaperPurchase.getId().equals(null)) {
+        if (newPaperPurchase.getId() == null) {
             PaperPurchase paperPurchase = paperPurchaseService.createPaperPurchase(
                     paperPurchaseMapper.mapFromDTO(newPaperPurchase));
 

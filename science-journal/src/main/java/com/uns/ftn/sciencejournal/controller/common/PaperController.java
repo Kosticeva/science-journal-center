@@ -4,11 +4,17 @@ import com.uns.ftn.sciencejournal.dto.common.PaperDTO;
 import com.uns.ftn.sciencejournal.mapper.common.PaperMapper;
 import com.uns.ftn.sciencejournal.model.common.Paper;
 import com.uns.ftn.sciencejournal.service.common.PaperService;
+import com.uns.ftn.sciencejournal.service.storage.MagazineStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -21,6 +27,9 @@ public class PaperController {
 
     @Autowired
     PaperMapper paperMapper;
+
+    @Autowired
+    MagazineStorageService magazineStorageService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PaperDTO>> getAllPapers() {
@@ -71,5 +80,33 @@ public class PaperController {
         }
 
         return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/download/{doi}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String doi, HttpServletRequest request) {
+        // Load file as Resource
+        Resource resource = magazineStorageService.downloadPaper(paperService.getById(doi));
+
+        if(resource == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Try to determine file's content type
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            System.out.println("Could not determine file type.");
+        }
+
+        // Fallback to the default content type if type could not be determined
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
     }
 }

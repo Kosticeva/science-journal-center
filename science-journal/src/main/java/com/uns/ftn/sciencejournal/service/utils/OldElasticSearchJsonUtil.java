@@ -14,16 +14,16 @@ public class OldElasticSearchJsonUtil {
     public String generateMoreLikeThisQuery(String content){
         StringBuilder builder = new StringBuilder(String.format("{\"%s\": { \"%s\": { \"%s\": {", QUERY_ATTR, MORE_LIKE_THIS_ATTR, "content"));
         builder.append(String.format("\"%s\": \"%s\", ", LIKE_TEXT, content));
-        builder.append(String.format("\"%s\": %s, ", MIN_TERM_FREQ, 1));
+        builder.append(String.format("\"%s\": %s, ", MIN_TERM_FREQ, 15));
         builder.append(String.format("\"%s\": %s }}}}", MIN_DOC_FREQ, 1));
 
         return builder.toString();
     }
 
     public String generateGeoQuery(String latitude, String longitude) {
-        StringBuilder builder = new StringBuilder(String.format("{\"%s\": {\"%s\": {\"%s\": {\"%s\": {}},\"%s\": {\"%s\": {\"%s\": ",
+        StringBuilder builder = new StringBuilder(String.format("{\"%s\": {\"%s\": {\"%s\": {\"%s\": {}},\"%s\": {\"%s\": {\"%s\": {",
                 QUERY_ATTR, FILTERED, QUERY_ATTR, CONDITION_ALL_ATTR, FILTER, NEGATION, GEO_DISTANCE));
-        builder.append(String.format("\"%s\": \"%s\", \"%s\": {\"%s\": \"%s\", \"%s\": \"%s\"}}}}}}}", DISTANCE, "200km", "authors.location", "lat", latitude, "lon", longitude));
+        builder.append(String.format("\"%s\": \"%s\", \"%s\": {\"%s\": \"%s\", \"%s\": \"%s\"}}}}}}}", DISTANCE, "200km", "location", "lat", latitude, "lon", longitude));
         return builder.toString();
     }
 
@@ -100,6 +100,11 @@ public class OldElasticSearchJsonUtil {
     }
 
     public String convertPaperSearchModelToJson(PaperSearchModel model) {
+        Gson gson = new Gson();
+        return gson.toJson(model);
+    }
+
+    public String convertReviewerSearchModelToJson(PaperSearchModel.PaperReviewerSearchModel model) {
         Gson gson = new Gson();
         return gson.toJson(model);
     }

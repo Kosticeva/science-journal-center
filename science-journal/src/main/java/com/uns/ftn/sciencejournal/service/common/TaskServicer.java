@@ -1,6 +1,8 @@
 package com.uns.ftn.sciencejournal.service.common;
 
+import com.uns.ftn.sciencejournal.model.common.Application;
 import com.uns.ftn.sciencejournal.model.common.Task;
+import com.uns.ftn.sciencejournal.model.enums.PaperApplicationState;
 import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.common.ApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.common.TaskRepository;
@@ -31,7 +33,11 @@ public class TaskServicer {
             return new ArrayList<>();
         }
 
-        return taskRepository.findByUserAndDeadlineBeforeAndFinished(user, LocalDateTime.now(), false);
+        return taskRepository.findByUserAndDeadlineAfterAndFinished(user, LocalDateTime.now(), false);
+    }
+
+    public List<Task> getAllForApplicationAndState(Application application, PaperApplicationState paperApplicationState) {
+        return taskRepository.findByPaperAndType(application, paperApplicationState);
     }
 
     public Task getById(Long id) {

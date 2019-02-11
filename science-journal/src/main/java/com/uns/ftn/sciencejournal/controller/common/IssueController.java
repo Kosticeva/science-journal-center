@@ -27,6 +27,11 @@ public class IssueController {
         return ResponseEntity.ok(issueMapper.mapManyToDTO(issueService.getAll()));
     }
 
+    @GetMapping(value = "/{issn}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<IssueDTO>> getIssuesByMagazine(@PathVariable String issn) {
+        return ResponseEntity.ok().body(issueMapper.mapManyToDTO(issueService.getByMagazine(issn)));
+    }
+
     @GetMapping(value = "/{id}/{edition}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<IssueDTO> getIssueById(@PathVariable("id") String issn,
                                                  @PathVariable("edition") String edition) {

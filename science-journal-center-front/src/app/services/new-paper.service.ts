@@ -5,6 +5,7 @@ import { Magazine } from '../models/magazine';
 import { Application } from '../models/application';
 import { ScienceField } from '../models/science-field';
 import { User } from '../models/user';
+import { Paper } from '../models/paper';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +38,9 @@ export class NewPaperService {
 
   public createAppication(formData: FormData): Observable<Application> {
     return this.http.post<Application>(`http://localhost:8090/api/applications`, formData);
+  }
+
+  public publishPaper(paper: Paper): Observable<Paper> {
+    return this.http.post<Paper>(`http://localhost:8090/api/papers`, paper);
   }
 }

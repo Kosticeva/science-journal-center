@@ -30,10 +30,6 @@ public class Magazine {
     @Column(name = "MEMBERSHIP_CURRENCY")
     private String currency;
 
-    @OneToOne(optional = true)
-    @JoinColumn(name = "CHIEF_EDITOR", unique = true)
-    private Editor editor;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "MAGAZINE_FIELDS", joinColumns = @JoinColumn(name = "MAGAZINE"),
             inverseJoinColumns = @JoinColumn(name = "FIELD"))
@@ -47,13 +43,12 @@ public class Magazine {
     public Magazine() {
     }
 
-    public Magazine(String issn, String name, MagazinePaymentType type, Double membership, String currency, Editor editor, Set<ScienceField> fields, Set<PaymentOption> options) {
+    public Magazine(String issn, String name, MagazinePaymentType type, Double membership, String currency, Set<ScienceField> fields, Set<PaymentOption> options) {
         this.issn = issn;
         this.name = name;
         this.type = type;
         this.membership = membership;
         this.currency = currency;
-        this.editor = editor;
         this.fields = fields;
         this.options = options;
     }
@@ -98,14 +93,6 @@ public class Magazine {
         this.membership = membership;
     }
 
-    public Editor getEditor() {
-        return editor;
-    }
-
-    public void setEditor(Editor editor) {
-        this.editor = editor;
-    }
-
     public Set<ScienceField> getFields() {
         return fields;
     }
@@ -132,14 +119,13 @@ public class Magazine {
                 type == magazine.type &&
                 Objects.equals(membership, magazine.membership) &&
                 Objects.equals(currency, magazine.currency) &&
-                Objects.equals(editor, magazine.editor) &&
                 Objects.equals(fields, magazine.fields) &&
                 Objects.equals(options, magazine.options);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(issn, name, type, membership, currency, editor, fields, options);
+        return Objects.hash(issn, name, type, membership, currency, fields, options);
     }
 
     @Override
@@ -150,7 +136,6 @@ public class Magazine {
                 ", type=" + type +
                 ", membership=" + membership +
                 ", currency='" + currency + '\'' +
-                ", editor=" + editor +
                 ", fields=" + fields +
                 ", options=" + options +
                 '}';

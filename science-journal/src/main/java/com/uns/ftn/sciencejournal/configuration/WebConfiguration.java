@@ -11,7 +11,8 @@ public class WebConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests().antMatchers(HttpMethod.POST, "/api/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/credentials", "/api/users", "/api/dummy", "/api/dummy/end").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/papers/download/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/credentials", "/api/users").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated();
 

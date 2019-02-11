@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { SearchQuery } from 'src/app/models/search-query';
 import { SearchFieldQuery } from 'src/app/models/search-field-query';
 import { SearchService } from 'src/app/services/search.service';
+import { NewPaperService } from 'src/app/services/new-paper.service';
+import { PurchaseService } from 'src/app/services/purchase.service';
+import { TaskService } from 'src/app/services/task.service';
+import { PaperPurchase } from 'src/app/models/paper-purchase';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-search',
@@ -15,12 +20,17 @@ export class SearchComponent implements OnInit {
   searchQuery: SearchQuery;
   boolChosen: boolean = false;
   boolQuery: string = "";
+  downloadable: string = null;
 
   fields: any[];
 
   constructor(
     private searchService: SearchService,
-    private http: HttpClient
+    private newPaperService: NewPaperService,
+    private http: HttpClient,
+    private purchaseService: PurchaseService,
+    private taskService: TaskService,
+    private loginService: LoginService
   ) {
   }
 
@@ -102,6 +112,8 @@ export class SearchComponent implements OnInit {
           this.searchQuery.operatorsBetweenFields += "1";
         }
       }
+
+      query = this.searchQuery;
     }
 
     this.searchService.search(query, !this.boolChosen).subscribe(
@@ -117,10 +129,12 @@ export class SearchComponent implements OnInit {
     )
   }
 
-  generateSession(link: string) {
-    this.http.get<any>(link).subscribe(
+  buy(thing: any) {
+    let purchase = new PaperPurchase(null, new Date(), this.loginService.getUser(), null, 0, thing.doi, thing.price, thing.currency);
+    this.purchaseService.buyPaper(purchase).subscribe(
       (data) => {
-        window.location.href = data.link;
+        alert("Uspesna kupovina");
+        this.downloadable = thing.doi;
       }
     )
   }

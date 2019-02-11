@@ -1,5 +1,6 @@
 package com.uns.ftn.sciencejournal.service.users;
 
+import com.uns.ftn.sciencejournal.mapper.ElasticSearchReviewerMapper;
 import com.uns.ftn.sciencejournal.model.common.Magazine;
 import com.uns.ftn.sciencejournal.model.common.ScienceField;
 import com.uns.ftn.sciencejournal.model.users.Reviewer;
@@ -7,6 +8,8 @@ import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
 import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.ReviewerRepository;
+import com.uns.ftn.sciencejournal.service.search.ElasticSearchPlugin;
+import com.uns.ftn.sciencejournal.service.utils.OldElasticSearchJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,12 @@ public class ReviewerService {
     @Autowired
     ScienceFieldRepository scienceFieldRepository;
 
+    @Autowired
+    ElasticSearchPlugin elasticSearchPlugin;
+
+    @Autowired
+    ElasticSearchReviewerMapper elasticSearchReviewerMapper;
+
     public Reviewer getById(Integer id) {
         return reviewerRepository.findById(id).orElse(null);
     }
@@ -45,7 +54,11 @@ public class ReviewerService {
             return null;
         }
 
-        return reviewerRepository.save(reviewer);
+        Reviewer dbReviewer = reviewerRepository.save(reviewer);
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+        elasticSearchPlugin.addReviewer(jsonUtil.convertReviewerSearchModelToJson(elasticSearchReviewerMapper.mapReviewerToReviewerSearchModel(reviewer)), reviewer.getUser().getUsername());
+
+        return dbReviewer;
     }
 
     public Reviewer updateReviewer(Reviewer newReviewer, Integer id) {
@@ -68,7 +81,11 @@ public class ReviewerService {
         reviewer.setTitle(newReviewer.getTitle());
         reviewer.setUser(newReviewer.getUser());
 
-        return reviewerRepository.save(reviewer);
+        Reviewer dbReviewer = reviewerRepository.save(reviewer);
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+        elasticSearchPlugin.addReviewer(jsonUtil.convertReviewerSearchModelToJson(elasticSearchReviewerMapper.mapReviewerToReviewerSearchModel(reviewer)), reviewer.getUser().getUsername());
+
+        return dbReviewer;
     }
 
     private boolean checkReviewerValidity(Reviewer reviewer) {
@@ -109,9 +126,12 @@ public class ReviewerService {
     }
 
     public void deleteReviewer(Integer id) {
-        if (id != null) {
-            reviewerRepository.deleteById(id);
+        if (id == null) {
+            return;
         }
+
+        elasticSearchPlugin.removeReviewer(id.toString());
+        reviewerRepository.deleteById(id);
     }
 
 

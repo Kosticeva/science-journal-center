@@ -23,6 +23,7 @@ import { ProfileComponent } from './user/profile/profile.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { BasicAuthInterceptor } from './helpers/basic-auth.interceptor';
 import { AuthGuardService, AuthNotGuardService } from './helpers/auth-guard.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { AuthGuardService, AuthNotGuardService } from './helpers/auth-guard.serv
     FormsModule,
     AngularFontAwesomeModule,
     TooltipModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [
     FormBuilder, 

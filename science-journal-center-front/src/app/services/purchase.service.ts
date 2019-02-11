@@ -5,6 +5,8 @@ import { IssuePurchase } from '../models/issue-purchase';
 import { PaperPurchase } from '../models/paper-purchase';
 import { SubscriptionPurchase } from '../models/subscription-purchase';
 import { Subscription } from '../models/subscription';
+import { Issue } from '../models/issue';
+import { Paper } from '../models/paper';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +39,17 @@ export class PurchaseService {
 
   public purchaseSubscription(purchase: SubscriptionPurchase): Observable<SubscriptionPurchase> {
     return this.http.post<SubscriptionPurchase>(`http://localhost:8090/api/subscriptionPurchases`, purchase);
+  }
+
+  public getIssuesForMagazine(issn: string): Observable<Issue[]> {
+    return this.http.get<Issue[]>(`http://localhost:8090/api/issues/${issn}`);
+  }
+
+  public getPaper(doi: string): Observable<Paper> {
+    return this.http.get<Paper>(`http://localhost:8090/api/papers/${doi}`);
+  }
+
+  public buyPaper(purchase: PaperPurchase): Observable<PaperPurchase> {
+    return this.http.post<PaperPurchase>(`http://localhost:8090/api/paperPurchases`, purchase);
   }
 }

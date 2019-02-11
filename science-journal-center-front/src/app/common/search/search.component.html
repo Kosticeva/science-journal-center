@@ -144,7 +144,8 @@
                     <div class="col-3">
                       <span><b>Cena: {{item.price}} {{item.currency}}</b></span>
                       <br />
-                      <button class="btn btn-lg btn-primary" (click)="generateSession(item.linkForPurchase)">Kupi</button>
+                      <button class="btn btn-lg btn-primary" (click)="buy(item)">Kupi</button>
+                      <a *ngIf="downloadable===item.doi" role="button" href="{{item.linkForPurchase}}" (click)="downloadable=null" download="{{item.title}}">Preuzmi</a>
                     </div>
                   </div>
                   <div class="row">

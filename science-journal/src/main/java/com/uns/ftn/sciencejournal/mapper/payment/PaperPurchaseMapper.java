@@ -35,6 +35,9 @@ public class PaperPurchaseMapper {
         purchase.setType(PurchaseType.PAPER);
         if(dto.getUser() != null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
 
+        purchase.setAmount(dto.getAmount());
+        purchase.setCurrency(dto.getCurrency());
+
         return purchase;
     }
 
@@ -47,6 +50,9 @@ public class PaperPurchaseMapper {
         dto.setTimeOfPurchase(paperPurchase.getTimeOfPurchase());
         dto.setId(paperPurchase.getTransactionId());
         if(paperPurchase.getUser() != null) dto.setUser(paperPurchase.getUser().getUsername());
+
+        dto.setAmount(paperPurchase.getAmount());
+        dto.setCurrency(paperPurchase.getCurrency());
 
         return dto;
     }

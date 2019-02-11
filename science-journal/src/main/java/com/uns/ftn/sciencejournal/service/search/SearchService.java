@@ -4,19 +4,31 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.uns.ftn.sciencejournal.dto.PaperResultDTO;
+import com.uns.ftn.sciencejournal.dto.users.UserDTO;
 import com.uns.ftn.sciencejournal.model.SearchFieldQuery;
 import com.uns.ftn.sciencejournal.model.SearchQuery;
+import com.uns.ftn.sciencejournal.model.common.Application;
 import com.uns.ftn.sciencejournal.model.common.Paper;
+import com.uns.ftn.sciencejournal.model.common.Task;
+import com.uns.ftn.sciencejournal.model.enums.PaperApplicationState;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
+import com.uns.ftn.sciencejournal.model.users.User;
 import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
+import com.uns.ftn.sciencejournal.repository.users.UserRepository;
+import com.uns.ftn.sciencejournal.service.common.TaskServicer;
 import com.uns.ftn.sciencejournal.service.utils.ElasticSearchJsonUtil;
 import com.uns.ftn.sciencejournal.service.utils.OldElasticSearchJsonUtil;
+import com.uns.ftn.sciencejournal.service.utils.PDFUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class SearchService {
@@ -26,6 +38,30 @@ public class SearchService {
 
     @Autowired
     PaperRepository paperRepository;
+
+    @Autowired
+    CredentialsRepository credentialsRepository;
+
+    @Autowired
+    TaskServicer taskServicer;
+
+    public List<Credentials> searchReviewers(Application application) {
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+        String similarPapers = elasticSearchPlugin.searchForPapers(jsonUtil.generateMoreLikeThisQuery(PDFUtils.readFromPDF(application.getFile()).replace("\n", "")));
+        String reviewersOutside100kmRadius = elasticSearchPlugin.searchForReviewers(jsonUtil.generateGeoQuery(
+                application.getAuthor().getUserDetails().getLatitude().toString(), application.getAuthor().getUserDetails().getLongitude().toString()));
+
+        List<Credentials> allFoundUsers = new ArrayList<>(mapPaperToReviewer(jsonUtil.getHitsFromJson(similarPapers)));
+        allFoundUsers.addAll(mapObjectToReviewer(jsonUtil.getHitsFromJson(reviewersOutside100kmRadius)));
+
+        return reduceListOfUsers(allFoundUsers);
+    }
+
+    private List<Credentials> reduceListOfUsers(List<Credentials> users) {
+        return users.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
     public List<PaperResultDTO> searchPapers(SearchQuery query) {
 
@@ -41,7 +77,7 @@ public class SearchService {
         String json = jsonUtil.generateQueries(collectMustParameters(query), collectShouldParameters(query), query.getSize());
 
 
-        String response = elasticSearchPlugin.searchFor(json);
+        String response = elasticSearchPlugin.searchForPapers(json);
         return mapObjectToPaper(jsonUtil.getHitsFromJson(response));
     }
 
@@ -49,7 +85,7 @@ public class SearchService {
         ElasticSearchJsonUtil jsonUtil = new ElasticSearchJsonUtil();
         String json = jsonUtil.generateJsonFromBoolQuery(query);
 
-        String response = elasticSearchPlugin.searchFor(json);
+        String response = elasticSearchPlugin.searchForPapers(json);
         OldElasticSearchJsonUtil oldJsonUtil = new OldElasticSearchJsonUtil();
         return mapObjectToPaper(oldJsonUtil.getHitsFromJson(response));
     }
@@ -110,6 +146,31 @@ public class SearchService {
         return objects;
     }
 
+    private List<Credentials> mapObjectToReviewer(JsonArray objects) {
+        List<Credentials> finalList = new ArrayList<>();
+        for (JsonElement element: objects) {
+            JsonObject hit = element.getAsJsonObject().get("_source").getAsJsonObject();
+            finalList.add(credentialsRepository.getOne(hit.get("username").getAsString()));
+        }
+
+        return finalList;
+    }
+
+    private List<Credentials> mapPaperToReviewer(JsonArray objects){
+        List<Credentials> finalList = new ArrayList<>();
+        for (JsonElement element: objects) {
+            JsonObject hit = element.getAsJsonObject().get("_source").getAsJsonObject();
+            Paper paper = paperRepository.getOne(hit.get("doi").getAsString());
+            List<Task> tasks = taskServicer.getAllForApplicationAndState(paper.getLastRevision(), PaperApplicationState.REVIEW);
+
+            for(Task task: tasks) {
+                finalList.add(task.getUser());
+            }
+        }
+
+        return finalList;
+    }
+
     private List<PaperResultDTO> mapObjectToPaper(JsonArray objects) {
         List<PaperResultDTO> finalList = new ArrayList<>();
         for (JsonElement element: objects) {
@@ -122,7 +183,11 @@ public class SearchService {
             resultDTO.setIssue(String.format("%s (izdanje %s)", paper.getIssue().getMagazine().getName(), paper.getIssue().getEdition()));
             resultDTO.setPrice(paper.getPrice());
             resultDTO.setCurrency(paper.getCurrency());
-            resultDTO.setLinkForPurchase(String.format("http://localhost:8090/api/paperPurchases/buy/%s", paper.getDoi()));
+            try{
+                resultDTO.setLinkForPurchase(String.format("http://localhost:8090/api/papers/download/%s", URLEncoder.encode(paper.getDoi(), "UTF-8")));
+            }catch (Exception e) {
+                resultDTO.setLinkForPurchase("");
+            }
 
             JsonArray authors = hit.get("authors").getAsJsonArray();
             StringBuilder builder = new StringBuilder();

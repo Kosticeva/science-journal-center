@@ -18,33 +18,59 @@ import java.util.HashMap;
 public class ElasticSearchPlugin {
 
     private RestTemplate template;
-    private static String ELASTIC_SEARCH_URI = "http://localhost:9200/science-journal/papers/_search";
-    private static String ELASTIC_INDEX_URI = "http://localhost:9200/science-journal/papers/";
+    private static final String ELASTIC_SEARCH_URI = "http://localhost:9200/science-journal/%s/_search";
+    private static final String ELASTIC_INDEX_URI = "http://localhost:9200/science-journal/%s/";
+    private static final String PAPER_INDEX = "papers";
+    private static final String REVIEWER_INDEX = "reviewers";
 
     @Autowired
-    public ElasticSearchPlugin(){
+    public ElasticSearchPlugin() {
         template = new RestTemplate();
         template.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
     }
 
-    public String searchFor(String jsonBody) {
-        return sendRequestToElasticSearch(ELASTIC_SEARCH_URI, "", jsonBody, HttpMethod.POST);
+    public String searchForPapers(String jsonBody) {
+        return searchFor(PAPER_INDEX , jsonBody);
     }
 
-    public String addToIndex(String jsonBody, String id){
-        return sendRequestToElasticSearch(ELASTIC_INDEX_URI, id, jsonBody, HttpMethod.PUT);
+    public String searchForReviewers(String jsonBody) {
+        return searchFor(REVIEWER_INDEX, jsonBody);
     }
 
-    public String removeFromIndex(String id){
-        return sendRequestToElasticSearch(ELASTIC_INDEX_URI, id, "", HttpMethod.DELETE);
+    public String addPaper(String jsonBody, String id) {
+        return addToIndex(PAPER_INDEX , jsonBody, id);
     }
 
-    private String sendRequestToElasticSearch(String uri, String id, String body, HttpMethod method){
+    public String addReviewer(String jsonBody, String id) {
+        return addToIndex(REVIEWER_INDEX, jsonBody, id);
+    }
+
+    public String removePaper(String id){
+        return removeFromIndex(PAPER_INDEX , id);
+    }
+
+    public String removeReviewer(String id) {
+        return removeFromIndex(REVIEWER_INDEX, id);
+    }
+
+    public String searchFor(String index, String jsonBody) {
+        return sendRequestToElasticSearch(ELASTIC_SEARCH_URI, index,"", jsonBody, HttpMethod.POST);
+    }
+
+    public String addToIndex(String index, String jsonBody, String id){
+        return sendRequestToElasticSearch(ELASTIC_INDEX_URI, index, id, jsonBody, HttpMethod.PUT);
+    }
+
+    public String removeFromIndex(String index, String id){
+        return sendRequestToElasticSearch(ELASTIC_INDEX_URI, index, id, "", HttpMethod.DELETE);
+    }
+
+    private String sendRequestToElasticSearch(String uri, String index, String id, String body, HttpMethod method){
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> entity = new HttpEntity<>(body, headers);
         try {
             ResponseEntity<String> result = template.exchange(
-                    uri + URLEncoder.encode(id, "UTF-8"), method, entity, String.class, new HashMap<>());
+                    String.format(uri, index) + URLEncoder.encode(id, "UTF-8"), method, entity, String.class, new HashMap<>());
 
             return result.getBody();
         }catch (UnsupportedEncodingException ex){

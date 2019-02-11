@@ -21,8 +21,12 @@ public class IssueService {
     @Autowired
     MagazineStorageService magazineStorageService;
 
+    public List<Issue> getByMagazine(String issn) {
+        return issueRepository.findByMagazine(magazineRepository.getOne(issn));
+    }
+
     public Issue getById(String issn, String edition) {
-        return issueRepository.findFirstByMagazineAndEdition(issn, edition);
+        return issueRepository.findFirstByMagazineAndEdition(magazineRepository.getOne(issn), edition);
     }
 
     public List<Issue> getAll() {
@@ -100,8 +104,8 @@ public class IssueService {
             return;
         }
 
-        magazineStorageService.removeIssueRepository(issueRepository.findFirstByMagazineAndEdition(issn, edition));
-        issueRepository.deleteById(issueRepository.findFirstByMagazineAndEdition(issn, edition).getId());
+        magazineStorageService.removeIssueRepository(issueRepository.findFirstByMagazineAndEdition(magazineRepository.getOne(issn), edition));
+        issueRepository.deleteById(issueRepository.findFirstByMagazineAndEdition(magazineRepository.getOne(issn), edition).getId());
     }
 
 }

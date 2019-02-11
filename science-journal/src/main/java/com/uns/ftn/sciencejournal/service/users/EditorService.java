@@ -25,6 +25,10 @@ public class EditorService {
     @Autowired
     ScienceFieldRepository scienceFieldRepository;
 
+    public Editor getChiefEditorOfMagazine(String issn) {
+        return editorRepository.findFirstByMagazineAndField(magazineRepository.getOne(issn), null);
+    }
+
     public Editor getById(Integer id) {
         return editorRepository.findById(id).orElse(null);
     }

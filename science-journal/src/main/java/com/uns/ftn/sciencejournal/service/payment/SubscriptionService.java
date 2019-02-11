@@ -77,6 +77,7 @@ public class SubscriptionService {
         subscription.setType(SubscriptionType.MONTHLY);
         subscription.setPaid(false);
         subscription.setCancelled(null);
+        subscription.setDate(LocalDate.now().plusMonths(1L));
 
         return subscriptionRepository.save(subscription);
     }
@@ -110,11 +111,6 @@ public class SubscriptionService {
         /*if (subscription.getType() == null) {
             return false;
         }*/
-
-        if (subscription.getDate() == null) {
-            return false;
-        }
-
         if (subscription.getMagazine() == null || subscription.getMagazine().getIssn() == null) {
             return false;
         }

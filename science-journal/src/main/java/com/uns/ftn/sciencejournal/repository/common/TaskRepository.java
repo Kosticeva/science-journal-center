@@ -14,5 +14,5 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findByPaperAndType(Application application, PaperApplicationState state);
-    List<Task> findByUserAndDeadlineBeforeAndFinished(Credentials user, LocalDateTime deadline, Boolean finished);
+    List<Task> findByUserAndDeadlineAfterAndFinished(Credentials user, LocalDateTime deadline, Boolean finished);
 }

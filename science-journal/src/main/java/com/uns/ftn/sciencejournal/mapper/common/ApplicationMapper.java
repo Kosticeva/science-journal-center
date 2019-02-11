@@ -40,9 +40,14 @@ public class ApplicationMapper {
         if(dto.getAuthor() != null) application.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
 
         application.setCoauthors(new HashSet<>());
-        for (Long coauthor : dto.getCoauthors()) {
-            application.getCoauthors().add(userRepository.getOne(coauthor));
+        if(dto.getCoauthors() == null) {
+
+        }else {
+            for (Long coauthor : dto.getCoauthors()) {
+                application.getCoauthors().add(userRepository.getOne(coauthor));
+            }
         }
+
 
         if(dto.getMagazine() != null) application.setMagazine(magazineRepository.getOne(dto.getMagazine()));
         if(dto.getField() != null) application.setField(scienceFieldRepository.getOne(dto.getField()));

@@ -7,6 +7,7 @@ import com.uns.ftn.sciencejournal.mapper.common.TaskMapper;
 import com.uns.ftn.sciencejournal.model.common.Application;
 import com.uns.ftn.sciencejournal.service.common.ApplicationService;
 import com.uns.ftn.sciencejournal.service.common.TaskServicer;
+import com.uns.ftn.sciencejournal.service.users.EditorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,9 @@ public class ApplicationController {
     @Autowired
     TaskMapper taskMapper;
 
+    @Autowired
+    EditorService editorService;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ApplicationDTO>> getAllApplications() {
         return ResponseEntity.ok(applicationMapper.mapManyToDTO(applicationService.getAll()));
@@ -54,7 +58,7 @@ public class ApplicationController {
                                                             @RequestParam("abstract") String pAbstract,
                                                             @RequestParam("keyterms") String keyterms,
                                                             @RequestParam("author") String author,
-                                                            @RequestParam("coauthors") Long[] coauthors,
+                                                            @RequestParam(value = "coauthors", required = false) Long[] coauthors,
                                                             @RequestParam("magazine") String issn,
                                                             @RequestParam("field") String field,
                                                             @RequestParam("file") MultipartFile file) {
@@ -63,7 +67,13 @@ public class ApplicationController {
         newApplication.setPaperAbstract(pAbstract);
         newApplication.setKeyTerms(keyterms);
         newApplication.setAuthor(author);
-        newApplication.setCoauthors(new HashSet<>(Arrays.asList(coauthors)));
+        if(coauthors == null) {
+            //
+        }else if(coauthors.length == 0) {
+
+        }else{
+            newApplication.setCoauthors(new HashSet<>(Arrays.asList(coauthors)));
+        }
         newApplication.setMagazine(issn);
         newApplication.setField(field);
         Application application = applicationService.createApplication(applicationMapper.mapFromDTO(newApplication), file);
@@ -72,7 +82,7 @@ public class ApplicationController {
             TaskDTO task = new TaskDTO();
             task.setApplication(application.getId());
             task.setDeadline(LocalDateTime.now().plusDays(3));
-            task.setUser(application.getMagazine().getEditor().getUser().getUsername());
+            task.setUser(editorService.getChiefEditorOfMagazine(application.getMagazine().getIssn()).getUser().getUsername());
             task.setSummary("Odabir recenzenata");
             task.setType(application.getState());
             task.setFinished(false);

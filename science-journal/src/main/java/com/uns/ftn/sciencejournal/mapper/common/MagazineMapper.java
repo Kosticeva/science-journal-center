@@ -18,9 +18,6 @@ import java.util.List;
 public class MagazineMapper {
 
     @Autowired
-    EditorRepository editorRepository;
-
-    @Autowired
     ScienceFieldRepository scienceFieldRepository;
 
     @Autowired
@@ -28,9 +25,6 @@ public class MagazineMapper {
 
     public Magazine mapFromDTO(MagazineDTO dto) {
         Magazine magazine = new Magazine();
-
-        if(dto.getEditor() != null)
-            magazine.setEditor(editorRepository.getOne(dto.getEditor()));
 
         magazine.setIssn(dto.getIssn());
         magazine.setMembership(dto.getMembership());
@@ -53,8 +47,6 @@ public class MagazineMapper {
 
     public MagazineDTO mapToDTO(Magazine magazine) {
         MagazineDTO dto = new MagazineDTO();
-
-        if(magazine.getEditor() != null) dto.setEditor(magazine.getEditor().getId());
 
         dto.setIssn(magazine.getIssn());
         dto.setMembership(magazine.getMembership());

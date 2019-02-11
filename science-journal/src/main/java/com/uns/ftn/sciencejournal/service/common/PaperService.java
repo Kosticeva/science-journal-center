@@ -74,7 +74,7 @@ public class PaperService {
         paperRepository.save(dbPaper);
 
         OldElasticSearchJsonUtil util = new OldElasticSearchJsonUtil();
-        elasticSearchPlugin.addToIndex(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(paper)), paper.getDoi());
+        elasticSearchPlugin.addPaper(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(paper)), paper.getDoi());
 
         return dbPaper;
     }
@@ -118,7 +118,7 @@ public class PaperService {
         paperRepository.save(dbPaper);
 
         OldElasticSearchJsonUtil util = new OldElasticSearchJsonUtil();
-        elasticSearchPlugin.addToIndex(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(paper)), paper.getDoi());
+        elasticSearchPlugin.addPaper(util.convertPaperSearchModelToJson(elasticSearchPaperMapper.mapPaperToElasticSearchModel(paper)), paper.getDoi());
 
         return dbPaper;
     }
@@ -199,7 +199,7 @@ public class PaperService {
             return;
         }
 
-        elasticSearchPlugin.removeFromIndex(id);
+        elasticSearchPlugin.removePaper(id);
         magazineStorageService.removePaper(paperRepository.getOne(id));
         paperRepository.deleteById(id);
     }

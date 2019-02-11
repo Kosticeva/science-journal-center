@@ -104,7 +104,7 @@ export class NewPaperComponent implements OnInit {
     data.append("title", this.application.title);
     data.append("magazine", this.application.magazine);
     data.append("abstract", this.application.paperAbstract);
-    data.append("keyterms", this.application.keyWords);
+    data.append("keyterms", this.application.keyTerms);
     data.append("author", this.loginService.getUser());
     data.append("field", this.application.field);
     

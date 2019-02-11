@@ -17,7 +17,6 @@ public class ElasticSearchJsonUtil {
         JsonElement query = new JsonObject();
         query.getAsJsonObject().add(ElasticSearchJsonConstants.QUERY_ATTR, queryBase);
 
-        //",\"highlight\":{\"pre_tags\": [\"<b>\"],\"post_tags\": [\"</b>\"],\"fields\":{\"content\":{}}}";
         JsonElement highlightFields = new JsonObject();
         highlightFields.getAsJsonObject().add("content", new JsonObject());
         JsonElement highlight = new JsonObject();

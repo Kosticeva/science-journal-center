@@ -48,6 +48,8 @@ public class SubscriptionPurchaseMapper {
         dto.setSuccessful(subscriptionPurchase.getSuccessful());
         dto.setTimeOfPurchase(subscriptionPurchase.getTimeOfPurchase());
         dto.setId(subscriptionPurchase.getTransactionId());
+        dto.setCurrency(subscriptionPurchase.getCurrency());
+        dto.setAmount(subscriptionPurchase.getAmount());
         if(subscriptionPurchase.getUser() != null) dto.setUser(subscriptionPurchase.getUser().getUsername());
 
         return dto;

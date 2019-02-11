@@ -20,9 +20,6 @@ public class MagazineService {
     MagazineRepository magazineRepository;
 
     @Autowired
-    EditorRepository editorRepository;
-
-    @Autowired
     ScienceFieldRepository scienceFieldRepository;
 
     @Autowired
@@ -74,7 +71,6 @@ public class MagazineService {
         magazine.setName(newMagazine.getName());
         magazine.setMembership(newMagazine.getMembership());
         magazine.setType(newMagazine.getType());
-        magazine.setEditor(newMagazine.getEditor());
         magazine.setFields(newMagazine.getFields());
         magazine.setOptions(newMagazine.getOptions());
         magazine.setCurrency(newMagazine.getCurrency());
@@ -96,14 +92,6 @@ public class MagazineService {
         }
 
         if(magazine.getCurrency() == null || magazine.getCurrency().equals("")) {
-            return false;
-        }
-
-        if (magazine.getEditor() != null && magazine.getEditor().getId() == null) {
-            return false;
-        }
-
-        if (magazine.getEditor() != null && editorRepository.getOne(magazine.getEditor().getId()) == null) {
             return false;
         }
 

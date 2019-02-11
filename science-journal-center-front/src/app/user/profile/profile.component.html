@@ -53,55 +53,15 @@
         </tr>
       </thead>
       <tbody>
-        <div *ngFor="let task of tasks">
-          <tr>
+          <tr *ngFor="let task of tasks">
             <td>{{task.summary}}</td>
             <td>{{task.type}}</td>
-            <td><a role="button" (click)="viewApplication(task.application)" class="btn btn-primary">Prijava sa sifrom {{task.application}}</a></td>
+            <td><a role="button" (click)="viewApplication(task.application, template)" class="btn btn-primary">Prijava sa sifrom {{task.application}}</a></td>
             <td>Zavrsiti do: <b>{{task.deadline}}</b></td>
             <td><span class="btn-group">
-              <button (click)="finishTask(task)">Zavrsi</button>
+              <button class="btn btn-primary" (click)="finishTask(task, template1)">Zavrsi</button>
             </span></td>
           </tr>
-          <tr *ngIf="viewingApplication === task.application">
-            <td colspan="5">
-              <table>
-                <tr>
-                  <th>Naslov</th>
-                  <td>{{viewingApplication.title}}</td>
-                </tr>
-                <tr>
-                  <th>Apstrakt</th>
-                  <td>{{viewingApplication.paperAbstract}}</td>
-                </tr>
-                <tr>
-                  <th>Kljucne reci</th>
-                  <td>{{viewingApplication.keyWords}}</td>
-                </tr>
-                <tr>
-                  <th>Autori</th>
-                  <td>{{viewAuthors(viewingApplication)}}</td>
-                </tr>
-                <tr>
-                  <th>Casopis</th>
-                  <td>{{viewingApplication.magazine}}</td>
-                </tr>
-                <tr>
-                  <th>Oblast</th>
-                  <td>{{viewingApplication.field}}</td>
-                </tr>
-                <tr>
-                  <th>Akcije</th>
-                  <td>
-                    <button (click)="publish(viewingApplication)">
-                      Objavi
-                    </button>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </div>
       </tbody>
     </table>
   </div>
@@ -168,3 +128,90 @@
     </table>
   </div>
 </div>
+
+<ng-template #template let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Prijava</h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="modal.dismiss('')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-light">
+      <thead>
+        <tr>
+          <th scope="col">Naslov</th>
+          <th scope="col">Apstrakt</th>
+          <th scope="col">Autor</th>
+          <th scope="col">Oblast</th>
+          <th scope="col">Postavljeno</th>
+          <th scope="col">Akcije</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{application.title}}</td>
+          <td>{{application.abstract}}</td>
+          <td>{{application.author}}</td>
+          <td>{{application.field}}</td>
+          <td>{{application.timestamp}}</td>
+          <td><button class="btn btn-primary" (click)="download(application.file)">Preuzmi rad</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
+
+<ng-template #template1 let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Zadatak</h4>
+    <button
+      type="button"
+      class="close pull-right"
+      aria-label="Close"
+      (click)="modal.dismiss('')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="task.type==='REVIEWER_PROPOSAL'">
+      <h4>Odaberi recenzente</h4>
+      <select multiple class="form-control" name="reviewers" id="reviewers" [(ngModel)]="chosens">
+        <option *ngFor="let reviewer of reviewers" value="{{reviewer.username}}">{{reviewer.username}}</option>
+      </select>
+      <br />
+      <button class="btn btn-primary" (click)="submitFinishedTask()">Zavrsi</button>
+    </div>
+    <div *ngIf="task.type==='REVIEW_ANALYSIS'">
+      <h4>Odobri rad</h4>
+      <table>
+        <tr>
+          <td class="form-control-label">Unesi DOI za rad: </td>
+          <td colspan="3"><input type="text" id="doi" name="doi" class="form-control" [(ngModel)]="doi" /></td>
+        </tr>
+        <tr>
+          <td class="form-control-label">Cena: </td>
+          <td><input type="number" id="price" name="price" class="form-control" [(ngModel)]="price" /></td>
+          <td class="form-control-label">Valuta: </td>
+          <td><input type="text" id="curr" name="curr" class="form-control" [(ngModel)]="currency" /></td>
+        </tr>
+        <tr>
+          <td>Izdanje:</td>
+          <td>
+            <select class="form-control" name="issues" id="issues" [(ngModel)]="issue">
+              <option *ngFor="let issu of issues" value="{{issu.id}}">{{issu.edition}}</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <br />
+      <button class="btn btn-primary" (click)="submitFinishedTask()">Zavrsi</button>
+    </div>
+  </div>
+</ng-template>
