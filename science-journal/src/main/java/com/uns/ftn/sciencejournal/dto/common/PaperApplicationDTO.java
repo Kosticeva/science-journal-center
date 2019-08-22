@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 
-public class ApplicationDTO {
+public class PaperApplicationDTO {
 
     private Long paperId;
 
@@ -18,7 +18,7 @@ public class ApplicationDTO {
 
     private String keyTerms;
 
-    private String author;
+    //private String author;
 
     private Set<Long> coauthors;
 
@@ -34,18 +34,17 @@ public class ApplicationDTO {
 
     private LocalDate timestamp;
 
-    public ApplicationDTO() {
+    public PaperApplicationDTO() {
     }
 
-    public ApplicationDTO(Long paperId, Integer version, String title, String paperAbstract, String keyTerms,
-                          String author, Set<Long> coauthors, String magazine, String field, String file,
-                          PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
+    public PaperApplicationDTO(Long paperId, Integer version, String title, String paperAbstract, String keyTerms,
+                               Set<Long> coauthors, String magazine, String field, String file,
+                               PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
         this.paperId = paperId;
         this.version = version;
         this.title = title;
         this.paperAbstract = paperAbstract;
         this.keyTerms = keyTerms;
-        this.author = author;
         this.coauthors = coauthors;
         this.magazine = magazine;
         this.field = field;
@@ -93,14 +92,6 @@ public class ApplicationDTO {
 
     public void setKeyTerms(String keyTerms) {
         this.keyTerms = keyTerms;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public Set<Long> getCoauthors() {
@@ -161,13 +152,12 @@ public class ApplicationDTO {
 
     @Override
     public String toString() {
-        return "ApplicationDTO{" +
+        return "PaperApplicationDTO{" +
                 "paperId=" + paperId +
                 ", version=" + version +
                 ", title='" + title + '\'' +
                 ", paperAbstract='" + paperAbstract + '\'' +
                 ", keyTerms='" + keyTerms + '\'' +
-                ", author='" + author + '\'' +
                 ", coauthors=" + coauthors +
                 ", magazine='" + magazine + '\'' +
                 ", field='" + field + '\'' +
@@ -182,13 +172,12 @@ public class ApplicationDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ApplicationDTO that = (ApplicationDTO) o;
+        PaperApplicationDTO that = (PaperApplicationDTO) o;
         return Objects.equals(paperId, that.paperId) &&
                 Objects.equals(version, that.version) &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(paperAbstract, that.paperAbstract) &&
                 Objects.equals(keyTerms, that.keyTerms) &&
-                Objects.equals(author, that.author) &&
                 Objects.equals(coauthors, that.coauthors) &&
                 Objects.equals(magazine, that.magazine) &&
                 Objects.equals(field, that.field) &&
@@ -200,7 +189,7 @@ public class ApplicationDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(paperId, version, title, paperAbstract, keyTerms, author, coauthors, magazine,
+        return Objects.hash(paperId, version, title, paperAbstract, keyTerms, coauthors, magazine,
                 field, file, state, accepted, timestamp);
     }
 }

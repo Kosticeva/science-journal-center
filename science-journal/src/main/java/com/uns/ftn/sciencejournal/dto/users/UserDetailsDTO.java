@@ -2,7 +2,7 @@ package com.uns.ftn.sciencejournal.dto.users;
 
 import java.util.Objects;
 
-public class UserDTO {
+public class UserDetailsDTO {
 
     private Long id;
 
@@ -20,10 +20,10 @@ public class UserDTO {
     
     private Double longitude;
 
-    public UserDTO() {
+    public UserDetailsDTO() {
     }
 
-    public UserDTO(Long id, String fName, String lName, String city, String country, String email, Double latitude, Double longitude) {
+    public UserDetailsDTO(Long id, String fName, String lName, String city, String country, String email, Double latitude, Double longitude) {
         this.id = id;
         this.fName = fName;
         this.lName = lName;
@@ -38,15 +38,15 @@ public class UserDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserDTO userDTO = (UserDTO) o;
-        return Objects.equals(id, userDTO.id) &&
-                Objects.equals(fName, userDTO.fName) &&
-                Objects.equals(lName, userDTO.lName) &&
-                Objects.equals(city, userDTO.city) &&
-                Objects.equals(country, userDTO.country) &&
-                Objects.equals(email, userDTO.email) &&
-                Objects.equals(latitude, userDTO.latitude) &&
-                Objects.equals(longitude, userDTO.longitude);
+        UserDetailsDTO userDetailsDTO = (UserDetailsDTO) o;
+        return Objects.equals(id, userDetailsDTO.id) &&
+                Objects.equals(fName, userDetailsDTO.fName) &&
+                Objects.equals(lName, userDetailsDTO.lName) &&
+                Objects.equals(city, userDetailsDTO.city) &&
+                Objects.equals(country, userDetailsDTO.country) &&
+                Objects.equals(email, userDetailsDTO.email) &&
+                Objects.equals(latitude, userDetailsDTO.latitude) &&
+                Objects.equals(longitude, userDetailsDTO.longitude);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class UserDTO {
 
     @Override
     public String toString() {
-        return "UserDTO{" +
+        return "UserDetailsDTO{" +
                 "id=" + id +
                 ", fName='" + fName + '\'' +
                 ", lName='" + lName + '\'' +

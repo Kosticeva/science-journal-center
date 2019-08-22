@@ -2,12 +2,11 @@ package com.uns.ftn.sciencejournal.mapper.common;
 
 import com.uns.ftn.sciencejournal.dto.common.PaperDTO;
 import com.uns.ftn.sciencejournal.model.common.Paper;
-import com.uns.ftn.sciencejournal.model.users.User;
-import com.uns.ftn.sciencejournal.repository.common.ApplicationRepository;
-import com.uns.ftn.sciencejournal.repository.common.IssueRepository;
+import com.uns.ftn.sciencejournal.model.users.UserDetails;
+import com.uns.ftn.sciencejournal.repository.common.PaperApplicationRepository;
+import com.uns.ftn.sciencejournal.repository.common.PaperIssueRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
-import com.uns.ftn.sciencejournal.repository.users.UserRepository;
+import com.uns.ftn.sciencejournal.repository.users.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,19 +18,16 @@ import java.util.List;
 public class PaperMapper {
 
     @Autowired
-    CredentialsRepository credentialsRepository;
-
-    @Autowired
-    IssueRepository issueRepository;
+    PaperIssueRepository paperIssueRepository;
 
     @Autowired
     ScienceFieldRepository scienceFieldRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserDetailsRepository userDetailsRepository;
 
     @Autowired
-    ApplicationRepository applicationRepository;
+    PaperApplicationRepository paperApplicationRepository;
 
     public Paper mapFromDTO(PaperDTO dto) {
         Paper paper = new Paper();
@@ -41,19 +37,18 @@ public class PaperMapper {
         paper.setPaperAbstract(dto.getPaperAbstract());
         paper.setKeyTerms(dto.getKeyTerms());
 
-        if(dto.getAuthor() != null) paper.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
-
         paper.setCoauthors(new HashSet<>());
         for (Long coauthor : dto.getCoauthors()) {
-            paper.getCoauthors().add(userRepository.getOne(coauthor));
+            paper.getCoauthors().add(userDetailsRepository.getOne(coauthor));
         }
 
-        if(dto.getIssue() != null) paper.setIssue(issueRepository.getOne(dto.getIssue()));
-        if(dto.getField() != null) paper.setField(scienceFieldRepository.getOne(dto.getField()));
+        if (dto.getIssue() != null) paper.setPaperIssue(paperIssueRepository.getOne(dto.getIssue()));
+        if (dto.getField() != null) paper.setField(scienceFieldRepository.getOne(dto.getField()));
         paper.setFile(dto.getFile());
         paper.setPrice(dto.getPrice());
         paper.setCurrency(dto.getCurrency());
-        if(dto.getLastRevision() != null) paper.setLastRevision(applicationRepository.getOne(dto.getLastRevision()));
+        if (dto.getLastRevision() != null)
+            paper.setLastRevision(paperApplicationRepository.getOne(dto.getLastRevision()));
 
         return paper;
     }
@@ -63,25 +58,22 @@ public class PaperMapper {
 
         dto.setDoi(paper.getDoi());
         dto.setTitle(paper.getTitle());
-        dto.setIssue(paper.getIssue().getId());
+        dto.setIssue(paper.getPaperIssue().getId());
         dto.setPaperAbstract(paper.getPaperAbstract());
         dto.setKeyTerms(paper.getKeyTerms());
-        if(paper.getAuthor() != null){
-            dto.setAuthor(paper.getAuthor().getUsername());
-        }
 
         dto.setCoauthors(new HashSet<>());
-        for (User coauthor : paper.getCoauthors()) {
+        for (UserDetails coauthor : paper.getCoauthors()) {
             dto.getCoauthors().add(coauthor.getUserId());
         }
 
-        if(paper.getField() != null) dto.setField(paper.getField().getCode());
+        if (paper.getField() != null) dto.setField(paper.getField().getCode());
 
         dto.setFile(paper.getFile());
         dto.setPrice(paper.getPrice());
         dto.setCurrency(paper.getCurrency());
 
-        if(paper.getLastRevision() != null) dto.setLastRevision(paper.getLastRevision().getId());
+        if (paper.getLastRevision() != null) dto.setLastRevision(paper.getLastRevision().getId());
 
         return dto;
     }

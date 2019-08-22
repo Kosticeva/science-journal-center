@@ -10,9 +10,9 @@ public class ElasticSearchReviewerMapper {
 
     public PaperSearchModel.PaperReviewerSearchModel mapReviewerToReviewerSearchModel(Reviewer reviewer) {
         return new PaperSearchModel().new PaperReviewerSearchModel(
-                reviewer.getUser().getUsername(), new PaperSearchModel().new Location(
+                /*reviewer.getUser().getUsername(), new PaperSearchModel().new Location(
                 reviewer.getUser().getUserDetails().getLatitude().toString(),
-                reviewer.getUser().getUserDetails().getLongitude().toString()));
+                reviewer.getUser().getUserDetails().getLongitude().toString())*/);
     }
 
 }

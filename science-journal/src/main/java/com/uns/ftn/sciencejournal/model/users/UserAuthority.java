@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class Authority {
+public abstract class UserAuthority {
 
     @Column(name = "TITLE", length = 31, nullable = false)
     protected String title;
@@ -14,17 +14,16 @@ public abstract class Authority {
     @Column(name = "ID")
     protected Integer id;
 
-    @OneToOne(optional = false)
+    /*@OneToOne(optional = false)
     @JoinColumn(name = "USERNAME", unique = true)
-    protected Credentials user;
+    protected Credentials user;*/
 
-    public Authority() {
+    public UserAuthority() {
     }
 
-    public Authority(String title, Integer id, Credentials user) {
+    public UserAuthority(String title, Integer id) {
         this.title = title;
         this.id = id;
-        this.user = user;
     }
 
     public String getTitle() {
@@ -43,20 +42,11 @@ public abstract class Authority {
         this.id = id;
     }
 
-    public Credentials getUser() {
-        return user;
-    }
-
-    public void setUser(Credentials user) {
-        this.user = user;
-    }
-
     @Override
     public String toString() {
-        return "Authority{" +
+        return "UserAuthority{" +
                 "title='" + title + '\'' +
                 ", id=" + id +
-                ", user=" + user +
                 '}';
     }
 
@@ -64,14 +54,13 @@ public abstract class Authority {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Authority authority = (Authority) o;
-        return Objects.equals(title, authority.title) &&
-                Objects.equals(id, authority.id) &&
-                Objects.equals(user, authority.user);
+        UserAuthority userAuthority = (UserAuthority) o;
+        return Objects.equals(title, userAuthority.title) &&
+                Objects.equals(id, userAuthority.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, id, user);
+        return Objects.hash(title, id);
     }
 }

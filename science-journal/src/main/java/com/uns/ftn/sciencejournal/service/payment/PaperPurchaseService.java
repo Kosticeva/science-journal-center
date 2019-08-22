@@ -1,11 +1,9 @@
 package com.uns.ftn.sciencejournal.service.payment;
 
 import com.uns.ftn.sciencejournal.model.payment.PaperPurchase;
-import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaperPurchaseRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +22,15 @@ public class PaperPurchaseService {
     PaperRepository paperRepository;
 
     @Autowired
-    CredentialsRepository credentialsRepository;
-
-    @Autowired
     PaymentOptionRepository paymentOptionRepository;
 
     public List<PaperPurchase> getAllFromUser(String username) {
-        Credentials user = credentialsRepository.findFirstByUsername(username);
-        if (user == null) {
-            return new ArrayList<>();
-        }
+        /*Credentials user = credentialsRepository.findFirstByUsername(username);
+        if (user == null) {*/
+        return new ArrayList<>();
+        /*}
 
-        return paperPurchaseRepository.getByUser(user);
+        return paperPurchaseRepository.getByUser(user);*/
     }
 
     public PaperPurchase getById(Long id) {
@@ -83,8 +78,7 @@ public class PaperPurchaseService {
         paperPurchase.setAmount(newPaperPurchase.getAmount());
         paperPurchase.setOption(newPaperPurchase.getOption());
         paperPurchase.setType(newPaperPurchase.getType());
-        paperPurchase.setUser(newPaperPurchase.getUser());
-
+        //paperPurchase.setUser(newPaperPurchase.getUser());
 
         return paperPurchaseRepository.save(paperPurchase);
     }
@@ -106,13 +100,13 @@ public class PaperPurchaseService {
             return false;
         }
 
-        if (paperPurchase.getUser() == null || paperPurchase.getUser().getUsername() == null) {
+        /*if (paperPurchase.getUser() == null || paperPurchase.getUser().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(paperPurchase.getUser().getUsername()) == null) {
             return false;
-        }
+        }*/
 
         if (paperPurchase.getPaper() == null || paperPurchase.getPaper().getDoi() == null) {
             return false;

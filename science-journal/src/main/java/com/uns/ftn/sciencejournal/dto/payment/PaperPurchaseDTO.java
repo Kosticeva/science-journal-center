@@ -9,7 +9,7 @@ public class PaperPurchaseDTO {
 
     private LocalDateTime timeOfPurchase;
 
-    private String user;
+    //private String user;
 
     private Boolean successful;
 
@@ -24,10 +24,9 @@ public class PaperPurchaseDTO {
     public PaperPurchaseDTO() {
     }
 
-    public PaperPurchaseDTO(String id, LocalDateTime timeOfPurchase, String user, Boolean successful, Integer paymentOption, String paper, Double amount, String currency) {
+    public PaperPurchaseDTO(String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, String paper, Double amount, String currency) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
-        this.user = user;
         this.successful = successful;
         this.paymentOption = paymentOption;
         this.paper = paper;
@@ -57,14 +56,6 @@ public class PaperPurchaseDTO {
 
     public void setTimeOfPurchase(LocalDateTime timeOfPurchase) {
         this.timeOfPurchase = timeOfPurchase;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
     }
 
     public Boolean getSuccessful() {
@@ -106,7 +97,6 @@ public class PaperPurchaseDTO {
         PaperPurchaseDTO that = (PaperPurchaseDTO) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
-                Objects.equals(user, that.user) &&
                 Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
                 Objects.equals(paper, that.paper) &&
@@ -116,7 +106,7 @@ public class PaperPurchaseDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, successful, paymentOption, paper, amount, currency);
+        return Objects.hash(id, timeOfPurchase, successful, paymentOption, paper, amount, currency);
     }
 
     @Override
@@ -124,7 +114,6 @@ public class PaperPurchaseDTO {
         return "PaperPurchaseDTO{" +
                 "id='" + id + '\'' +
                 ", timeOfPurchase=" + timeOfPurchase +
-                ", user='" + user + '\'' +
                 ", successful=" + successful +
                 ", paymentOption=" + paymentOption +
                 ", paper='" + paper + '\'' +

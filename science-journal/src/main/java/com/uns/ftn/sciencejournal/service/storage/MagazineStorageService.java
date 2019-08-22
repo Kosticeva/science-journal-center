@@ -1,19 +1,15 @@
 package com.uns.ftn.sciencejournal.service.storage;
 
-import com.uns.ftn.sciencejournal.model.common.Application;
-import com.uns.ftn.sciencejournal.model.common.Issue;
+import com.uns.ftn.sciencejournal.model.common.PaperApplication;
+import com.uns.ftn.sciencejournal.model.common.PaperIssue;
 import com.uns.ftn.sciencejournal.model.common.Magazine;
 import com.uns.ftn.sciencejournal.model.common.Paper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -48,23 +44,23 @@ public class MagazineStorageService {
         storageService.deleteDirectory(storageService.load(magazine.getIssn()));
     }
 
-    public Path initIssueRepository(Issue issue){
+    public Path initIssueRepository(PaperIssue paperIssue){
         try {
-            return storageService.createDirectory(issue.getId().toString(),
-                    storageService.load(issue.getMagazine().getIssn()).resolve(ISSUES_REPO_NAME));
+            return storageService.createDirectory(paperIssue.getId().toString(),
+                    storageService.load(paperIssue.getMagazine().getIssn()).resolve(ISSUES_REPO_NAME));
         }catch (StorageException exc) {
             System.out.println(exc.getMessage());
             return null;
         }
     }
 
-    public void removeIssueRepository(Issue issue) {
-        storageService.deleteDirectory(storageService.load(issue.getMagazine().getIssn()).resolve(ISSUES_REPO_NAME).resolve(issue.getId().toString()));
+    public void removeIssueRepository(PaperIssue paperIssue) {
+        storageService.deleteDirectory(storageService.load(paperIssue.getMagazine().getIssn()).resolve(ISSUES_REPO_NAME).resolve(paperIssue.getId().toString()));
     }
 
-    public Path storeApplication(Application application, MultipartFile file) {
+    public Path storeApplication(PaperApplication paperApplication, MultipartFile file) {
         try{
-            return storageService.store(file, getApplicationStoragePath(application));
+            return storageService.store(file, getApplicationStoragePath(paperApplication));
         }catch (StorageException exc) {
             System.out.println(exc.getMessage());
             return null;
@@ -82,15 +78,15 @@ public class MagazineStorageService {
         }
     }
 
-    public void removeApplication(Application application) {
-        storageService.deleteDirectory(getApplicationStoragePath(application));
+    public void removeApplication(PaperApplication paperApplication) {
+        storageService.deleteDirectory(getApplicationStoragePath(paperApplication));
     }
 
     public Path publishPaper(Paper paper) {
         try{
             return storageService.copyFile(Paths.get(paper.getLastRevision().getFile()),
-                    storageService.load(paper.getIssue().getMagazine().getIssn())
-                            .resolve(ISSUES_REPO_NAME).resolve(paper.getIssue().getId().toString()));
+                    storageService.load(paper.getPaperIssue().getMagazine().getIssn())
+                            .resolve(ISSUES_REPO_NAME).resolve(paper.getPaperIssue().getId().toString()));
         }catch (StorageException exc) {
             System.out.println(exc.getMessage());
             return null;
@@ -101,19 +97,19 @@ public class MagazineStorageService {
         storageService.deleteDirectory(getPathToPaper(paper));
     }
 
-    private Path getApplicationStoragePath(Application application) {
-        return Paths.get(application.getMagazine().getIssn()).resolve(APPLICATIONS_REPO_NAME)
-                .resolve(getApplicationNameFormat(application));
+    private Path getApplicationStoragePath(PaperApplication paperApplication) {
+        return Paths.get(paperApplication.getMagazine().getIssn()).resolve(APPLICATIONS_REPO_NAME)
+                .resolve(getApplicationNameFormat(paperApplication));
     }
 
-    private String getApplicationNameFormat(Application application) {
-        return String.format("%d-%s", application.getId(), application.getFile());
+    private String getApplicationNameFormat(PaperApplication paperApplication) {
+        return String.format("%d-%s", paperApplication.getId(), paperApplication.getFile());
     }
 
 
     public Path getPathToPaper(Paper paper) {
-        return storageService.load(paper.getIssue().getMagazine().getIssn())
-                .resolve(ISSUES_REPO_NAME).resolve(paper.getIssue().getId().toString())
+        return storageService.load(paper.getPaperIssue().getMagazine().getIssn())
+                .resolve(ISSUES_REPO_NAME).resolve(paper.getPaperIssue().getId().toString())
                 .resolve(getApplicationNameFormat(paper.getLastRevision()));
     }
 }

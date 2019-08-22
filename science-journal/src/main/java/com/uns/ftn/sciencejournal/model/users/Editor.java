@@ -3,11 +3,13 @@ package com.uns.ftn.sciencejournal.model.users;
 import com.uns.ftn.sciencejournal.model.common.Magazine;
 import com.uns.ftn.sciencejournal.model.common.ScienceField;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
-public class Editor extends Authority {
+public class Editor extends UserAuthority {
 
     @ManyToOne
     @JoinColumn(name = "MAGAZINE")
@@ -20,8 +22,8 @@ public class Editor extends Authority {
     public Editor() {
     }
 
-    public Editor(String title, Integer id, Credentials user, Magazine magazine, ScienceField field) {
-        super(title, id, user);
+    public Editor(String title, Integer id, Magazine magazine, ScienceField field) {
+        super(title, id);
         this.magazine = magazine;
         this.field = field;
     }
@@ -49,7 +51,6 @@ public class Editor extends Authority {
                 ", field=" + field +
                 ", title='" + title + '\'' +
                 ", id=" + id +
-                ", user=" + user +
                 '}';
     }
 
@@ -61,7 +62,6 @@ public class Editor extends Authority {
         return magazine.equals(editor.magazine) &&
                 id.equals(editor.id) &&
                 title.equals(editor.title) &&
-                user.equals(editor.user) &&
                 Objects.equals(field, editor.field);
     }
 

@@ -1,11 +1,9 @@
 package com.uns.ftn.sciencejournal.service.payment;
 
 import com.uns.ftn.sciencejournal.model.payment.SubscriptionPurchase;
-import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionPurchaseRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionRepository;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +22,15 @@ public class SubscriptionPurchaseService {
     SubscriptionRepository subscriptionRepository;
 
     @Autowired
-    CredentialsRepository credentialsRepository;
-
-    @Autowired
     PaymentOptionRepository paymentOptionRepository;
 
     public List<SubscriptionPurchase> getAllFromUser(String username) {
-        Credentials user = credentialsRepository.findFirstByUsername(username);
-        if (user == null) {
-            return new ArrayList<>();
-        }
+        /*Credentials user = credentialsRepository.findFirstByUsername(username);
+        if (user == null) {*/
+        return new ArrayList<>();
+        /*}
 
-        return subscriptionPurchaseRepository.getByUser(user);
+        return subscriptionPurchaseRepository.getByUser(user);*/
     }
 
     public SubscriptionPurchase getById(Long id) {
@@ -83,7 +78,7 @@ public class SubscriptionPurchaseService {
         subscriptionPurchase.setAmount(newSubscriptionPurchase.getAmount());
         subscriptionPurchase.setOption(newSubscriptionPurchase.getOption());
         subscriptionPurchase.setType(newSubscriptionPurchase.getType());
-        subscriptionPurchase.setUser(newSubscriptionPurchase.getUser());
+        //subscriptionPurchase.setUser(newSubscriptionPurchase.getUser());
 
         return subscriptionPurchaseRepository.save(subscriptionPurchase);
     }
@@ -105,13 +100,13 @@ public class SubscriptionPurchaseService {
             return false;
         }*/
 
-        if (subscriptionPurchase.getUser() == null || subscriptionPurchase.getUser().getUsername() == null) {
+        /*if (subscriptionPurchase.getUser() == null || subscriptionPurchase.getUser().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(subscriptionPurchase.getUser().getUsername()) == null) {
             return false;
-        }
+        }*/
 
         if (subscriptionPurchase.getSubscription() == null || subscriptionPurchase.getSubscription().getId() == null) {
             return false;

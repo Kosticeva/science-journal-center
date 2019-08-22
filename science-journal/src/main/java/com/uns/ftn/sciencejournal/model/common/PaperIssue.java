@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "ISSUE", uniqueConstraints = @UniqueConstraint(columnNames = {"MAGAZINE", "EDITION"}))
-public class Issue {
+public class PaperIssue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,10 +28,10 @@ public class Issue {
     @Column(name = "CURRENCY", nullable = false)
     private String currency;
 
-    public Issue() {
+    public PaperIssue() {
     }
 
-    public Issue(Long id, String edition, Magazine magazine, LocalDate date, Double price, String currency) {
+    public PaperIssue(Long id, String edition, Magazine magazine, LocalDate date, Double price, String currency) {
         this.id = id;
         this.edition = edition;
         this.magazine = magazine;
@@ -92,13 +92,13 @@ public class Issue {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Issue issue = (Issue) o;
-        return Objects.equals(id, issue.id) &&
-                Objects.equals(edition, issue.edition) &&
-                Objects.equals(magazine, issue.magazine) &&
-                Objects.equals(date, issue.date) &&
-                Objects.equals(price, issue.price) &&
-                Objects.equals(currency, issue.currency);
+        PaperIssue paperIssue = (PaperIssue) o;
+        return Objects.equals(id, paperIssue.id) &&
+                Objects.equals(edition, paperIssue.edition) &&
+                Objects.equals(magazine, paperIssue.magazine) &&
+                Objects.equals(date, paperIssue.date) &&
+                Objects.equals(price, paperIssue.price) &&
+                Objects.equals(currency, paperIssue.currency);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class Issue {
 
     @Override
     public String toString() {
-        return "Issue{" +
+        return "PaperIssue{" +
                 "id=" + id +
                 ", edition='" + edition + '\'' +
                 ", magazine=" + magazine +

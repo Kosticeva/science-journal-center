@@ -10,7 +10,7 @@ public class ReviewerDTO {
 
     private String title;
 
-    private String user;
+    //private String user;
 
     private Set<String> magazines = new HashSet<>();
 
@@ -19,10 +19,9 @@ public class ReviewerDTO {
     public ReviewerDTO() {
     }
 
-    public ReviewerDTO(Integer id, String title, String user, Set<String> magazines, Set<String> fields) {
+    public ReviewerDTO(Integer id, String title, Set<String> magazines, Set<String> fields) {
         this.id = id;
         this.title = title;
-        this.user = user;
         this.magazines = magazines;
         this.fields = fields;
     }
@@ -34,14 +33,13 @@ public class ReviewerDTO {
         ReviewerDTO that = (ReviewerDTO) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(title, that.title) &&
-                Objects.equals(user, that.user) &&
                 Objects.equals(magazines, that.magazines) &&
                 Objects.equals(fields, that.fields);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, user, magazines, fields);
+        return Objects.hash(id, title, magazines, fields);
     }
 
     @Override
@@ -49,7 +47,6 @@ public class ReviewerDTO {
         return "ReviewerDTO{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", user='" + user + '\'' +
                 ", magazines=" + magazines +
                 ", fields=" + fields +
                 '}';
@@ -69,14 +66,6 @@ public class ReviewerDTO {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
     }
 
     public Set<String> getMagazines() {

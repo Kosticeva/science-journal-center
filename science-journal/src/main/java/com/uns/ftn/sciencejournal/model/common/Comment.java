@@ -13,10 +13,10 @@ public class Comment {
     @Id
     private Long id;
 
-    @OneToOne(optional = false)
+    /*@OneToOne(optional = false)
     @MapsId
     @JoinColumn(name = "TASK")
-    private Task task;
+    private Task task;*/
 
     @Column(name = "PUBLIC_COMMENT", length = 1023)
     private String publicComment;
@@ -34,44 +34,12 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(Long id, Task task, String publicComment, String privateComment,
-                   ReviewSummary summary, LocalDateTime timestamp) {
+    public Comment(Long id, String publicComment, String privateComment, ReviewSummary summary, LocalDateTime timestamp) {
         this.id = id;
-        this.task = task;
         this.publicComment = publicComment;
         this.privateComment = privateComment;
         this.summary = summary;
         this.timestamp = timestamp;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id) &&
-                Objects.equals(task, comment.task) &&
-                Objects.equals(publicComment, comment.publicComment) &&
-                Objects.equals(privateComment, comment.privateComment) &&
-                summary == comment.summary &&
-                Objects.equals(timestamp, comment.timestamp);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, task, publicComment, privateComment, summary, timestamp);
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", task=" + task +
-                ", publicComment='" + publicComment + '\'' +
-                ", privateComment='" + privateComment + '\'' +
-                ", summary=" + summary +
-                ", timestamp=" + timestamp +
-                '}';
     }
 
     public Long getId() {
@@ -80,14 +48,6 @@ public class Comment {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     public String getPublicComment() {
@@ -120,5 +80,33 @@ public class Comment {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id) &&
+                Objects.equals(publicComment, comment.publicComment) &&
+                Objects.equals(privateComment, comment.privateComment) &&
+                summary == comment.summary &&
+                Objects.equals(timestamp, comment.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, publicComment, privateComment, summary, timestamp);
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", publicComment='" + publicComment + '\'' +
+                ", privateComment='" + privateComment + '\'' +
+                ", summary=" + summary +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }

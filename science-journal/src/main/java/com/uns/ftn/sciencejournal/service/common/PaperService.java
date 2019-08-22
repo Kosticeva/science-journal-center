@@ -1,12 +1,13 @@
 package com.uns.ftn.sciencejournal.service.common;
 
 import com.uns.ftn.sciencejournal.mapper.ElasticSearchPaperMapper;
-import com.uns.ftn.sciencejournal.model.common.Application;
 import com.uns.ftn.sciencejournal.model.common.Paper;
-import com.uns.ftn.sciencejournal.model.users.User;
-import com.uns.ftn.sciencejournal.repository.common.*;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
-import com.uns.ftn.sciencejournal.repository.users.UserRepository;
+import com.uns.ftn.sciencejournal.model.users.UserDetails;
+import com.uns.ftn.sciencejournal.repository.common.PaperApplicationRepository;
+import com.uns.ftn.sciencejournal.repository.common.PaperIssueRepository;
+import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
+import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
+import com.uns.ftn.sciencejournal.repository.users.UserDetailsRepository;
 import com.uns.ftn.sciencejournal.service.search.ElasticSearchPlugin;
 import com.uns.ftn.sciencejournal.service.storage.MagazineStorageService;
 import com.uns.ftn.sciencejournal.service.utils.DOIUtils;
@@ -14,7 +15,6 @@ import com.uns.ftn.sciencejournal.service.utils.OldElasticSearchJsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -25,16 +25,13 @@ public class PaperService {
     PaperRepository paperRepository;
 
     @Autowired
-    ApplicationRepository applicationRepository;
+    PaperApplicationRepository paperApplicationRepository;
 
     @Autowired
-    CredentialsRepository credentialsRepository;
+    UserDetailsRepository userDetailsRepository;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    IssueRepository issueRepository;
+    PaperIssueRepository paperIssueRepository;
 
     @Autowired
     ScienceFieldRepository scienceFieldRepository;
@@ -65,7 +62,7 @@ public class PaperService {
 
         Paper dbPaper = paperRepository.save(paper);
         Path pathToPaperOnServer = magazineStorageService.publishPaper(paper);
-        if(pathToPaperOnServer == null){
+        if (pathToPaperOnServer == null) {
             return null;
         }
 
@@ -101,15 +98,15 @@ public class PaperService {
         paper.setPrice(newPaper.getPrice());
         paper.setCurrency(newPaper.getCurrency());
 
-        paper.setAuthor(newPaper.getAuthor());
+        //paper.setAuthor(newPaper.getAuthor());
         paper.setCoauthors(newPaper.getCoauthors());
-        paper.setIssue(newPaper.getIssue());
+        paper.setPaperIssue(newPaper.getPaperIssue());
         paper.setField(newPaper.getField());
         paper.setLastRevision(newPaper.getLastRevision());
 
         Paper dbPaper = paperRepository.save(paper);
         Path pathToPaperOnServer = magazineStorageService.publishPaper(paper);
-        if(pathToPaperOnServer == null){
+        if (pathToPaperOnServer == null) {
             return null;
         }
 
@@ -145,15 +142,15 @@ public class PaperService {
             return false;
         }
 
-        if(paper.getCurrency() == null || paper.getCurrency().equals("")){
+        if (paper.getCurrency() == null || paper.getCurrency().equals("")) {
             return false;
         }
 
-        if (paper.getIssue() == null || paper.getIssue().getId() == null) {
+        if (paper.getPaperIssue() == null || paper.getPaperIssue().getId() == null) {
             return false;
         }
 
-        if (issueRepository.getOne(paper.getIssue().getId()) == null) {
+        if (paperIssueRepository.getOne(paper.getPaperIssue().getId()) == null) {
             return false;
         }
 
@@ -161,17 +158,17 @@ public class PaperService {
             return false;
         }
 
-        if (applicationRepository.getOne(paper.getLastRevision().getId()) == null) {
+        if (paperApplicationRepository.getOne(paper.getLastRevision().getId()) == null) {
             return false;
         }
 
-        if (paper.getAuthor() == null || paper.getAuthor().getUsername() == null) {
+        /*if (paper.getAuthor() == null || paper.getAuthor().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(paper.getAuthor().getUsername()) == null) {
             return false;
-        }
+        }*/
 
         if (paper.getField() == null || paper.getField().getCode() == null) {
             return false;
@@ -185,8 +182,8 @@ public class PaperService {
             return false;
         }
 
-        for (User coauthor : paper.getCoauthors()) {
-            if (coauthor.getUserId() == null || userRepository.getOne(coauthor.getUserId()) == null) {
+        for (UserDetails coauthor : paper.getCoauthors()) {
+            if (coauthor.getUserId() == null || userDetailsRepository.getOne(coauthor.getUserId()) == null) {
                 return false;
             }
         }

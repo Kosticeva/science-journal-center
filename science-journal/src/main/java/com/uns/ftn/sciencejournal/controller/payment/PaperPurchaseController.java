@@ -3,21 +3,16 @@ package com.uns.ftn.sciencejournal.controller.payment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.uns.ftn.sciencejournal.configuration.JwtTokenProvider;
-import com.uns.ftn.sciencejournal.dto.payment.IssuePurchaseDTO;
 import com.uns.ftn.sciencejournal.dto.payment.PaperPurchaseDTO;
 import com.uns.ftn.sciencejournal.mapper.payment.PaperPurchaseMapper;
 import com.uns.ftn.sciencejournal.model.PaymentSession;
 import com.uns.ftn.sciencejournal.model.common.Paper;
 import com.uns.ftn.sciencejournal.model.payment.PaperPurchase;
-import com.uns.ftn.sciencejournal.model.users.Credentials;
-import com.uns.ftn.sciencejournal.model.users.User;
 import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
-import com.uns.ftn.sciencejournal.repository.users.UserRepository;
+import com.uns.ftn.sciencejournal.repository.users.UserDetailsRepository;
 import com.uns.ftn.sciencejournal.service.payment.PaperPurchaseService;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,10 +34,7 @@ public class PaperPurchaseController {
     PaperPurchaseMapper paperPurchaseMapper;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    CredentialsRepository credentialsRepository;
+    UserDetailsRepository userDetailsRepository;
 
     @Autowired
     PaperRepository paperRepository;
@@ -111,20 +103,20 @@ public class PaperPurchaseController {
     }
 
     @GetMapping(value = "/buy/{doi}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> buyPaper(@PathVariable String doi, @Context HttpServletRequest request){
+    public ResponseEntity<String> buyPaper(@PathVariable String doi, @Context HttpServletRequest request) {
         JwtTokenProvider provider = new JwtTokenProvider();
 
         PaymentSession session = new PaymentSession();
 
-        Credentials credentials = credentialsRepository.findFirstByUsername(provider.parseToken(request));
+        /*Credentials credentials = credentialsRepository.findFirstByUsername(provider.parseToken(request));
 
         session.setUsername(credentials.getUsername());
         session.setBuyerFirstName(credentials.getUserDetails().getfName());
         session.setBuyerLastName(credentials.getUserDetails().getlName());
-        session.setBuyerEmail(credentials.getUserDetails().getEmail());
+        session.setBuyerEmail(credentials.getUserDetails().getEmail());*/
 
         Paper paper = paperRepository.getOne(doi);
-        session.setIssn(paper.getIssue().getMagazine().getIssn());
+        session.setIssn(paper.getPaperIssue().getMagazine().getIssn());
         session.setMerchandise(paper.getTitle());
         session.setPrice(paper.getPrice());
         session.setCurrency(paper.getCurrency());
@@ -133,6 +125,6 @@ public class PaperPurchaseController {
         ResponseEntity<String> responseToken = template.postForEntity("https://localhost:8080/sessions", session, String.class);
 
         String jwtSessionToken = new Gson().fromJson(responseToken.getBody(), JsonObject.class).get("token").getAsString().substring(6);
-        return ResponseEntity.ok().body("{\"link: \": \"https://localhost:4200/#/choose-payment/"+jwtSessionToken + "\"}");
+        return ResponseEntity.ok().body("{\"link: \": \"https://localhost:4200/#/choose-payment/" + jwtSessionToken + "\"}");
     }
 }

@@ -9,7 +9,7 @@ public class SubscriptionDTO {
 
     private Long id;
 
-    private String user;
+    //private String user;
 
     private String magazine;
 
@@ -24,10 +24,9 @@ public class SubscriptionDTO {
     public SubscriptionDTO() {
     }
 
-    public SubscriptionDTO(Long id, String user, String magazine, SubscriptionType type, LocalDate date,
+    public SubscriptionDTO(Long id, String magazine, SubscriptionType type, LocalDate date,
                            Boolean paid, Boolean cancelled) {
         this.id = id;
-        this.user = user;
         this.magazine = magazine;
         this.type = type;
         this.date = date;
@@ -41,7 +40,6 @@ public class SubscriptionDTO {
         if (o == null || getClass() != o.getClass()) return false;
         SubscriptionDTO that = (SubscriptionDTO) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(user, that.user) &&
                 Objects.equals(magazine, that.magazine) &&
                 type == that.type &&
                 Objects.equals(date, that.date) &&
@@ -51,14 +49,13 @@ public class SubscriptionDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, magazine, type, date, paid, cancelled);
+        return Objects.hash(id, magazine, type, date, paid, cancelled);
     }
 
     @Override
     public String toString() {
         return "SubscriptionDTO{" +
                 "id=" + id +
-                ", user='" + user + '\'' +
                 ", magazine='" + magazine + '\'' +
                 ", type=" + type +
                 ", date=" + date +
@@ -73,14 +70,6 @@ public class SubscriptionDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
     }
 
     public String getMagazine() {

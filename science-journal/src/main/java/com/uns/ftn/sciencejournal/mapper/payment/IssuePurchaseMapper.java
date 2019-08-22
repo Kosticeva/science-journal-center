@@ -3,9 +3,8 @@ package com.uns.ftn.sciencejournal.mapper.payment;
 import com.uns.ftn.sciencejournal.dto.payment.IssuePurchaseDTO;
 import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 import com.uns.ftn.sciencejournal.model.payment.IssuePurchase;
-import com.uns.ftn.sciencejournal.repository.common.IssueRepository;
+import com.uns.ftn.sciencejournal.repository.common.PaperIssueRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +15,7 @@ import java.util.List;
 public class IssuePurchaseMapper {
 
     @Autowired
-    IssueRepository issueRepository;
-
-    @Autowired
-    CredentialsRepository credentialsRepository;
+    PaperIssueRepository paperIssueRepository;
 
     @Autowired
     PaymentOptionRepository paymentOptionRepository;
@@ -27,7 +23,7 @@ public class IssuePurchaseMapper {
     public IssuePurchase mapFromDTO(IssuePurchaseDTO dto) {
         IssuePurchase purchase = new IssuePurchase();
 
-        if(dto.getIssuePK() != null) purchase.setIssue(issueRepository.getOne(dto.getIssuePK()));
+        if (dto.getIssuePK() != null) purchase.setPaperIssue(paperIssueRepository.getOne(dto.getIssuePK()));
 
         if (dto.getPaymentOption() != null) purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
 
@@ -37,7 +33,7 @@ public class IssuePurchaseMapper {
         purchase.setType(PurchaseType.ISSUE);
         purchase.setAmount(dto.getAmount());
 
-        if (dto.getUser() == null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
+        //if (dto.getUser() == null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
 
         return purchase;
     }
@@ -45,12 +41,12 @@ public class IssuePurchaseMapper {
     public IssuePurchaseDTO mapToDTO(IssuePurchase issuePurchase) {
         IssuePurchaseDTO dto = new IssuePurchaseDTO();
 
-        dto.setIssuePK(issuePurchase.getIssue().getId());
-        if(issuePurchase.getOption() != null) dto.setPaymentOption(issuePurchase.getOption().getPaymentOptionCode());
+        dto.setIssuePK(issuePurchase.getPaperIssue().getId());
+        if (issuePurchase.getOption() != null) dto.setPaymentOption(issuePurchase.getOption().getPaymentOptionCode());
         dto.setSuccessful(issuePurchase.getSuccessful());
         dto.setTimeOfPurchase(issuePurchase.getTimeOfPurchase());
         dto.setId(issuePurchase.getTransactionId());
-        if(issuePurchase.getUser() != null) dto.setUser(issuePurchase.getUser().getUsername());
+        //if(issuePurchase.getUser() != null) dto.setUser(issuePurchase.getUser().getUsername());
         dto.setAmount(issuePurchase.getAmount());
 
         return dto;

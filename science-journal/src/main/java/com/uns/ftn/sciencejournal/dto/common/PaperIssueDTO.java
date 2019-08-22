@@ -3,7 +3,7 @@ package com.uns.ftn.sciencejournal.dto.common;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class IssueDTO {
+public class PaperIssueDTO {
 
     private Long id;
 
@@ -17,10 +17,10 @@ public class IssueDTO {
 
     private String currency;
 
-    public IssueDTO() {
+    public PaperIssueDTO() {
     }
 
-    public IssueDTO(Long id, String magazine, String edition, LocalDate date, Double price, String currency) {
+    public PaperIssueDTO(Long id, String magazine, String edition, LocalDate date, Double price, String currency) {
         this.id = id;
         this.magazine = magazine;
         this.edition = edition;
@@ -81,13 +81,13 @@ public class IssueDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IssueDTO issueDTO = (IssueDTO) o;
-        return Objects.equals(id, issueDTO.id) &&
-                Objects.equals(magazine, issueDTO.magazine) &&
-                Objects.equals(edition, issueDTO.edition) &&
-                Objects.equals(date, issueDTO.date) &&
-                Objects.equals(price, issueDTO.price) &&
-                Objects.equals(currency, issueDTO.currency);
+        PaperIssueDTO paperIssueDTO = (PaperIssueDTO) o;
+        return Objects.equals(id, paperIssueDTO.id) &&
+                Objects.equals(magazine, paperIssueDTO.magazine) &&
+                Objects.equals(edition, paperIssueDTO.edition) &&
+                Objects.equals(date, paperIssueDTO.date) &&
+                Objects.equals(price, paperIssueDTO.price) &&
+                Objects.equals(currency, paperIssueDTO.currency);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class IssueDTO {
 
     @Override
     public String toString() {
-        return "IssueDTO{" +
+        return "PaperIssueDTO{" +
                 "id=" + id +
                 ", magazine='" + magazine + '\'' +
                 ", edition='" + edition + '\'' +

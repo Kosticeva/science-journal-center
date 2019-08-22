@@ -8,7 +8,7 @@ public class EditorDTO {
 
     private String title;
 
-    private String user;
+    //private String user;
 
     private String magazine;
 
@@ -17,10 +17,9 @@ public class EditorDTO {
     public EditorDTO() {
     }
 
-    public EditorDTO(Integer id, String title, String user, String magazine, String field) {
+    public EditorDTO(Integer id, String title, String magazine, String field) {
         this.id = id;
         this.title = title;
-        this.user = user;
         this.magazine = magazine;
         this.field = field;
     }
@@ -32,14 +31,13 @@ public class EditorDTO {
         EditorDTO editorDTO = (EditorDTO) o;
         return Objects.equals(id, editorDTO.id) &&
                 Objects.equals(title, editorDTO.title) &&
-                Objects.equals(user, editorDTO.user) &&
                 Objects.equals(magazine, editorDTO.magazine) &&
                 Objects.equals(field, editorDTO.field);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, user, magazine, field);
+        return Objects.hash(id, title, magazine, field);
     }
 
     @Override
@@ -47,7 +45,6 @@ public class EditorDTO {
         return "EditorDTO{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", user='" + user + '\'' +
                 ", magazine='" + magazine + '\'' +
                 ", field='" + field + '\'' +
                 '}';
@@ -67,14 +64,6 @@ public class EditorDTO {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
     }
 
     public String getMagazine() {

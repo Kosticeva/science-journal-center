@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "REVIEWER")
-public class Reviewer extends Authority {
+public class Reviewer extends UserAuthority {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "REVIEWER_MAGAZINE", joinColumns = @JoinColumn(name = "REVIEWER"),
@@ -25,8 +25,8 @@ public class Reviewer extends Authority {
     public Reviewer() {
     }
 
-    public Reviewer(String title, Integer id, Credentials user, Set<Magazine> magazines, Set<ScienceField> fields) {
-        super(title, id, user);
+    public Reviewer(String title, Integer id, Set<Magazine> magazines, Set<ScienceField> fields) {
+        super(title, id);
         this.magazines = magazines;
         this.fields = fields;
     }
@@ -54,7 +54,6 @@ public class Reviewer extends Authority {
                 ", fields=" + fields +
                 ", title='" + title + '\'' +
                 ", id=" + id +
-                ", user=" + user +
                 '}';
     }
 
@@ -66,7 +65,6 @@ public class Reviewer extends Authority {
         return magazines.equals(reviewer.magazines) &&
                 id.equals(reviewer.id) &&
                 title.equals(reviewer.title) &&
-                user.equals(reviewer.user) &&
                 fields.equals(reviewer.fields);
     }
 

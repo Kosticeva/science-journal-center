@@ -2,7 +2,6 @@ package com.uns.ftn.sciencejournal.service.common;
 
 import com.uns.ftn.sciencejournal.model.common.Comment;
 import com.uns.ftn.sciencejournal.repository.common.CommentRepository;
-import com.uns.ftn.sciencejournal.repository.common.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +13,6 @@ public class CommentService {
 
     @Autowired
     CommentRepository commentRepository;
-
-    @Autowired
-    TaskRepository taskRepository;
-
 
     public Comment getById(Long id) {
         return commentRepository.findById(id).orElse(null);
@@ -57,7 +52,7 @@ public class CommentService {
             return null;
         }
 
-        comment.setTask(newComment.getTask());
+        //comment.setTask(newComment.getTask());
         comment.setPrivateComment(newComment.getPrivateComment());
         comment.setPublicComment(newComment.getPublicComment());
         comment.setSummary(newComment.getSummary());
@@ -66,13 +61,13 @@ public class CommentService {
     }
 
     public boolean checkCommentValidity(Comment comment) {
-        if (comment.getTask() == null || comment.getTask().getId() == null) {
+        /*if (comment.getTask() == null || comment.getTask().getId() == null) {
             return false;
         }
 
         if (taskRepository.getOne(comment.getId()) == null) {
             return false;
-        }
+        }*/
 
         if (comment.getPublicComment() == null || comment.getPublicComment().equals("")) {
             return false;

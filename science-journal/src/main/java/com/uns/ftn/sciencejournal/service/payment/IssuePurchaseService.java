@@ -1,11 +1,9 @@
 package com.uns.ftn.sciencejournal.service.payment;
 
 import com.uns.ftn.sciencejournal.model.payment.IssuePurchase;
-import com.uns.ftn.sciencejournal.model.users.Credentials;
-import com.uns.ftn.sciencejournal.repository.common.IssueRepository;
+import com.uns.ftn.sciencejournal.repository.common.PaperIssueRepository;
 import com.uns.ftn.sciencejournal.repository.payment.IssuePurchaseRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +19,18 @@ public class IssuePurchaseService {
     IssuePurchaseRepository issuePurchaseRepository;
 
     @Autowired
-    IssueRepository issueRepository;
-
-    @Autowired
-    CredentialsRepository credentialsRepository;
+    PaperIssueRepository paperIssueRepository;
 
     @Autowired
     PaymentOptionRepository paymentOptionRepository;
 
     public List<IssuePurchase> getAllFromUser(String username) {
-        Credentials user = credentialsRepository.findFirstByUsername(username);
-        if(user == null) {
-            return new ArrayList<>();
-        }
+        /*Credentials user = credentialsRepository.findFirstByUsername(username);
+        if(user == null) {*/
+        return new ArrayList<>();
+        /*}
 
-        return issuePurchaseRepository.getByUser(user);
+        return issuePurchaseRepository.getByUser(user);*/
     }
 
     public IssuePurchase getById(Long id) {
@@ -87,11 +82,11 @@ public class IssuePurchaseService {
         }
 
         issuePurchase.setSuccessful(newIssuePurchase.getSuccessful());
-        issuePurchase.setIssue(newIssuePurchase.getIssue());
+        issuePurchase.setPaperIssue(newIssuePurchase.getPaperIssue());
         issuePurchase.setAmount(newIssuePurchase.getAmount());
         issuePurchase.setOption(newIssuePurchase.getOption());
         issuePurchase.setType(newIssuePurchase.getType());
-        issuePurchase.setUser(newIssuePurchase.getUser());
+        //issuePurchase.setUser(newIssuePurchase.getUser());
 
         return issuePurchaseRepository.save(issuePurchase);
     }
@@ -113,19 +108,19 @@ public class IssuePurchaseService {
             return false;
         }
 
-        if (issuePurchase.getUser() == null || issuePurchase.getUser().getUsername() == null) {
+        /*if (issuePurchase.getUser() == null || issuePurchase.getUser().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(issuePurchase.getUser().getUsername()) == null) {
             return false;
-        }
+        }*/
 
-        if (issuePurchase.getIssue() == null || issuePurchase.getIssue().getId() == null) {
+        if (issuePurchase.getPaperIssue() == null || issuePurchase.getPaperIssue().getId() == null) {
             return false;
         }
 
-        if (issueRepository.getOne(issuePurchase.getIssue().getId()) == null) {
+        if (paperIssueRepository.getOne(issuePurchase.getPaperIssue().getId()) == null) {
             return false;
         }
 

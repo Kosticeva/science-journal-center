@@ -6,7 +6,6 @@ import com.uns.ftn.sciencejournal.model.common.ScienceField;
 import com.uns.ftn.sciencejournal.model.users.Reviewer;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
-import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +15,6 @@ import java.util.List;
 
 @Service
 public class ReviewerMapper {
-
-    @Autowired
-    CredentialsRepository credentialsRepository;
 
     @Autowired
     MagazineRepository magazineRepository;
@@ -31,7 +27,6 @@ public class ReviewerMapper {
 
         reviewer.setId(dto.getId());
         reviewer.setTitle(dto.getTitle());
-        if(dto.getUser() != null) reviewer.setUser(credentialsRepository.getOne(dto.getUser()));
 
         reviewer.setMagazines(new HashSet<>());
         for (String issn : dto.getMagazines()) {
@@ -52,7 +47,6 @@ public class ReviewerMapper {
 
         dto.setId(reviewer.getId());
         dto.setTitle(reviewer.getTitle());
-        if(reviewer.getUser() != null) dto.setUser(reviewer.getUser().getUsername());
 
         dto.setMagazines(new HashSet<>());
         for (Magazine magazine : reviewer.getMagazines()) {

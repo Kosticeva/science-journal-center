@@ -9,7 +9,7 @@ public class SubscriptionPurchaseDTO {
 
     private LocalDateTime timeOfPurchase;
 
-    private String user;
+    // private String user;
 
     private Boolean successful;
 
@@ -24,10 +24,9 @@ public class SubscriptionPurchaseDTO {
     public SubscriptionPurchaseDTO() {
     }
 
-    public SubscriptionPurchaseDTO(String id, LocalDateTime timeOfPurchase, String user, Boolean successful, Integer paymentOption, Long subscription, Double amount, String currency) {
+    public SubscriptionPurchaseDTO(String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, Long subscription, Double amount, String currency) {
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
-        this.user = user;
         this.successful = successful;
         this.paymentOption = paymentOption;
         this.subscription = subscription;
@@ -67,14 +66,6 @@ public class SubscriptionPurchaseDTO {
         this.timeOfPurchase = timeOfPurchase;
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
     public Boolean getSuccessful() {
         return successful;
     }
@@ -106,7 +97,6 @@ public class SubscriptionPurchaseDTO {
         SubscriptionPurchaseDTO that = (SubscriptionPurchaseDTO) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
-                Objects.equals(user, that.user) &&
                 Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
                 Objects.equals(subscription, that.subscription) &&
@@ -116,7 +106,7 @@ public class SubscriptionPurchaseDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, user, successful, paymentOption, subscription, amount, currency);
+        return Objects.hash(id, timeOfPurchase, successful, paymentOption, subscription, amount, currency);
     }
 
     @Override
@@ -124,7 +114,6 @@ public class SubscriptionPurchaseDTO {
         return "SubscriptionPurchaseDTO{" +
                 "id='" + id + '\'' +
                 ", timeOfPurchase=" + timeOfPurchase +
-                ", user='" + user + '\'' +
                 ", successful=" + successful +
                 ", paymentOption=" + paymentOption +
                 ", subscription=" + subscription +

@@ -2,7 +2,6 @@ package com.uns.ftn.sciencejournal.mapper.common;
 
 import com.uns.ftn.sciencejournal.dto.common.CommentDTO;
 import com.uns.ftn.sciencejournal.model.common.Comment;
-import com.uns.ftn.sciencejournal.repository.common.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +11,6 @@ import java.util.List;
 @Service
 public class CommentMapper {
 
-    @Autowired
-    public TaskRepository taskRepository;
-
     public Comment mapFromDTO(CommentDTO dto) {
         Comment comment = new Comment();
 
@@ -22,8 +18,6 @@ public class CommentMapper {
         comment.setPrivateComment(dto.getPrivateComment());
         comment.setPublicComment(dto.getPublicComment());
         comment.setSummary(dto.getSummary());
-
-        if(dto.getTask() != null) comment.setTask(taskRepository.getOne(dto.getTask()));
         comment.setTimestamp(dto.getTimestamp());
 
         return comment;
@@ -36,8 +30,6 @@ public class CommentMapper {
         dto.setPrivateComment(comment.getPrivateComment());
         dto.setPublicComment(comment.getPublicComment());
         dto.setSummary(comment.getSummary());
-
-        if(comment.getTask() != null) dto.setTask(comment.getTask().getId());
         dto.setTimestamp(comment.getTimestamp());
 
         return dto;

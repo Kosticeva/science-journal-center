@@ -5,7 +5,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "USER")
-public class User {
+public class UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,10 +33,10 @@ public class User {
     @Column(name = "LONGITUDE", nullable = false)
     private Double longitude;
 
-    public User() {
+    public UserDetails() {
     }
 
-    public User(Long userId, String fName, String lName, String city, String country, String email, Double latitude, Double longitude) {
+    public UserDetails(Long userId, String fName, String lName, String city, String country, String email, Double latitude, Double longitude) {
         this.userId = userId;
         this.fName = fName;
         this.lName = lName;
@@ -51,15 +51,15 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(userId, user.userId) &&
-                Objects.equals(fName, user.fName) &&
-                Objects.equals(lName, user.lName) &&
-                Objects.equals(city, user.city) &&
-                Objects.equals(country, user.country) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(latitude, user.latitude) &&
-                Objects.equals(longitude, user.longitude);
+        UserDetails userDetails = (UserDetails) o;
+        return Objects.equals(userId, userDetails.userId) &&
+                Objects.equals(fName, userDetails.fName) &&
+                Objects.equals(lName, userDetails.lName) &&
+                Objects.equals(city, userDetails.city) &&
+                Objects.equals(country, userDetails.country) &&
+                Objects.equals(email, userDetails.email) &&
+                Objects.equals(latitude, userDetails.latitude) &&
+                Objects.equals(longitude, userDetails.longitude);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDetails{" +
                 "userId=" + userId +
                 ", fName='" + fName + '\'' +
                 ", lName='" + lName + '\'' +

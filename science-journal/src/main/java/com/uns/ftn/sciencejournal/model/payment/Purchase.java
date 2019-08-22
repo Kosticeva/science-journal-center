@@ -1,7 +1,6 @@
 package com.uns.ftn.sciencejournal.model.payment;
 
 import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
-import com.uns.ftn.sciencejournal.model.users.Credentials;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,9 +15,9 @@ public abstract class Purchase {
     @Column(name = "TIMESTAMP", nullable = false)
     private LocalDateTime timeOfPurchase;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    /*@ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER")
-    private Credentials user;
+    private Credentials user;*/
 
     @Column(name = "TYPE")
     private PurchaseType type;
@@ -39,10 +38,9 @@ public abstract class Purchase {
     public Purchase() {
     }
 
-    public Purchase(String transactionId, LocalDateTime timeOfPurchase, Credentials user, PurchaseType type, Boolean successful, PaymentOption option, Double amount, String currency) {
+    public Purchase(String transactionId, LocalDateTime timeOfPurchase, PurchaseType type, Boolean successful, PaymentOption option, Double amount, String currency) {
         this.transactionId = transactionId;
         this.timeOfPurchase = timeOfPurchase;
-        this.user = user;
         this.type = type;
         this.successful = successful;
         this.option = option;
@@ -72,14 +70,6 @@ public abstract class Purchase {
 
     public void setTimeOfPurchase(LocalDateTime timeOfPurchase) {
         this.timeOfPurchase = timeOfPurchase;
-    }
-
-    public Credentials getUser() {
-        return user;
-    }
-
-    public void setUser(Credentials user) {
-        this.user = user;
     }
 
     public PurchaseType getType() {

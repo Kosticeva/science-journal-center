@@ -1,7 +1,6 @@
 package com.uns.ftn.sciencejournal.model.common;
 
-import com.uns.ftn.sciencejournal.model.users.Credentials;
-import com.uns.ftn.sciencejournal.model.users.User;
+import com.uns.ftn.sciencejournal.model.users.UserDetails;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -25,18 +24,18 @@ public class Paper {
     @Column(name = "KEYWORDS", length = 1023, nullable = false)
     private String keyTerms;
 
-    @ManyToOne(fetch = FetchType.LAZY/*, optional = false*/)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "AUTHOR")
-    private Credentials author;
+    private Credentials author;*/
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PAPER_COAUTHORS", joinColumns = @JoinColumn(name = "PAPER"),
             inverseJoinColumns = @JoinColumn(name = "AUTHOR"))
-    private Set<User> coauthors = new HashSet<>();
+    private Set<UserDetails> coauthors = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY/*, optional = false*/)
     @JoinColumn(name = "ISSUE")
-    private Issue issue;
+    private PaperIssue paperIssue;
 
     @ManyToOne(fetch = FetchType.LAZY/*, optional = false*/)
     @JoinColumn(name = "FIELD")
@@ -54,74 +53,23 @@ public class Paper {
     @OneToOne(/*optional = false*/)
     @JoinColumns({
             @JoinColumn(name = "LAST_REVISION_ID", referencedColumnName = "ID")})
-    private Application lastRevision;
+    private PaperApplication lastRevision;
 
     public Paper() {
     }
 
-    public Paper(String doi, String title, String paperAbstract, String keyTerms, Credentials author, Set<User> coauthors, Issue issue, ScienceField field, String file, Double price, String currency, Application lastRevision) {
+    public Paper(String doi, String title, String paperAbstract, String keyTerms, Set<UserDetails> coauthors, PaperIssue paperIssue, ScienceField field, String file, Double price, String currency, PaperApplication lastRevision) {
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
         this.keyTerms = keyTerms;
-        this.author = author;
         this.coauthors = coauthors;
-        this.issue = issue;
+        this.paperIssue = paperIssue;
         this.field = field;
         this.file = file;
         this.price = price;
         this.currency = currency;
         this.lastRevision = lastRevision;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Paper paper = (Paper) o;
-        return Objects.equals(doi, paper.doi) &&
-                Objects.equals(title, paper.title) &&
-                Objects.equals(paperAbstract, paper.paperAbstract) &&
-                Objects.equals(keyTerms, paper.keyTerms) &&
-                Objects.equals(author, paper.author) &&
-                Objects.equals(coauthors, paper.coauthors) &&
-                Objects.equals(issue, paper.issue) &&
-                Objects.equals(field, paper.field) &&
-                Objects.equals(file, paper.file) &&
-                Objects.equals(price, paper.price) &&
-                Objects.equals(currency, paper.currency) &&
-                Objects.equals(lastRevision, paper.lastRevision);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue, field, file, price, currency, lastRevision);
-    }
-
-    @Override
-    public String toString() {
-        return "Paper{" +
-                "doi='" + doi + '\'' +
-                ", title='" + title + '\'' +
-                ", paperAbstract='" + paperAbstract + '\'' +
-                ", keyTerms='" + keyTerms + '\'' +
-                ", author=" + author +
-                ", coauthors=" + coauthors +
-                ", issue=" + issue +
-                ", field=" + field +
-                ", file='" + file + '\'' +
-                ", price=" + price +
-                ", currency='" + currency + '\'' +
-                ", lastRevision=" + lastRevision +
-                '}';
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
     }
 
     public String getDoi() {
@@ -156,28 +104,20 @@ public class Paper {
         this.keyTerms = keyTerms;
     }
 
-    public Credentials getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Credentials author) {
-        this.author = author;
-    }
-
-    public Set<User> getCoauthors() {
+    public Set<UserDetails> getCoauthors() {
         return coauthors;
     }
 
-    public void setCoauthors(Set<User> coauthors) {
+    public void setCoauthors(Set<UserDetails> coauthors) {
         this.coauthors = coauthors;
     }
 
-    public Issue getIssue() {
-        return issue;
+    public PaperIssue getPaperIssue() {
+        return paperIssue;
     }
 
-    public void setIssue(Issue issue) {
-        this.issue = issue;
+    public void setPaperIssue(PaperIssue paperIssue) {
+        this.paperIssue = paperIssue;
     }
 
     public ScienceField getField() {
@@ -188,14 +128,6 @@ public class Paper {
         this.field = field;
     }
 
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
     public String getFile() {
         return file;
     }
@@ -204,11 +136,67 @@ public class Paper {
         this.file = file;
     }
 
-    public Application getLastRevision() {
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public PaperApplication getLastRevision() {
         return lastRevision;
     }
 
-    public void setLastRevision(Application lastRevision) {
+    public void setLastRevision(PaperApplication lastRevision) {
         this.lastRevision = lastRevision;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Paper paper = (Paper) o;
+        return Objects.equals(doi, paper.doi) &&
+                Objects.equals(title, paper.title) &&
+                Objects.equals(paperAbstract, paper.paperAbstract) &&
+                Objects.equals(keyTerms, paper.keyTerms) &&
+                Objects.equals(coauthors, paper.coauthors) &&
+                Objects.equals(paperIssue, paper.paperIssue) &&
+                Objects.equals(field, paper.field) &&
+                Objects.equals(file, paper.file) &&
+                Objects.equals(price, paper.price) &&
+                Objects.equals(currency, paper.currency) &&
+                Objects.equals(lastRevision, paper.lastRevision);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(doi, title, paperAbstract, keyTerms, coauthors, paperIssue, field, file, price, currency, lastRevision);
+    }
+
+    @Override
+    public String toString() {
+        return "Paper{" +
+                "doi='" + doi + '\'' +
+                ", title='" + title + '\'' +
+                ", paperAbstract='" + paperAbstract + '\'' +
+                ", keyTerms='" + keyTerms + '\'' +
+                ", coauthors=" + coauthors +
+                ", paperIssue=" + paperIssue +
+                ", field=" + field +
+                ", file='" + file + '\'' +
+                ", price=" + price +
+                ", currency='" + currency + '\'' +
+                ", lastRevision=" + lastRevision +
+                '}';
     }
 }

@@ -38,13 +38,13 @@ public class CommentController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO newComment) {
-        if (!newComment.getTask().equals(null)) {
-            Comment comment = commentService.createComment(commentMapper.mapFromDTO(newComment));
+        //if (!newComment.getTask().equals(null)) {
+        Comment comment = commentService.createComment(commentMapper.mapFromDTO(newComment));
 
-            if (!comment.equals(null)) {
-                return ResponseEntity.ok(commentMapper.mapToDTO(comment));
-            }
+        if (!comment.equals(null)) {
+            return ResponseEntity.ok(commentMapper.mapToDTO(comment));
         }
+        //}
 
         return ResponseEntity.badRequest().build();
     }

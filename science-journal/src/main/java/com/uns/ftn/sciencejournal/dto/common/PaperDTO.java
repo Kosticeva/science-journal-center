@@ -1,8 +1,5 @@
 package com.uns.ftn.sciencejournal.dto.common;
 
-import com.uns.ftn.sciencejournal.model.common.Application;
-import com.uns.ftn.sciencejournal.model.common.Issue;
-
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,7 +13,7 @@ public class PaperDTO {
 
     private String keyTerms;
 
-    private String author;
+    //private String author;
 
     private Set<Long> coauthors;
 
@@ -35,12 +32,11 @@ public class PaperDTO {
     public PaperDTO() {
     }
 
-    public PaperDTO(String doi, String title, String paperAbstract, String keyTerms, String author, Set<Long> coauthors, Long issue, String field, String file, Double price, Long lastRevision, String currency) {
+    public PaperDTO(String doi, String title, String paperAbstract, String keyTerms, Set<Long> coauthors, Long issue, String field, String file, Double price, Long lastRevision, String currency) {
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
         this.keyTerms = keyTerms;
-        this.author = author;
         this.coauthors = coauthors;
         this.issue = issue;
         this.field = field;
@@ -88,14 +84,6 @@ public class PaperDTO {
 
     public void setKeyTerms(String keyTerms) {
         this.keyTerms = keyTerms;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public Set<Long> getCoauthors() {
@@ -155,7 +143,6 @@ public class PaperDTO {
                 Objects.equals(title, paperDTO.title) &&
                 Objects.equals(paperAbstract, paperDTO.paperAbstract) &&
                 Objects.equals(keyTerms, paperDTO.keyTerms) &&
-                Objects.equals(author, paperDTO.author) &&
                 Objects.equals(coauthors, paperDTO.coauthors) &&
                 Objects.equals(issue, paperDTO.issue) &&
                 Objects.equals(field, paperDTO.field) &&
@@ -167,7 +154,7 @@ public class PaperDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(doi, title, paperAbstract, keyTerms, author, coauthors, issue, field, file, price, lastRevision, currency);
+        return Objects.hash(doi, title, paperAbstract, keyTerms, coauthors, issue, field, file, price, lastRevision, currency);
     }
 
     @Override
@@ -177,7 +164,6 @@ public class PaperDTO {
                 ", title='" + title + '\'' +
                 ", paperAbstract='" + paperAbstract + '\'' +
                 ", keyTerms='" + keyTerms + '\'' +
-                ", author='" + author + '\'' +
                 ", coauthors=" + coauthors +
                 ", issue=" + issue +
                 ", field='" + field + '\'' +
