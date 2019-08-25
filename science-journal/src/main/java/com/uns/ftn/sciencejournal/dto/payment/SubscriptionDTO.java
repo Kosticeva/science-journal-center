@@ -9,7 +9,7 @@ public class SubscriptionDTO {
 
     private Long id;
 
-    //private String user;
+    private String user;
 
     private String magazine;
 
@@ -24,8 +24,9 @@ public class SubscriptionDTO {
     public SubscriptionDTO() {
     }
 
-    public SubscriptionDTO(Long id, String magazine, SubscriptionType type, LocalDate date,
+    public SubscriptionDTO(String user, Long id, String magazine, SubscriptionType type, LocalDate date,
                            Boolean paid, Boolean cancelled) {
+        this.user = user;
         this.id = id;
         this.magazine = magazine;
         this.type = type;
@@ -41,6 +42,7 @@ public class SubscriptionDTO {
         SubscriptionDTO that = (SubscriptionDTO) o;
         return Objects.equals(id, that.id) &&
                 Objects.equals(magazine, that.magazine) &&
+                Objects.equals(user, that.user) &&
                 type == that.type &&
                 Objects.equals(date, that.date) &&
                 Objects.equals(paid, that.paid) &&
@@ -49,7 +51,7 @@ public class SubscriptionDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, magazine, type, date, paid, cancelled);
+        return Objects.hash(user, id, magazine, type, date, paid, cancelled);
     }
 
     @Override
@@ -57,6 +59,7 @@ public class SubscriptionDTO {
         return "SubscriptionDTO{" +
                 "id=" + id +
                 ", magazine='" + magazine + '\'' +
+                ", user='" + user + '\'' +
                 ", type=" + type +
                 ", date=" + date +
                 ", paid=" + paid +
@@ -110,5 +113,13 @@ public class SubscriptionDTO {
 
     public void setCancelled(Boolean cancelled) {
         this.cancelled = cancelled;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

@@ -5,6 +5,7 @@ import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 import com.uns.ftn.sciencejournal.model.payment.IssuePurchase;
 import com.uns.ftn.sciencejournal.repository.common.PaperIssueRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ import java.util.List;
 
 @Service
 public class IssuePurchaseMapper {
+
+    @Autowired
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     PaperIssueRepository paperIssueRepository;
@@ -33,7 +37,7 @@ public class IssuePurchaseMapper {
         purchase.setType(PurchaseType.ISSUE);
         purchase.setAmount(dto.getAmount());
 
-        //if (dto.getUser() == null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
+        if (dto.getUser() == null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
 
         return purchase;
     }
@@ -46,7 +50,7 @@ public class IssuePurchaseMapper {
         dto.setSuccessful(issuePurchase.getSuccessful());
         dto.setTimeOfPurchase(issuePurchase.getTimeOfPurchase());
         dto.setId(issuePurchase.getTransactionId());
-        //if(issuePurchase.getUser() != null) dto.setUser(issuePurchase.getUser().getUsername());
+        if (issuePurchase.getUser() != null) dto.setUser(issuePurchase.getUser().getUsername());
         dto.setAmount(issuePurchase.getAmount());
 
         return dto;

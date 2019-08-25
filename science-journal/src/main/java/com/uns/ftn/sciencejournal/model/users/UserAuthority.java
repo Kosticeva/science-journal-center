@@ -14,16 +14,17 @@ public abstract class UserAuthority {
     @Column(name = "ID")
     protected Integer id;
 
-    /*@OneToOne(optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name = "USERNAME", unique = true)
-    protected Credentials user;*/
+    protected Credentials user;
 
     public UserAuthority() {
     }
 
-    public UserAuthority(String title, Integer id) {
+    public UserAuthority(String title, Integer id, Credentials user) {
         this.title = title;
         this.id = id;
+        this.user = user;
     }
 
     public String getTitle() {
@@ -42,25 +43,35 @@ public abstract class UserAuthority {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "UserAuthority{" +
-                "title='" + title + '\'' +
-                ", id=" + id +
-                '}';
+    public Credentials getUser() {
+        return user;
+    }
+
+    public void setUser(Credentials user) {
+        this.user = user;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserAuthority userAuthority = (UserAuthority) o;
-        return Objects.equals(title, userAuthority.title) &&
-                Objects.equals(id, userAuthority.id);
+        UserAuthority that = (UserAuthority) o;
+        return Objects.equals(title, that.title) &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, id);
+        return Objects.hash(title, id, user);
+    }
+
+    @Override
+    public String toString() {
+        return "UserAuthority{" +
+                "title='" + title + '\'' +
+                ", id=" + id +
+                ", user=" + user +
+                '}';
     }
 }

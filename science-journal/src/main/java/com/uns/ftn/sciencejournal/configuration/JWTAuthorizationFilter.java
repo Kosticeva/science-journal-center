@@ -1,8 +1,24 @@
 package com.uns.ftn.sciencejournal.configuration;
 
-public class JWTAuthorizationFilter /*extends BasicAuthenticationFilter*/ {
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-    /*public JWTAuthorizationFilter(AuthenticationManager authManager) {
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import static com.uns.ftn.sciencejournal.configuration.JWTConstants.HEADER_STRING;
+import static com.uns.ftn.sciencejournal.configuration.JWTConstants.TOKEN_PREFIX;
+
+// TODO: 8/24/2019 activate this
+public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+
+    public JWTAuthorizationFilter(AuthenticationManager authManager) {
         super(authManager);
     }
 
@@ -31,5 +47,5 @@ public class JWTAuthorizationFilter /*extends BasicAuthenticationFilter*/ {
             return new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
         }
         return null;
-    }*/
+    }
 }

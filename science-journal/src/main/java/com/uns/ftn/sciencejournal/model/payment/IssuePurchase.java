@@ -2,6 +2,7 @@ package com.uns.ftn.sciencejournal.model.payment;
 
 import com.uns.ftn.sciencejournal.model.common.PaperIssue;
 import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,8 +23,8 @@ public class IssuePurchase extends Purchase {
         super();
     }
 
-    public IssuePurchase(String transactionId, LocalDateTime timeOfPurchase, PurchaseType type, Boolean successful, PaymentOption option, Double amount, String currency, PaperIssue paperIssue) {
-        super(transactionId, timeOfPurchase, type, successful, option, amount, currency);
+    public IssuePurchase(Credentials user, String transactionId, LocalDateTime timeOfPurchase, PurchaseType type, Boolean successful, PaymentOption option, Double amount, String currency, PaperIssue paperIssue) {
+        super(transactionId, timeOfPurchase, user, type, successful, option, amount, currency);
         this.paperIssue = paperIssue;
     }
 

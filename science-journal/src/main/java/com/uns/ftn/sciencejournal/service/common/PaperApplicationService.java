@@ -6,6 +6,7 @@ import com.uns.ftn.sciencejournal.model.users.UserDetails;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.PaperApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.UserDetailsRepository;
 import com.uns.ftn.sciencejournal.service.storage.MagazineStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ import java.util.List;
 
 @Service
 public class PaperApplicationService {
+
+    @Autowired
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     PaperApplicationRepository paperApplicationRepository;
@@ -91,7 +95,7 @@ public class PaperApplicationService {
         paperApplication.setKeyTerms(newPaperApplication.getKeyTerms());
         paperApplication.setTitle(newPaperApplication.getTitle());
 
-        //paperApplication.setAuthor(newPaperApplication.getAuthor());
+        paperApplication.setAuthor(newPaperApplication.getAuthor());
         paperApplication.setCoauthors(newPaperApplication.getCoauthors());
         paperApplication.setMagazine(newPaperApplication.getMagazine());
         paperApplication.setField(newPaperApplication.getField());
@@ -130,13 +134,13 @@ public class PaperApplicationService {
             return false;
         }
 
-        /*if (paperApplication.getAuthor() == null || paperApplication.getAuthor().getUsername() == null) {
+        if (paperApplication.getAuthor() == null || paperApplication.getAuthor().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(paperApplication.getAuthor().getUsername()) == null) {
             return false;
-        }*/
+        }
 
         if (paperApplication.getField() == null || paperApplication.getField().getCode() == null) {
             return false;

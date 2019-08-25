@@ -87,7 +87,7 @@ public class PaperController {
         // Load file as Resource
         Resource resource = magazineStorageService.downloadPaper(paperService.getById(doi));
 
-        if(resource == null){
+        if (resource == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -100,7 +100,7 @@ public class PaperController {
         }
 
         // Fallback to the default content type if type could not be determined
-        if(contentType == null) {
+        if (contentType == null) {
             contentType = "application/octet-stream";
         }
 

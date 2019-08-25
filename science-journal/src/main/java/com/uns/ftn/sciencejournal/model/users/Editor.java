@@ -22,8 +22,8 @@ public class Editor extends UserAuthority {
     public Editor() {
     }
 
-    public Editor(String title, Integer id, Magazine magazine, ScienceField field) {
-        super(title, id);
+    public Editor(String title, Integer id, Magazine magazine, ScienceField field, Credentials user) {
+        super(title, id, user);
         this.magazine = magazine;
         this.field = field;
     }
@@ -51,6 +51,7 @@ public class Editor extends UserAuthority {
                 ", field=" + field +
                 ", title='" + title + '\'' +
                 ", id=" + id +
+                ", user=" + user +
                 '}';
     }
 
@@ -62,11 +63,12 @@ public class Editor extends UserAuthority {
         return magazine.equals(editor.magazine) &&
                 id.equals(editor.id) &&
                 title.equals(editor.title) &&
+                user.equals(editor.user) &&
                 Objects.equals(field, editor.field);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(magazine, field);
+        return Objects.hash(magazine, field, user);
     }
 }

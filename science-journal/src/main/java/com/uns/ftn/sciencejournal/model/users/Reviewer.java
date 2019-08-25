@@ -25,8 +25,8 @@ public class Reviewer extends UserAuthority {
     public Reviewer() {
     }
 
-    public Reviewer(String title, Integer id, Set<Magazine> magazines, Set<ScienceField> fields) {
-        super(title, id);
+    public Reviewer(String title, Integer id, Set<Magazine> magazines, Set<ScienceField> fields, Credentials user) {
+        super(title, id, user);
         this.magazines = magazines;
         this.fields = fields;
     }
@@ -51,6 +51,7 @@ public class Reviewer extends UserAuthority {
     public String toString() {
         return "Reviewer{" +
                 "magazines=" + magazines +
+                "user=" + user +
                 ", fields=" + fields +
                 ", title='" + title + '\'' +
                 ", id=" + id +
@@ -65,11 +66,12 @@ public class Reviewer extends UserAuthority {
         return magazines.equals(reviewer.magazines) &&
                 id.equals(reviewer.id) &&
                 title.equals(reviewer.title) &&
-                fields.equals(reviewer.fields);
+                fields.equals(reviewer.fields) &&
+                user.equals(reviewer.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(magazines, fields);
+        return Objects.hash(magazines, fields, user);
     }
 }

@@ -3,6 +3,7 @@ package com.uns.ftn.sciencejournal.service.users;
 import com.uns.ftn.sciencejournal.model.users.Editor;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.EditorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,8 @@ public class EditorService {
     @Autowired
     EditorRepository editorRepository;
 
-    /*@Autowired
-    CredentialsRepository credentialsRepository;*/
+    @Autowired
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     MagazineRepository magazineRepository;
@@ -67,7 +68,7 @@ public class EditorService {
         editor.setField(newEditor.getField());
         editor.setMagazine(newEditor.getMagazine());
         editor.setTitle(newEditor.getTitle());
-        //editor.setUser(newEditor.getUser());
+        editor.setUser(newEditor.getUser());
 
         return editorRepository.save(editor);
     }
@@ -78,13 +79,13 @@ public class EditorService {
             return false;
         }
 
-        /*if (editor.getUser() == null || editor.getUser().getUsername() == null) {
+        if (editor.getUser() == null || editor.getUser().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(editor.getUser().getUsername()) == null) {
             return false;
-        }*/
+        }
 
         if (editor.getMagazine() == null || editor.getMagazine().getIssn().equals("")) {
             return false;

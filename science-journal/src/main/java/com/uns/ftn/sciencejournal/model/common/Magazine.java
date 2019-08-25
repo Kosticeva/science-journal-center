@@ -2,7 +2,6 @@ package com.uns.ftn.sciencejournal.model.common;
 
 import com.uns.ftn.sciencejournal.model.enums.MagazinePaymentType;
 import com.uns.ftn.sciencejournal.model.payment.PaymentOption;
-import com.uns.ftn.sciencejournal.model.users.Editor;
 
 import javax.persistence.*;
 import java.util.HashSet;

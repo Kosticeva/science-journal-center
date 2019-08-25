@@ -1,5 +1,6 @@
 package com.uns.ftn.sciencejournal.model.common;
 
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.model.users.UserDetails;
 
 import javax.persistence.*;
@@ -24,9 +25,9 @@ public class Paper {
     @Column(name = "KEYWORDS", length = 1023, nullable = false)
     private String keyTerms;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "AUTHOR")
-    private Credentials author;*/
+    private Credentials author;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "PAPER_COAUTHORS", joinColumns = @JoinColumn(name = "PAPER"),
@@ -58,7 +59,7 @@ public class Paper {
     public Paper() {
     }
 
-    public Paper(String doi, String title, String paperAbstract, String keyTerms, Set<UserDetails> coauthors, PaperIssue paperIssue, ScienceField field, String file, Double price, String currency, PaperApplication lastRevision) {
+    public Paper(Credentials author, String doi, String title, String paperAbstract, String keyTerms, Set<UserDetails> coauthors, PaperIssue paperIssue, ScienceField field, String file, Double price, String currency, PaperApplication lastRevision) {
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
@@ -70,6 +71,15 @@ public class Paper {
         this.price = price;
         this.currency = currency;
         this.lastRevision = lastRevision;
+        this.author = author;
+    }
+
+    public Credentials getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Credentials author) {
+        this.author = author;
     }
 
     public String getDoi() {
@@ -175,12 +185,13 @@ public class Paper {
                 Objects.equals(file, paper.file) &&
                 Objects.equals(price, paper.price) &&
                 Objects.equals(currency, paper.currency) &&
-                Objects.equals(lastRevision, paper.lastRevision);
+                Objects.equals(lastRevision, paper.lastRevision) &&
+                Objects.equals(author, paper.author);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(doi, title, paperAbstract, keyTerms, coauthors, paperIssue, field, file, price, currency, lastRevision);
+        return Objects.hash(author, doi, title, paperAbstract, keyTerms, coauthors, paperIssue, field, file, price, currency, lastRevision);
     }
 
     @Override
@@ -197,6 +208,7 @@ public class Paper {
                 ", price=" + price +
                 ", currency='" + currency + '\'' +
                 ", lastRevision=" + lastRevision +
+                ", author=" + author +
                 '}';
     }
 }

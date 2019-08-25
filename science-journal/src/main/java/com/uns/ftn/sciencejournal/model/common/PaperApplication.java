@@ -1,6 +1,7 @@
 package com.uns.ftn.sciencejournal.model.common;
 
 import com.uns.ftn.sciencejournal.model.enums.PaperApplicationState;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.model.users.UserDetails;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "APPLICATION")
-public class PaperApplication implements Serializable{
+public class PaperApplication implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +32,9 @@ public class PaperApplication implements Serializable{
     @Column(name = "KEYWORDS", length = 1023, nullable = false)
     private String keyTerms;
 
-    /*@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "AUTHOR")
-    private Credentials author;*/
+    private Credentials author;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -67,7 +68,8 @@ public class PaperApplication implements Serializable{
     public PaperApplication() {
     }
 
-    public PaperApplication(Long id, Integer version, String title, String paperAbstract, String keyTerms, Set<UserDetails> coauthors, Magazine magazine, ScienceField field, String file, PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
+    public PaperApplication(Credentials author, Long id, Integer version, String title, String paperAbstract, String keyTerms, Set<UserDetails> coauthors, Magazine magazine, ScienceField field, String file, PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
+        this.author = author;
         this.id = id;
         this.version = version;
         this.title = title;
@@ -80,6 +82,14 @@ public class PaperApplication implements Serializable{
         this.state = state;
         this.accepted = accepted;
         this.timestamp = timestamp;
+    }
+
+    public Credentials getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Credentials author) {
+        this.author = author;
     }
 
     public Long getId() {
@@ -192,6 +202,7 @@ public class PaperApplication implements Serializable{
                 Objects.equals(magazine, that.magazine) &&
                 Objects.equals(field, that.field) &&
                 Objects.equals(file, that.file) &&
+                Objects.equals(author, that.author) &&
                 state == that.state &&
                 Objects.equals(accepted, that.accepted) &&
                 Objects.equals(timestamp, that.timestamp);
@@ -199,13 +210,14 @@ public class PaperApplication implements Serializable{
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, version, title, paperAbstract, keyTerms, coauthors, magazine, field, file, state, accepted, timestamp);
+        return Objects.hash(author, id, version, title, paperAbstract, keyTerms, coauthors, magazine, field, file, state, accepted, timestamp);
     }
 
     @Override
     public String toString() {
         return "PaperApplication{" +
                 "id=" + id +
+                ", author=" + author +
                 ", version=" + version +
                 ", title='" + title + '\'' +
                 ", paperAbstract='" + paperAbstract + '\'' +

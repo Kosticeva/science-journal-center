@@ -6,6 +6,7 @@ import com.uns.ftn.sciencejournal.model.users.UserDetails;
 import com.uns.ftn.sciencejournal.repository.common.PaperApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.common.PaperIssueRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ import java.util.List;
 
 @Service
 public class PaperMapper {
+
+    @Autowired
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     PaperIssueRepository paperIssueRepository;
@@ -31,6 +35,8 @@ public class PaperMapper {
 
     public Paper mapFromDTO(PaperDTO dto) {
         Paper paper = new Paper();
+
+        if(dto.getAuthor() != null) paper.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
 
         paper.setDoi(dto.getDoi());
         paper.setTitle(dto.getTitle());
@@ -56,6 +62,7 @@ public class PaperMapper {
     public PaperDTO mapToDTO(Paper paper) {
         PaperDTO dto = new PaperDTO();
 
+        dto.setAuthor(paper.getAuthor().getUsername());
         dto.setDoi(paper.getDoi());
         dto.setTitle(paper.getTitle());
         dto.setIssue(paper.getPaperIssue().getId());

@@ -5,6 +5,7 @@ import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 import com.uns.ftn.sciencejournal.model.payment.PaperPurchase;
 import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ import java.util.List;
 public class PaperPurchaseMapper {
 
     @Autowired
+    CredentialsRepository credentialsRepository;
+
+    @Autowired
     PaperRepository paperRepository;
 
     @Autowired
@@ -23,6 +27,7 @@ public class PaperPurchaseMapper {
     public PaperPurchase mapFromDTO(PaperPurchaseDTO dto) {
         PaperPurchase purchase = new PaperPurchase();
 
+        if(dto.getUser() != null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
         if (dto.getPaper() != null) purchase.setPaper(paperRepository.getOne(dto.getPaper()));
         if (dto.getPaymentOption() != null) purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
         purchase.setSuccessful(dto.getSuccessful());
@@ -44,6 +49,7 @@ public class PaperPurchaseMapper {
         dto.setSuccessful(paperPurchase.getSuccessful());
         dto.setTimeOfPurchase(paperPurchase.getTimeOfPurchase());
         dto.setId(paperPurchase.getTransactionId());
+        if(paperPurchase.getUser() != null) dto.setUser(paperPurchase.getUser().getUsername());
 
         dto.setAmount(paperPurchase.getAmount());
         dto.setCurrency(paperPurchase.getCurrency());

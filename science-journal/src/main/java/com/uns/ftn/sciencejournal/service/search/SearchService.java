@@ -8,11 +8,14 @@ import com.uns.ftn.sciencejournal.model.SearchFieldQuery;
 import com.uns.ftn.sciencejournal.model.SearchQuery;
 import com.uns.ftn.sciencejournal.model.common.Paper;
 import com.uns.ftn.sciencejournal.model.common.PaperApplication;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.model.users.Reviewer;
 import com.uns.ftn.sciencejournal.repository.common.PaperRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.ReviewerRepository;
 import com.uns.ftn.sciencejournal.service.utils.ElasticSearchJsonUtil;
 import com.uns.ftn.sciencejournal.service.utils.OldElasticSearchJsonUtil;
+import com.uns.ftn.sciencejournal.service.utils.PDFUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +36,15 @@ public class SearchService {
     PaperRepository paperRepository;
 
     @Autowired
+    CredentialsRepository credentialsRepository;
+
+    @Autowired
     ReviewerRepository reviewerRepository;
 
-    public List</*Credentials*/String> searchReviewers(PaperApplication paperApplication) {
-        /*OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+    public List<Credentials> searchReviewers(PaperApplication paperApplication) {
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
         String similarPapers = elasticSearchPlugin.searchForPapers(jsonUtil.generateMoreLikeThisQuery(PDFUtils.readFromPDF(paperApplication.getFile()).replace("\n", "")));
-        
+
         String reviewersOutside100kmRadius = elasticSearchPlugin.searchForReviewers(jsonUtil.generateGeoQuery(
                 paperApplication.getAuthor().getUserDetails().getLatitude().toString(), paperApplication.getAuthor().getUserDetails().getLongitude().toString()));
 
@@ -46,25 +52,23 @@ public class SearchService {
         List<Credentials> allFoundUsers = new ArrayList<>(mapPaperToReviewer(jsonUtil.getHitsFromJson(similarPapers)));
         allFoundUsers.addAll(mapObjectToReviewer(jsonUtil.getHitsFromJson(reviewersOutside100kmRadius)));
 
-        return reduceThoseThatWorkForMagazineInField(reduceListOfUsers(allFoundUsers), reviewersForMagazine);*/
-        return new ArrayList<>();
+        return reduceThoseThatWorkForMagazineInField(reduceListOfUsers(allFoundUsers), reviewersForMagazine);
     }
 
-    private List</*Credentials*/String> reduceThoseThatWorkForMagazineInField(List</*Credentials*/String> found, List<Reviewer> work) {
-        /*List<Credentials> finalList = new ArrayList<>();
-        for(Reviewer worker: work) {
-            for(Credentials founder: found) {
-                if(worker.getUser().getUsername().equals(founder.getUsername())) {
+    private List<Credentials> reduceThoseThatWorkForMagazineInField(List<Credentials> found, List<Reviewer> work) {
+        List<Credentials> finalList = new ArrayList<>();
+        for (Reviewer worker : work) {
+            for (Credentials founder : found) {
+                if (worker.getUser().getUsername().equals(founder.getUsername())) {
                     finalList.add(founder);
                 }
             }
         }
 
-        return finalList;*/
-        return new ArrayList<>();
+        return finalList;
     }
 
-    private List</*Credentials*/String> reduceListOfUsers(List</*Credentials*/String> users) {
+    private List<Credentials> reduceListOfUsers(List<Credentials> users) {
         return users.stream()
                 .distinct()
                 .collect(Collectors.toList());
@@ -153,18 +157,18 @@ public class SearchService {
         return objects;
     }
 
-    private List</*Credentials*/String> mapObjectToReviewer(JsonArray objects) {
-        List</*Credentials*/String> finalList = new ArrayList<>();
+    private List<Credentials> mapObjectToReviewer(JsonArray objects) {
+        List<Credentials> finalList = new ArrayList<>();
         for (JsonElement element : objects) {
             JsonObject hit = element.getAsJsonObject().get("_source").getAsJsonObject();
-            //finalList.add(credentialsRepository.getOne(hit.get("username").getAsString()));
+            finalList.add(credentialsRepository.getOne(hit.get("username").getAsString()));
         }
 
         return finalList;
     }
 
-    private List</*Credentials*/String> mapPaperToReviewer(JsonArray objects) {
-        List</*Credentials*/String> finalList = new ArrayList<>();
+    private List<Credentials> mapPaperToReviewer(JsonArray objects) {
+        List<Credentials> finalList = new ArrayList<>();
         for (JsonElement element : objects) {
             JsonObject hit = element.getAsJsonObject().get("_source").getAsJsonObject();
             Paper paper = paperRepository.getOne(hit.get("doi").getAsString());

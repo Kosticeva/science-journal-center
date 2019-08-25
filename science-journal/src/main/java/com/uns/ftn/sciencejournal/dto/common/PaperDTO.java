@@ -13,7 +13,7 @@ public class PaperDTO {
 
     private String keyTerms;
 
-    //private String author;
+    private String author;
 
     private Set<Long> coauthors;
 
@@ -32,7 +32,8 @@ public class PaperDTO {
     public PaperDTO() {
     }
 
-    public PaperDTO(String doi, String title, String paperAbstract, String keyTerms, Set<Long> coauthors, Long issue, String field, String file, Double price, Long lastRevision, String currency) {
+    public PaperDTO(String author, String doi, String title, String paperAbstract, String keyTerms, Set<Long> coauthors, Long issue, String field, String file, Double price, Long lastRevision, String currency) {
+        this.author = author;
         this.doi = doi;
         this.title = title;
         this.paperAbstract = paperAbstract;
@@ -44,6 +45,14 @@ public class PaperDTO {
         this.price = price;
         this.lastRevision = lastRevision;
         this.currency = currency;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getCurrency() {
@@ -140,6 +149,7 @@ public class PaperDTO {
         if (o == null || getClass() != o.getClass()) return false;
         PaperDTO paperDTO = (PaperDTO) o;
         return Objects.equals(doi, paperDTO.doi) &&
+                Objects.equals(author, paperDTO.author) &&
                 Objects.equals(title, paperDTO.title) &&
                 Objects.equals(paperAbstract, paperDTO.paperAbstract) &&
                 Objects.equals(keyTerms, paperDTO.keyTerms) &&
@@ -154,13 +164,14 @@ public class PaperDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(doi, title, paperAbstract, keyTerms, coauthors, issue, field, file, price, lastRevision, currency);
+        return Objects.hash(author, doi, title, paperAbstract, keyTerms, coauthors, issue, field, file, price, lastRevision, currency);
     }
 
     @Override
     public String toString() {
         return "PaperDTO{" +
                 "doi='" + doi + '\'' +
+                ", author='" + author + '\'' +
                 ", title='" + title + '\'' +
                 ", paperAbstract='" + paperAbstract + '\'' +
                 ", keyTerms='" + keyTerms + '\'' +

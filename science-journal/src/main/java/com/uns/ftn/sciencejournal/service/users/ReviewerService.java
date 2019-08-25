@@ -6,6 +6,7 @@ import com.uns.ftn.sciencejournal.model.common.ScienceField;
 import com.uns.ftn.sciencejournal.model.users.Reviewer;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.ReviewerRepository;
 import com.uns.ftn.sciencejournal.service.search.ElasticSearchPlugin;
 import com.uns.ftn.sciencejournal.service.utils.OldElasticSearchJsonUtil;
@@ -25,6 +26,9 @@ public class ReviewerService {
 
     @Autowired
     ScienceFieldRepository scienceFieldRepository;
+
+    @Autowired
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     ElasticSearchPlugin elasticSearchPlugin;
@@ -75,11 +79,11 @@ public class ReviewerService {
         reviewer.setFields(newReviewer.getFields());
         reviewer.setMagazines(newReviewer.getMagazines());
         reviewer.setTitle(newReviewer.getTitle());
-        //reviewer.setUser(newReviewer.getUser());
+        reviewer.setUser(newReviewer.getUser());
 
         Reviewer dbReviewer = reviewerRepository.save(reviewer);
         OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
-        elasticSearchPlugin.addReviewer(jsonUtil.convertReviewerSearchModelToJson(elasticSearchReviewerMapper.mapReviewerToReviewerSearchModel(reviewer)), /*reviewer.getUser().getUsername()*/"");
+        elasticSearchPlugin.addReviewer(jsonUtil.convertReviewerSearchModelToJson(elasticSearchReviewerMapper.mapReviewerToReviewerSearchModel(reviewer)), reviewer.getUser().getUsername());
 
         return dbReviewer;
     }
@@ -90,13 +94,13 @@ public class ReviewerService {
             return false;
         }
 
-        /*if (reviewer.getUser() == null || reviewer.getUser().getUsername() == null) {
+        if (reviewer.getUser() == null || reviewer.getUser().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(reviewer.getUser().getUsername()) == null) {
             return false;
-        }*/
+        }
 
         if (reviewer.getMagazines() == null || reviewer.getMagazines().isEmpty()) {
             return false;

@@ -10,7 +10,7 @@ public class ReviewerDTO {
 
     private String title;
 
-    //private String user;
+    private String user;
 
     private Set<String> magazines = new HashSet<>();
 
@@ -19,7 +19,8 @@ public class ReviewerDTO {
     public ReviewerDTO() {
     }
 
-    public ReviewerDTO(Integer id, String title, Set<String> magazines, Set<String> fields) {
+    public ReviewerDTO(String user, Integer id, String title, Set<String> magazines, Set<String> fields) {
+        this.user = user;
         this.id = id;
         this.title = title;
         this.magazines = magazines;
@@ -32,6 +33,7 @@ public class ReviewerDTO {
         if (o == null || getClass() != o.getClass()) return false;
         ReviewerDTO that = (ReviewerDTO) o;
         return Objects.equals(id, that.id) &&
+                Objects.equals(user, that.user) &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(magazines, that.magazines) &&
                 Objects.equals(fields, that.fields);
@@ -39,13 +41,14 @@ public class ReviewerDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, magazines, fields);
+        return Objects.hash(user, id, title, magazines, fields);
     }
 
     @Override
     public String toString() {
         return "ReviewerDTO{" +
                 "id=" + id +
+                ", user='" + user + '\'' +
                 ", title='" + title + '\'' +
                 ", magazines=" + magazines +
                 ", fields=" + fields +
@@ -82,5 +85,13 @@ public class ReviewerDTO {
 
     public void setFields(Set<String> fields) {
         this.fields = fields;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

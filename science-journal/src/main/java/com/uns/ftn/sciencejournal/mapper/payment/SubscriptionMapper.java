@@ -3,6 +3,7 @@ package com.uns.ftn.sciencejournal.mapper.payment;
 import com.uns.ftn.sciencejournal.dto.payment.SubscriptionDTO;
 import com.uns.ftn.sciencejournal.model.payment.Subscription;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,9 @@ import java.util.List;
 
 @Service
 public class SubscriptionMapper {
+
+    @Autowired
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     MagazineRepository magazineRepository;
@@ -22,6 +26,8 @@ public class SubscriptionMapper {
         subscription.setDate(dto.getDate());
         subscription.setId(dto.getId());
         if (dto.getMagazine() != null) subscription.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+        if(dto.getUser() != null) subscription.setUser(credentialsRepository.getOne(dto.getUser()));
+
         subscription.setPaid(dto.getPaid());
         subscription.setType(dto.getType());
 
@@ -35,6 +41,8 @@ public class SubscriptionMapper {
         dto.setDate(subscription.getDate());
         dto.setId(subscription.getId());
         if (subscription.getMagazine() != null) dto.setMagazine(subscription.getMagazine().getIssn());
+        if(subscription.getUser() != null) dto.setUser(subscription.getUser().getUsername());
+
         dto.setPaid(subscription.getPaid());
         dto.setType(subscription.getType());
 

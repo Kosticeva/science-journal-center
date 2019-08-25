@@ -5,6 +5,7 @@ import com.uns.ftn.sciencejournal.model.common.PaperApplication;
 import com.uns.ftn.sciencejournal.model.users.UserDetails;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.ScienceFieldRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.repository.users.UserDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class PaperApplicationMapper {
     @Autowired
     UserDetailsRepository userDetailsRepository;
 
+    @Autowired
+    CredentialsRepository credentialsRepository;
+
     public PaperApplication mapFromDTO(PaperApplicationDTO dto) {
         PaperApplication paperApplication = new PaperApplication();
 
@@ -44,6 +48,7 @@ public class PaperApplicationMapper {
 
 
         if (dto.getMagazine() != null) paperApplication.setMagazine(magazineRepository.getOne(dto.getMagazine()));
+        if (dto.getAuthor() != null) paperApplication.setAuthor(credentialsRepository.getOne(dto.getAuthor()));
         if (dto.getField() != null) paperApplication.setField(scienceFieldRepository.getOne(dto.getField()));
         paperApplication.setFile(dto.getFile());
         paperApplication.setState(dto.getState());
@@ -61,6 +66,7 @@ public class PaperApplicationMapper {
         dto.setTitle(paperApplication.getTitle());
         dto.setPaperAbstract(paperApplication.getPaperAbstract());
         dto.setKeyTerms(paperApplication.getKeyTerms());
+        dto.setAuthor(paperApplication.getAuthor().getUsername());
 
         dto.setCoauthors(new HashSet<>());
         for (UserDetails coauthor : paperApplication.getCoauthors()) {

@@ -56,7 +56,7 @@ public class PaperApplicationController {
         newApplication.setTitle(title);
         newApplication.setPaperAbstract(pAbstract);
         newApplication.setKeyTerms(keyterms);
-        //newApplication.setAuthor(author);
+        newApplication.setAuthor(author);
         if (coauthors == null) {
             //
         } else if (coauthors.length == 0) {

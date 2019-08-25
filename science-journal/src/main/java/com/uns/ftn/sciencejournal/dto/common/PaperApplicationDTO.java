@@ -18,7 +18,7 @@ public class PaperApplicationDTO {
 
     private String keyTerms;
 
-    //private String author;
+    private String author;
 
     private Set<Long> coauthors;
 
@@ -37,9 +37,10 @@ public class PaperApplicationDTO {
     public PaperApplicationDTO() {
     }
 
-    public PaperApplicationDTO(Long paperId, Integer version, String title, String paperAbstract, String keyTerms,
+    public PaperApplicationDTO(String author, Long paperId, Integer version, String title, String paperAbstract, String keyTerms,
                                Set<Long> coauthors, String magazine, String field, String file,
                                PaperApplicationState state, Boolean accepted, LocalDate timestamp) {
+        this.author = author;
         this.paperId = paperId;
         this.version = version;
         this.title = title;
@@ -52,6 +53,14 @@ public class PaperApplicationDTO {
         this.state = state;
         this.accepted = accepted;
         this.timestamp = timestamp;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public Long getPaperId() {
@@ -162,6 +171,7 @@ public class PaperApplicationDTO {
                 ", magazine='" + magazine + '\'' +
                 ", field='" + field + '\'' +
                 ", file='" + file + '\'' +
+                ", author='" + author + '\'' +
                 ", state=" + state +
                 ", accepted=" + accepted +
                 ", timestamp=" + timestamp +
@@ -174,6 +184,7 @@ public class PaperApplicationDTO {
         if (o == null || getClass() != o.getClass()) return false;
         PaperApplicationDTO that = (PaperApplicationDTO) o;
         return Objects.equals(paperId, that.paperId) &&
+                Objects.equals(author, that.author) &&
                 Objects.equals(version, that.version) &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(paperAbstract, that.paperAbstract) &&
@@ -189,7 +200,7 @@ public class PaperApplicationDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(paperId, version, title, paperAbstract, keyTerms, coauthors, magazine,
+        return Objects.hash(author, paperId, version, title, paperAbstract, keyTerms, coauthors, magazine,
                 field, file, state, accepted, timestamp);
     }
 }

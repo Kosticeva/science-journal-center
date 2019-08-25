@@ -4,9 +4,11 @@ import com.uns.ftn.sciencejournal.model.common.Magazine;
 import com.uns.ftn.sciencejournal.model.enums.SubscriptionType;
 import com.uns.ftn.sciencejournal.model.payment.Subscription;
 import com.uns.ftn.sciencejournal.model.payment.SubscriptionPurchase;
+import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionPurchaseRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,30 +27,39 @@ public class SubscriptionService {
     @Autowired
     MagazineRepository magazineRepository;
 
+    @Autowired
+    CredentialsRepository credentialsRepository;
+
     public SubscriptionPurchase findActiveUserSubscriptionForMagazine(String issn, String username) {
-        //Credentials buyer = credentialsRepository.findFirstByUsername(username);
+        Credentials buyer = credentialsRepository.findFirstByUsername(username);
         Magazine magazine = magazineRepository.getOne(issn);
 
-        if (/*buyer == null || */magazine == null) {
+        if (buyer == null || magazine == null) {
             return null;
         }
 
-        return new SubscriptionPurchase();
-        /*List<Subscription> subscriptions = subscriptionRepository.getByUserAndMagazine(buyer, magazine);
-        Subscription currentSub = null;
-        for(Subscription sub: subscriptions) {
-            if(sub.getDate().isAfter(LocalDate.now())) {   //if it is valid now
-                currentSub = sub;
-                break;
-            }
-        }
+        Subscription currentSub = getByUserAndMagazine(buyer, magazine);
 
         List<SubscriptionPurchase> purchases = subscriptionPurchaseRepository.getBySubscription(currentSub);
         if(purchases.size() == 0) {
             return null;
         }
 
-        return purchases.get(0);*/
+        return purchases.get(0);
+    }
+
+    public Subscription getByUserAndMagazine(Credentials buyer, Magazine magazine) {
+
+        List<Subscription> subscriptions = subscriptionRepository.getByUserAndMagazine(buyer, magazine);
+        Subscription currentSub = null;
+        for(Subscription sub: subscriptions) {
+            if(sub.getDate().isAfter(LocalDate.now()) && !sub.getCancelled()) {   //if it is valid now
+                currentSub = sub;
+                break;
+            }
+        }
+
+        return currentSub;
     }
 
     public Subscription getById(Long id) {
@@ -97,7 +108,7 @@ public class SubscriptionService {
         subscription.setDate(newSubscription.getDate());
         subscription.setMagazine(newSubscription.getMagazine());
         subscription.setType(newSubscription.getType());
-        //subscription.setUser(newSubscription.getUser());
+        subscription.setUser(newSubscription.getUser());
 
         return subscriptionRepository.save(subscription);
     }
@@ -114,13 +125,13 @@ public class SubscriptionService {
             return false;
         }
 
-        /*if (subscription.getUser() == null || subscription.getUser().getUsername() == null) {
+        if (subscription.getUser() == null || subscription.getUser().getUsername() == null) {
             return false;
         }
 
         if (credentialsRepository.getOne(subscription.getUser().getUsername()) == null) {
             return false;
-        }*/
+        }
 
         return true;
     }

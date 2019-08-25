@@ -9,7 +9,7 @@ public class SubscriptionPurchaseDTO {
 
     private LocalDateTime timeOfPurchase;
 
-    // private String user;
+    private String user;
 
     private Boolean successful;
 
@@ -24,7 +24,8 @@ public class SubscriptionPurchaseDTO {
     public SubscriptionPurchaseDTO() {
     }
 
-    public SubscriptionPurchaseDTO(String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, Long subscription, Double amount, String currency) {
+    public SubscriptionPurchaseDTO(String user, String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, Long subscription, Double amount, String currency) {
+        this.user = user;
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.successful = successful;
@@ -32,6 +33,14 @@ public class SubscriptionPurchaseDTO {
         this.subscription = subscription;
         this.amount = amount;
         this.currency = currency;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getCurrency() {
@@ -96,6 +105,7 @@ public class SubscriptionPurchaseDTO {
         if (o == null || getClass() != o.getClass()) return false;
         SubscriptionPurchaseDTO that = (SubscriptionPurchaseDTO) o;
         return Objects.equals(id, that.id) &&
+                Objects.equals(user, that.user) &&
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
                 Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
@@ -106,13 +116,14 @@ public class SubscriptionPurchaseDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, successful, paymentOption, subscription, amount, currency);
+        return Objects.hash(user, id, timeOfPurchase, successful, paymentOption, subscription, amount, currency);
     }
 
     @Override
     public String toString() {
         return "SubscriptionPurchaseDTO{" +
                 "id='" + id + '\'' +
+                ", user='" + user + '\'' +
                 ", timeOfPurchase=" + timeOfPurchase +
                 ", successful=" + successful +
                 ", paymentOption=" + paymentOption +

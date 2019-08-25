@@ -1,9 +1,18 @@
 package com.uns.ftn.sciencejournal.controller.users;
 
+import com.uns.ftn.sciencejournal.dto.FormFieldsDto;
 import com.uns.ftn.sciencejournal.dto.users.UserDetailsDTO;
 import com.uns.ftn.sciencejournal.mapper.users.UserDetailsMapper;
 import com.uns.ftn.sciencejournal.model.users.UserDetails;
 import com.uns.ftn.sciencejournal.service.users.UserDetailsService;
+import org.camunda.bpm.engine.FormService;
+import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.TaskService;
+import org.camunda.bpm.engine.form.FormField;
+import org.camunda.bpm.engine.form.TaskFormData;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +31,32 @@ public class UserDetailsController {
 
     @Autowired
     UserDetailsMapper userDetailsMapper;
+
+    @Autowired
+    RuntimeService runtimeService;
+
+    @Autowired
+    TaskService taskService;
+
+    RepositoryService repositoryService;
+
+    @Autowired
+    FormService formService;
+
+    @GetMapping(path = "/registration/start", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FormFieldsDto startRegistrationProcess() {
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Registration");
+
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        TaskFormData taskFormData = formService.getTaskFormData(task.getFormKey());
+        List<FormField> properties = taskFormData.getFormFields();
+        for(FormField fp : properties) {
+            System.out.println(fp.getId() + fp.getType());
+        }
+
+        return new FormFieldsDto(task.getId(), processInstance.getId(), properties);
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserDetailsDTO>> getAllUsers() {

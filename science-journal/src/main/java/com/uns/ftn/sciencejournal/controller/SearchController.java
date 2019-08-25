@@ -1,7 +1,10 @@
 package com.uns.ftn.sciencejournal.controller;
 
 import com.uns.ftn.sciencejournal.dto.PaperResultDTO;
+import com.uns.ftn.sciencejournal.dto.common.PaperApplicationDTO;
+import com.uns.ftn.sciencejournal.dto.users.CredentialsDTO;
 import com.uns.ftn.sciencejournal.mapper.common.PaperApplicationMapper;
+import com.uns.ftn.sciencejournal.mapper.users.CredentialsMapper;
 import com.uns.ftn.sciencejournal.model.SearchQuery;
 import com.uns.ftn.sciencejournal.service.search.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class SearchController {
     SearchService searchService;
 
     @Autowired
+    CredentialsMapper userMapper;
+
+    @Autowired
     PaperApplicationMapper paperApplicationMapper;
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,8 +38,8 @@ public class SearchController {
         return ResponseEntity.ok(searchService.searchPapersQuery(query));
     }
 
-    /*@PutMapping(value = "/reviewers", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/reviewers", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CredentialsDTO>> getReviewers(@RequestBody PaperApplicationDTO paperApplicationDTO) {
         return ResponseEntity.ok().body(userMapper.mapManyToDTO(searchService.searchReviewers(paperApplicationMapper.mapFromDTO(paperApplicationDTO))));
-    }*/
+    }
 }

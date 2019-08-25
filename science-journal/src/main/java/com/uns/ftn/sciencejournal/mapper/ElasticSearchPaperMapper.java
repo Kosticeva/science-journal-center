@@ -29,10 +29,10 @@ public class ElasticSearchPaperMapper {
 
         List<PaperSearchModel.PaperAuthorSearchModel> authors = new ArrayList<>();
 
-        /*UserDetails author = paper.getAuthor().getUserDetails();
+        UserDetails author = paper.getAuthor().getUserDetails();
         authors.add(paperSearchModel.new PaperAuthorSearchModel(
                 author.getfName(), author.getlName(),
-                author.getUserId(), paperSearchModel.new Location(author.getLatitude().toString(), author.getLongitude().toString())));*/
+                author.getUserId(), paperSearchModel.new Location(author.getLatitude().toString(), author.getLongitude().toString())));
 
         for (UserDetails coauthor : paper.getCoauthors()) {
             authors.add(paperSearchModel.new PaperAuthorSearchModel(
@@ -43,6 +43,8 @@ public class ElasticSearchPaperMapper {
         paperSearchModel.setAuthors(authors);
 
         List<PaperSearchModel.PaperReviewerSearchModel> reviewers = new ArrayList<>();
+
+        // TODO: 8/24/2019 fixme!
         /*List<Task> reviewTasks = taskRepository.findByPaperAndType(paper.getLastRevision(), PaperApplicationState.REVIEW);
         
         for(Task task: reviewTasks){
@@ -56,8 +58,6 @@ public class ElasticSearchPaperMapper {
 
     private List<String> parseKeywords(String keywords) {
         String[] wordsArray = keywords.split(",");
-        List<String> wordsList = new ArrayList<>();
-        wordsList.addAll(Arrays.asList(wordsArray));
-        return wordsList;
+        return Arrays.asList(wordsArray);
     }
 }

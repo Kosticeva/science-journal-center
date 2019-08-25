@@ -5,6 +5,7 @@ import com.uns.ftn.sciencejournal.model.enums.PurchaseType;
 import com.uns.ftn.sciencejournal.model.payment.SubscriptionPurchase;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionRepository;
+import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ import java.util.List;
 
 @Service
 public class SubscriptionPurchaseMapper {
+
+    @Autowired
+    CredentialsRepository credentialsRepository;
 
     @Autowired
     SubscriptionRepository subscriptionRepository;
@@ -26,6 +30,8 @@ public class SubscriptionPurchaseMapper {
         if (dto.getSubscription() != null)
             purchase.setSubscription(subscriptionRepository.getOne(dto.getSubscription()));
         if (dto.getPaymentOption() != null) purchase.setOption(paymentOptionRepository.getOne(dto.getPaymentOption()));
+        if(dto.getUser() != null) purchase.setUser(credentialsRepository.getOne(dto.getUser()));
+
         purchase.setSuccessful(dto.getSuccessful());
         purchase.setTimeOfPurchase(dto.getTimeOfPurchase());
         purchase.setTransactionId(dto.getId());
@@ -39,6 +45,7 @@ public class SubscriptionPurchaseMapper {
     public SubscriptionPurchaseDTO mapToDTO(SubscriptionPurchase subscriptionPurchase) {
         SubscriptionPurchaseDTO dto = new SubscriptionPurchaseDTO();
 
+        if(subscriptionPurchase.getUser() != null) dto.setUser(subscriptionPurchase.getUser().getUsername());
         if (subscriptionPurchase.getSubscription() != null)
             dto.setSubscription(subscriptionPurchase.getSubscription().getId());
         if (subscriptionPurchase.getOption() != null)

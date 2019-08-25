@@ -9,7 +9,7 @@ public class PaperPurchaseDTO {
 
     private LocalDateTime timeOfPurchase;
 
-    //private String user;
+    private String user;
 
     private Boolean successful;
 
@@ -24,7 +24,8 @@ public class PaperPurchaseDTO {
     public PaperPurchaseDTO() {
     }
 
-    public PaperPurchaseDTO(String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, String paper, Double amount, String currency) {
+    public PaperPurchaseDTO(String user, String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, String paper, Double amount, String currency) {
+        this.user = user;
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
         this.successful = successful;
@@ -32,6 +33,14 @@ public class PaperPurchaseDTO {
         this.paper = paper;
         this.amount = amount;
         this.currency = currency;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public Double getAmount() {
@@ -96,6 +105,7 @@ public class PaperPurchaseDTO {
         if (o == null || getClass() != o.getClass()) return false;
         PaperPurchaseDTO that = (PaperPurchaseDTO) o;
         return Objects.equals(id, that.id) &&
+                Objects.equals(user, that.user) &&
                 Objects.equals(timeOfPurchase, that.timeOfPurchase) &&
                 Objects.equals(successful, that.successful) &&
                 Objects.equals(paymentOption, that.paymentOption) &&
@@ -106,13 +116,14 @@ public class PaperPurchaseDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, timeOfPurchase, successful, paymentOption, paper, amount, currency);
+        return Objects.hash(user, id, timeOfPurchase, successful, paymentOption, paper, amount, currency);
     }
 
     @Override
     public String toString() {
         return "PaperPurchaseDTO{" +
                 "id='" + id + '\'' +
+                ", user='" + user + '\'' +
                 ", timeOfPurchase=" + timeOfPurchase +
                 ", successful=" + successful +
                 ", paymentOption=" + paymentOption +
