@@ -19,7 +19,7 @@ public class JwtTokenProvider {
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + JWTConstants.EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
-        return new JWTToken("");
+        return new JWTToken(token);
     }
 
     public String parseToken(HttpServletRequest request) {
