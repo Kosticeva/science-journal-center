@@ -4,7 +4,8 @@
     <bpmn:startEvent id="StartEvent_00v7v90">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="issn" label="ISSN" type="string" />
+          <camunda:formField id="magazine" label="ISSN" type="string" />
+          <camunda:formField id="initiator" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_053mnqj</bpmn:outgoing>

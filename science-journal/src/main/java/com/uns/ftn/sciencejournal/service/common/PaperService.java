@@ -2,6 +2,8 @@ package com.uns.ftn.sciencejournal.service.common;
 
 import com.uns.ftn.sciencejournal.mapper.ElasticSearchPaperMapper;
 import com.uns.ftn.sciencejournal.model.common.Paper;
+import com.uns.ftn.sciencejournal.model.common.PaperIssue;
+import com.uns.ftn.sciencejournal.model.enums.MagazinePaymentType;
 import com.uns.ftn.sciencejournal.model.users.UserDetails;
 import com.uns.ftn.sciencejournal.repository.common.PaperApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.common.PaperIssueRepository;
@@ -142,20 +144,24 @@ public class PaperService {
             return false;
         }
 
-        if (paper.getPrice() == null) {
-            return false;
-        }
-
-        if (paper.getCurrency() == null || paper.getCurrency().equals("")) {
-            return false;
-        }
-
         if (paper.getPaperIssue() == null || paper.getPaperIssue().getId() == null) {
             return false;
         }
 
         if (paperIssueRepository.getOne(paper.getPaperIssue().getId()) == null) {
             return false;
+        }
+
+        PaperIssue paperIssue = paper.getPaperIssue();
+        if(paperIssue.getMagazine().getType().equals(MagazinePaymentType.PAID_ACCESS)) {
+
+            if (paper.getPrice() == null) {
+                return false;
+            }
+
+            if (paper.getCurrency() == null || paper.getCurrency().equals("")) {
+                return false;
+            }
         }
 
         if (paper.getLastRevision() == null || paper.getLastRevision().getId() == null) {

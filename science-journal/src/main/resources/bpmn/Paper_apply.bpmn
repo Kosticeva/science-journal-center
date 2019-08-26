@@ -24,7 +24,7 @@
       <bpmn:outgoing>SequenceFlow_1lsil9y</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_136yanu" name="Da" sourceRef="If_OpenAccess" targetRef="If_OpenAccessJoin">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${open_access==true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${open_access==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:exclusiveGateway id="If_OpenAccessJoin">
       <bpmn:incoming>SequenceFlow_0m62wfs</bpmn:incoming>
@@ -66,15 +66,17 @@
             </camunda:validation>
           </camunda:formField>
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationPersistenceService}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1q1agpk</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1tse1yb</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0terl1g</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Theme_revision" name="Tematska recenzija rada" camunda:assignee="${magazine_editor}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="theme_appropriate" label="Tematski prikladan rad?" type="boolean" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationThemeReviewEndListener}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0q5vttg</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1d5amb2</bpmn:outgoing>
@@ -86,10 +88,8 @@
     </bpmn:exclusiveGateway>
     <bpmn:endEvent id="EndPaper_Denied" name="Odbijanje rada">
       <bpmn:incoming>SequenceFlow_0qtt5k4</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0l1vu4s</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0s38432</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0ek0u1f</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_1x30v2q</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1shbhlf</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0qtt5k4" name="Ne" sourceRef="If_ThemeAppropriate" targetRef="EndPaper_Denied">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${theme_appropriate==false}</bpmn:conditionExpression>
@@ -102,7 +102,9 @@
         <camunda:formData>
           <camunda:formField id="structure_appropriate" label="Strukturno prikladan rad?" type="boolean" />
           <camunda:formField id="structure_deadline" label="Rok za ispravku" type="date" />
+          <camunda:formField id="structure_comment" label="Komentar na strukturu" type="string" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationStructureReviewEndListener}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0nferkg</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0mjpdpy</bpmn:outgoing>
@@ -136,12 +138,13 @@
             </camunda:validation>
           </camunda:formField>
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationReviewProposalEndListener}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1kkimm2</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1wsecq0</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1wsecq0" sourceRef="Choose_reviewers" targetRef="Review" />
-    <bpmn:userTask id="Review" name="Recenzija" camunda:candidateGroups="reviewers">
+    <bpmn:userTask id="Review" name="Recenzija">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="paper_grade" label="Ocena rada" type="enum" defaultValue="yes">
@@ -160,6 +163,8 @@
             </camunda:validation>
           </camunda:formField>
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationReviewEndListener}" event="complete" />
+        <camunda:taskListener delegateExpression="${setReviewerListener}" event="create" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1wsecq0</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1ra64ox</bpmn:incoming>
@@ -185,6 +190,7 @@
           <camunda:formField id="correction_deadline" label="Rok za ispravku rada" type="date" />
           <camunda:formField id="another_review_needed" label="Potrebna dodatna recenzija?" type="boolean" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationReviewEndProposalEndListener}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1bu1llq</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_012kpjt</bpmn:outgoing>
@@ -197,10 +203,10 @@
       <bpmn:outgoing>SequenceFlow_0l1vu4s</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_00slmbn" name="Prihvatiti" sourceRef="If_Decision" targetRef="NotifyInitiator_Accepted">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision==yes}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision=='yes'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0qvkkqz" name="Manje izmene potrebne" sourceRef="If_Decision" targetRef="Minor_UpdateApplication">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision==minor}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision=='minor'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:userTask id="Minor_UpdateApplication" name="Manja izmena rada" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
@@ -212,13 +218,14 @@
           </camunda:formField>
           <camunda:formField id="modifications" label="Unete promene su" type="string" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationPersistenceService}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0qvkkqz</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_10tz32c</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0swohb6</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0cfnl52" name="Vece izmene potrebne" sourceRef="If_Decision" targetRef="Major_UpdateApplication">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision==major}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision=='major'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:userTask id="Major_UpdateApplication" name="Veca izmena rada" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
@@ -230,6 +237,7 @@
           </camunda:formField>
           <camunda:formField id="modifications" label="Unete promene su" type="string" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationPersistenceService}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0cfnl52</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_03y2ey6</bpmn:outgoing>
@@ -241,6 +249,7 @@
         <camunda:formData>
           <camunda:formField id="decision_after_correction" label="Ponovna odluka" type="boolean" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${finalPaperApplicationChangeCheckListener}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0swohb6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1k6vgn2</bpmn:outgoing>
@@ -260,8 +269,8 @@
     <bpmn:sequenceFlow id="SequenceFlow_1wwd00c" name="Da" sourceRef="If_DecisionAfterCorrection" targetRef="NotifyInitiator_Accepted">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision_after_correction==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0l1vu4s" name="Odbiti" sourceRef="If_Decision" targetRef="EndPaper_Denied">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision==no}</bpmn:conditionExpression>
+    <bpmn:sequenceFlow id="SequenceFlow_0l1vu4s" name="Odbiti" sourceRef="If_Decision" targetRef="ServiceTask_1oxnsll">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision=='no'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0s38432" sourceRef="NotifyInitiator_Upgrade" targetRef="EndPaper_Denied" />
     <bpmn:boundaryEvent id="UpdateDeadline_finished" name="Prijava nije azurirana na vreme" attachedToRef="Upgrade_application">
@@ -299,19 +308,25 @@
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1ra64ox" sourceRef="New_reviewer" targetRef="Review" />
     <bpmn:boundaryEvent id="MinorUpdate_DeadlineFinished" name="Manja izmena rada nije izvrsena na vreme" attachedToRef="Minor_UpdateApplication">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${paperApplicationPaperReviewDeadlineExpiredListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ek0u1f</bpmn:outgoing>
       <bpmn:timerEventDefinition>
         <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${correction_deadline}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="MajorUpdate_DeadlineFinished" name="Veca izmena rada nije izvrsena na vreme" attachedToRef="Major_UpdateApplication">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${paperApplicationPaperReviewDeadlineExpiredListener}" event="end" />
+      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_1x30v2q</bpmn:outgoing>
       <bpmn:timerEventDefinition>
         <bpmn:timeDate xsi:type="bpmn:tFormalExpression">${correction_deadline}</bpmn:timeDate>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0ek0u1f" sourceRef="MinorUpdate_DeadlineFinished" targetRef="EndPaper_Denied" />
-    <bpmn:sequenceFlow id="SequenceFlow_1x30v2q" sourceRef="MajorUpdate_DeadlineFinished" targetRef="EndPaper_Denied" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ek0u1f" sourceRef="MinorUpdate_DeadlineFinished" targetRef="ServiceTask_1oxnsll" />
+    <bpmn:sequenceFlow id="SequenceFlow_1x30v2q" sourceRef="MajorUpdate_DeadlineFinished" targetRef="ServiceTask_1oxnsll" />
     <bpmn:sequenceFlow id="SequenceFlow_1d5amb2" sourceRef="Theme_revision" targetRef="If_ThemeAppropriate" />
     <bpmn:sequenceFlow id="SequenceFlow_1sw8lu4" name="Ne" sourceRef="If_StructureAppropriate" targetRef="NotifyInitiator_UpgradeApplication">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${structure_appropriate==false}</bpmn:conditionExpression>
@@ -332,11 +347,11 @@
           <camunda:formField id="keyterms" label="Kljucni pojmovi" type="string" />
           <camunda:formField id="pdf" label="Pdf" type="string" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${paperApplicationPersistenceService}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0f3sjtm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0s0d0fi</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1tse1yb" sourceRef="Enter_paper_metadata" targetRef="Choose_editor" />
     <bpmn:sequenceFlow id="SequenceFlow_0s0d0fi" sourceRef="Upgrade_application" targetRef="Choose_editor" />
     <bpmn:sequenceFlow id="SequenceFlow_1a433rp" sourceRef="NotifyInitiator_Accepted" targetRef="Save_paper" />
     <bpmn:sequenceFlow id="SequenceFlow_04w002p" sourceRef="Save_paper" targetRef="EndPaper_Accepted" />
@@ -347,31 +362,31 @@
       <bpmn:incoming>SequenceFlow_1jwt435</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1neomv6</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Choose_editor" name="Odabir urednika casopisa">
-      <bpmn:incoming>SequenceFlow_1tse1yb</bpmn:incoming>
+    <bpmn:serviceTask id="Choose_editor" name="Odabir urednika casopisa" camunda:delegateExpression="${chooseMagazineEditorService}">
       <bpmn:incoming>SequenceFlow_0s0d0fi</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0terl1g</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0e8rrc5</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyEditor_NewPaper" name="Slanje e-mail notifikacije">
+    <bpmn:serviceTask id="NotifyEditor_NewPaper" name="Slanje e-mail notifikacije" camunda:delegateExpression="${sendEmailEditorChosenService}">
       <bpmn:incoming>SequenceFlow_0e8rrc5</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0q5vttg</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics>
         <bpmn:loopCardinality xsi:type="bpmn:tFormalExpression">2</bpmn:loopCardinality>
       </bpmn:multiInstanceLoopCharacteristics>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyInitiator_UpgradeApplication" name="Slanje e-mail notifikacije">
+    <bpmn:serviceTask id="NotifyInitiator_UpgradeApplication" name="Slanje e-mail notifikacije" camunda:delegateExpression="${sendEmailStructureBadService}">
       <bpmn:incoming>SequenceFlow_1sw8lu4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0f3sjtm</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyInitiator_Upgrade" name="Slanje e-mail notifikacije">
+    <bpmn:serviceTask id="NotifyInitiator_Upgrade" name="Slanje e-mail notifikacije" camunda:delegateExpression="${sendEmailApplicationExpiredService}">
       <bpmn:incoming>SequenceFlow_0del036</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0s38432</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Choose_FieldEditor" name="Odabir urednika naucne oblasti">
+    <bpmn:serviceTask id="Choose_FieldEditor" name="Odabir urednika naucne oblasti" camunda:delegateExpression="${chooseFieldEditorService}">
       <bpmn:incoming>SequenceFlow_0akx4oq</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1kkimm2</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="NotifyInitiator_Accepted" name="Slanje e-maila o prihvatanju rada">
+    <bpmn:serviceTask id="NotifyInitiator_Accepted" name="Slanje e-maila o prihvatanju rada" camunda:delegateExpression="${sendEmailApplicationSuccesfulService}">
       <bpmn:incoming>SequenceFlow_00slmbn</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_1wwd00c</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1a433rp</bpmn:outgoing>
@@ -388,11 +403,13 @@
     <bpmn:sequenceFlow id="SequenceFlow_1qers5l" name="Da" sourceRef="AnotherReview_Needed" targetRef="New_reviewer">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${another_review_needed==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="Save_paper" name="Cuvanje rada i generisanje DOI-ja">
+    <bpmn:serviceTask id="Save_paper" name="Cuvanje rada i generisanje DOI-ja" camunda:delegateExpression="${paperPersistenceService}">
       <bpmn:incoming>SequenceFlow_1a433rp</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_04w002p</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="SequenceFlow_1lsil9y" sourceRef="If_OpenAccess" targetRef="Subscription_subprocess" />
+    <bpmn:sequenceFlow id="SequenceFlow_1lsil9y" sourceRef="If_OpenAccess" targetRef="Subscription_subprocess">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${open_access==true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:boundaryEvent id="NotSubscribed_Error" attachedToRef="Subscription_subprocess">
       <bpmn:outgoing>SequenceFlow_0kagjmk</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="Error_0o2leh9" />
@@ -403,6 +420,14 @@
       <bpmn:incoming>SequenceFlow_1lsil9y</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0sjvh1z</bpmn:outgoing>
     </bpmn:callActivity>
+    <bpmn:sequenceFlow id="SequenceFlow_0terl1g" sourceRef="Enter_paper_metadata" targetRef="Choose_editor" />
+    <bpmn:serviceTask id="ServiceTask_1oxnsll" name="Slanje e-mail notifikacije" camunda:delegateExpression="${sendEmailApplicationRejectedService}">
+      <bpmn:incoming>SequenceFlow_0ek0u1f</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0l1vu4s</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1x30v2q</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1shbhlf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1shbhlf" sourceRef="ServiceTask_1oxnsll" targetRef="EndPaper_Denied" />
   </bpmn:process>
   <bpmn:error id="Error_0o2leh9" name="Error_2vl2q2m" errorCode="123" />
   <bpmn:error id="Error_1vnlc6p" />
@@ -424,7 +449,7 @@
         <di:waypoint x="447" y="2" />
         <di:waypoint x="569" y="2" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="454" y="16" width="15" height="14" />
+          <dc:Bounds x="398" y="-38" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1mycdsj_di" bpmnElement="If_OpenAccessJoin" isMarkerVisible="true">
@@ -439,10 +464,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1q1agpk_di" bpmnElement="SequenceFlow_1q1agpk">
         <di:waypoint x="619" y="2" />
-        <di:waypoint x="762" y="2" />
+        <di:waypoint x="711" y="2" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1q2hu1q_di" bpmnElement="Enter_paper_metadata">
-        <dc:Bounds x="762" y="-38" width="100" height="80" />
+        <dc:Bounds x="711" y="-38" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_1c156yq_di" bpmnElement="Theme_revision">
         <dc:Bounds x="1316" y="-152" width="100" height="80" />
@@ -456,7 +481,7 @@
       <bpmndi:BPMNShape id="EndEvent_1etnt0x_di" bpmnElement="EndPaper_Denied">
         <dc:Bounds x="1460" y="230" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1506" y="233" width="72" height="14" />
+          <dc:Bounds x="1506" y="232" width="72" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0qtt5k4_di" bpmnElement="SequenceFlow_0qtt5k4">
@@ -598,8 +623,7 @@
       <bpmndi:BPMNEdge id="SequenceFlow_0l1vu4s_di" bpmnElement="SequenceFlow_0l1vu4s">
         <di:waypoint x="579" y="404" />
         <di:waypoint x="579" y="365" />
-        <di:waypoint x="1350" y="365" />
-        <di:waypoint x="1465" y="260" />
+        <di:waypoint x="1428" y="365" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="605" y="347" width="29" height="14" />
         </bpmndi:BPMNLabel>
@@ -650,14 +674,14 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0ek0u1f_di" bpmnElement="SequenceFlow_0ek0u1f">
         <di:waypoint x="935" y="385" />
-        <di:waypoint x="1478" y="385" />
-        <di:waypoint x="1478" y="266" />
+        <di:waypoint x="1399" y="385" />
+        <di:waypoint x="1428" y="385" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1x30v2q_di" bpmnElement="SequenceFlow_1x30v2q">
         <di:waypoint x="1060" y="779" />
         <di:waypoint x="1604" y="779" />
-        <di:waypoint x="1604" y="248" />
-        <di:waypoint x="1496" y="248" />
+        <di:waypoint x="1604" y="362" />
+        <di:waypoint x="1528" y="362" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1d5amb2_di" bpmnElement="SequenceFlow_1d5amb2">
         <di:waypoint x="1366" y="-72" />
@@ -676,13 +700,13 @@
         <di:waypoint x="898" y="248" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0q5vttg_di" bpmnElement="SequenceFlow_0q5vttg">
-        <di:waypoint x="1190" y="-112" />
+        <di:waypoint x="1184" y="-112" />
         <di:waypoint x="1316" y="-112" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0e8rrc5_di" bpmnElement="SequenceFlow_0e8rrc5">
         <di:waypoint x="992" y="-38" />
         <di:waypoint x="992" y="-112" />
-        <di:waypoint x="1090" y="-112" />
+        <di:waypoint x="1084" y="-112" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1y3c27g_di" bpmnElement="SequenceFlow_1y3c27g">
         <di:waypoint x="17" y="2" />
@@ -699,10 +723,6 @@
       <bpmndi:BPMNShape id="UserTask_03ce79d_di" bpmnElement="Upgrade_application">
         <dc:Bounds x="898" y="208" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_1tse1yb_di" bpmnElement="SequenceFlow_1tse1yb">
-        <di:waypoint x="862" y="2" />
-        <di:waypoint x="942" y="2" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0s0d0fi_di" bpmnElement="SequenceFlow_0s0d0fi">
         <di:waypoint x="985" y="208" />
         <di:waypoint x="985" y="42" />
@@ -728,7 +748,7 @@
         <dc:Bounds x="942" y="-38" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_04zs9r5_di" bpmnElement="NotifyEditor_NewPaper">
-        <dc:Bounds x="1090" y="-152" width="100" height="80" />
+        <dc:Bounds x="1084" y="-152" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1bwii06_di" bpmnElement="NotifyInitiator_UpgradeApplication">
         <dc:Bounds x="726" y="147" width="100" height="80" />
@@ -761,10 +781,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1qers5l_di" bpmnElement="SequenceFlow_1qers5l">
         <di:waypoint x="443" y="454" />
-        <di:waypoint x="443" y="618" />
-        <di:waypoint x="213" y="618" />
+        <di:waypoint x="443" y="695" />
+        <di:waypoint x="163" y="695" />
+        <di:waypoint x="163" y="658" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="448" y="459" width="15" height="14" />
+          <dc:Bounds x="448" y="465" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1oq5nfq_di" bpmnElement="Save_paper">
@@ -790,6 +811,17 @@
       <bpmndi:BPMNShape id="CallActivity_0ga0lmv_di" bpmnElement="Subscription_subprocess">
         <dc:Bounds x="471" y="-181" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0terl1g_di" bpmnElement="SequenceFlow_0terl1g">
+        <di:waypoint x="811" y="2" />
+        <di:waypoint x="942" y="2" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1oxnsll_di" bpmnElement="ServiceTask_1oxnsll">
+        <dc:Bounds x="1428" y="337" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1shbhlf_di" bpmnElement="SequenceFlow_1shbhlf">
+        <di:waypoint x="1478" y="337" />
+        <di:waypoint x="1478" y="266" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

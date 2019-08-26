@@ -93,24 +93,24 @@ insert into issue(id, edition, magazine, print_date, price, currency) values (4,
 
 insert into application(id, version, title, abstract, keywords, author, magazine, field, file, state, accepted, timestamp) values (1, 0, 'Sazvežđa', 'O nastanku sazvežđa', 'zvezde,grci,teleskop,nebo', 'ppetrovic', '12345678', 'AST', 'C:\\Users\\kosti\\git\\science-journal-center\\science-journal\\target\\www\\upload-dir\\12345678\\applications\\1-Sazvežđa.pdf', 'ACCEPTED', 1, '2019-01-27');
 insert into application_coauthors(paper, author) values (1, 1);
-insert into task(id, assignee, deadline, application_id, summary, type, finished) values (1, 'urednikNG', '2019-02-14', 1, 'Analiza recenzija', 5, 0);
+--insert into task(id, assignee, deadline, application_id, summary, type, finished) values (1, 'urednikNG', '2019-02-14', 1, 'Analiza recenzija', 5, 0);
 insert into application(id, version, title, abstract, keywords, author, magazine, field, file, state, accepted, timestamp) values (2, 0, 'Okeansko dno', 'O značaju i veličini okeanskog dna', 'okean,dno,Pacifik,Mont Everest,Mauna Kea,Marijanski rov,kontinent,voda', 'ppetrovic', '12345678', 'GLG', 'C:\\Users\\kosti\\git\\science-journal-center\\science-journal\\target\\www\\upload-dir\\12345678\\applications\\2-Okeansko dno.pdf', 'ACCEPTED', 1, '2019-01-27');
 insert into application_coauthors(paper, author) values (2, 1);
-insert into task(id, assignee, deadline, application_id, summary, type, finished) values (2, 'urednikNG', '2019-02-14', 2, 'Analiza recenzija', 5, 0);
+--insert into task(id, assignee, deadline, application_id, summary, type, finished) values (2, 'urednikNG', '2019-02-14', 2, 'Analiza recenzija', 5, 0);
 insert into application(id, version, title, abstract, keywords, author, magazine, field, file, state, accepted, timestamp) values (3, 0, 'Svet u doba Krede', 'O dinosaurusima koji su vladali u doba Krede', 'dinosaurus,Kreda,Pangea,Laurazija,Gondvana,Jura,Brachiosaurus,Apatosaurus,Hypsilophodon,klima,biljke', 'mmarkovic', '12345678', 'PLN', 'C:\\Users\\kosti\\git\\science-journal-center\\science-journal\\target\\www\\upload-dir\\12345678\\applications\\3-Svet u doba Krede.pdf', 'ACCEPTED', 1, '2019-01-27');
 insert into application_coauthors(paper, author) values (3, 2);
-insert into task(id, assignee, deadline, application_id, summary, type, finished) values (3, 'urednikNG', '2019-02-14', 3, 'Analiza recenzija', 5, 0);
+--insert into task(id, assignee, deadline, application_id, summary, type, finished) values (3, 'urednikNG', '2019-02-14', 3, 'Analiza recenzija', 5, 0);
 insert into application(id, version, title, abstract, keywords, author, magazine, field, file, state, accepted, timestamp) values (4, 0, 'Zečevi i kunići', 'O najbitnijim karakteristikama lagomorfa', 'zec,kunic,lagomorfe,sisari,glodari,zvizdare', 'mmarkovic', '87654321', 'ZOO', 'C:\\Users\\kosti\\git\\science-journal-center\\science-journal\\target\\www\\upload-dir\\87654321\\applications\\4-Zečevi i kunići.pdf', 'ACCEPTED', 1, '2019-01-27');
 insert into application_coauthors(paper, author) values (4, 2);
-insert into task(id, assignee, deadline, application_id, summary, type, finished) values (4, 'urednikPZ', '2019-02-14', 4, 'Analiza recenzija', 5, 0);
+--insert into task(id, assignee, deadline, application_id, summary, type, finished) values (4, 'urednikPZ', '2019-02-14', 4, 'Analiza recenzija', 5, 0);
 insert into application(id, version, title, abstract, keywords, author, magazine, field, file, state, accepted, timestamp) values (5, 0, 'Koža', 'O najbitnijim karakteristikama kože', 'koza,omotac,stopala,kapci,dlacice,cula,znoj', 'mmarkovic', '87654321', 'ANA', 'C:\\Users\\kosti\\git\\science-journal-center\\science-journal\\target\\www\\upload-dir\\87654321\\applications\\5-Koža.pdf', 'ACCEPTED', 1, '2019-01-27');
 insert into application_coauthors(paper, author) values (5, 2);
 insert into application_coauthors(paper, author) values (5, 1);
-insert into task(id, assignee, deadline, application_id, summary, type, finished) values (5, 'urednikPZ', '2019-02-14', 5, 'Analiza recenzija', 5, 0);
+--insert into task(id, assignee, deadline, application_id, summary, type, finished) values (5, 'urednikPZ', '2019-02-14', 5, 'Analiza recenzija', 5, 0);
 insert into application(id, version, title, abstract, keywords, author, magazine, field, file, state, accepted, timestamp) values (6, 0, 'Mongoli', 'O kulturnom nasleđu Mongola', 'mongoli,konjanici,Jurta,srednja Azija,nomadi,Gobi', 'ppetrovic', '87654321', 'HIS', 'C:\\Users\\kosti\\git\\science-journal-center\\science-journal\\target\\www\\upload-dir\\87654321\\applications\\6-Mongoli.pdf', 'ACCEPTED', 1, '2019-01-27');
 insert into application_coauthors(paper, author) values (6, 2);
 insert into application_coauthors(paper, author) values (6, 1);
-insert into task(id, assignee, deadline, application_id, summary, type, finished) values (6, 'urednikPZ', '2019-02-14',6, 'Analiza recenzija', 5, 0);
+--insert into task(id, assignee, deadline, application_id, summary, type, finished) values (6, 'urednikPZ', '2019-02-14',6, 'Analiza recenzija', 5, 0);
 
 
 

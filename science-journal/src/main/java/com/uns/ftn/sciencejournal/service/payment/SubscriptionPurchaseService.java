@@ -93,10 +93,6 @@ public class SubscriptionPurchaseService {
             return false;
         }
 
-        if (subscriptionPurchase.getType() == null) {
-            return false;
-        }
-
         /*if (subscriptionPurchase.getOption() == null || subscriptionPurchase.getOption().getPaymentOptionCode() == null) {
             return false;
         }

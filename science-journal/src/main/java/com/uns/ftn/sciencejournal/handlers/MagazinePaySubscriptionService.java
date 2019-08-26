@@ -38,7 +38,7 @@ public class MagazinePaySubscriptionService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        String issn = runtimeService.getVariable(delegateExecution.getId(), "issn").toString();
+        String issn = runtimeService.getVariable(delegateExecution.getId(), "magazine").toString();
         Magazine magazine = magazineService.getById(issn);
 
         String initiator = runtimeService.getVariable(delegateExecution.getId(), "initiator").toString();
@@ -56,5 +56,6 @@ public class MagazinePaySubscriptionService implements JavaDelegate {
         subscriptionPurchase = subscriptionPurchaseService.createSubscriptionPurchase(subscriptionPurchase);
 
         subscription.setPaid(true);
+        subscriptionService.updateSubscription(subscription, subscriptionId);
     }
 }

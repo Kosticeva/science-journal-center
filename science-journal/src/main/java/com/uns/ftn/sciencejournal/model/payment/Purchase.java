@@ -27,7 +27,7 @@ public abstract class Purchase {
     private Boolean successful;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PAYMENT_OPTION", nullable = false)
+    @JoinColumn(name = "PAYMENT_OPTION")
     private PaymentOption option;
 
     @Column(name = "AMOUNT", nullable = false)
