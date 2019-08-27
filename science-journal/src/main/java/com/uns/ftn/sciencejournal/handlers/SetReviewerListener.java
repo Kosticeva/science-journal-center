@@ -26,19 +26,11 @@ public class SetReviewerListener implements TaskListener {
         DelegateExecution delegateExecution = delegateTask.getExecution();
 
         String reviewer;
-        Object newReviewer = runtimeService.getVariable(delegateExecution.getId(), "new_reviewer");
-        if(newReviewer == null) {
-            Object reviewer1 = runtimeService.getVariable(delegateExecution.getId(), "reviewer1");
-            if(reviewer1 == null) {
-                reviewer = runtimeService.getVariable(delegateExecution.getId(), "reviewer2").toString();
-                runtimeService.removeVariable(delegateExecution.getId(), "reviewer2");
-            } else {
-                reviewer = reviewer1.toString();
-                runtimeService.removeVariable(delegateExecution.getId(), "reviewer1");
-            }
+        Object reviewer1 = runtimeService.getVariable(delegateExecution.getId(), "reviewer1");
+        if(reviewer1 == null) {
+            reviewer = runtimeService.getVariable(delegateExecution.getId(), "reviewer2").toString();
         } else {
-            reviewer = newReviewer.toString();
-            runtimeService.removeVariable(delegateExecution.getId(), "new_reviewer");
+            reviewer = reviewer1.toString();
         }
 
         delegateTask.setAssignee(reviewer);
