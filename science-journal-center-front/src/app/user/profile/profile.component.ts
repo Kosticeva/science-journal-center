@@ -15,6 +15,7 @@ import { NewPaperService } from 'src/app/services/new-paper.service';
 import { Paper } from 'src/app/models/paper';
 import { Issue } from 'src/app/models/issue';
 import { Router } from '@angular/router';
+import { CamundaService } from 'src/app/services/camunda.service';
 
 @Component({
   selector: 'app-profile',
@@ -46,7 +47,8 @@ export class ProfileComponent implements OnInit {
     private modalService: NgbModal,
     private searchService: SearchService,
     private paperService: NewPaperService,
-    private router: Router
+    private router: Router,
+    private camundaService: CamundaService
   ) { }
 
   openModal(template: TemplateRef<any>) {
@@ -59,6 +61,12 @@ export class ProfileComponent implements OnInit {
         this.user = data;
       }
     );
+
+    this.camundaService.getTasksFromUser(this.loginService.getUser()).subscribe(
+      (data) => {
+        this.tasks = data;
+      }
+    )
 
     this.purchaseService.getIssuePurchases().subscribe(
       (data) => {
@@ -77,110 +85,14 @@ export class ProfileComponent implements OnInit {
         this.subscriptionPurchases = data;
       }
     );
-
-    this.taskService.getTasks().subscribe(
-      (data) => {
-        this.tasks = data;
-      }
-    )
   }
 
-  viewApplication(id: number, templateRef: TemplateRef<any>) {
-    this.taskService.getApplication(id).subscribe(
-      (data) => {
-        this.application = data;
-        this.openModal(templateRef);
-      }
-    )
+  submitFinishedTask(taskId: string) {
+    this.router.navigate([`/task/${taskId}`]);
   }
 
   download(file: string) {
     alert("download!");
-  }
-
-  finishTask(task: Task, template: TemplateRef<any>) {
-    this.task = task;
-    this.openModal(template);
-    if(this.task.type === "REVIEWER_PROPOSAL") {
-      this.taskService.getApplication(this.task.application).subscribe(
-        (data) => {
-          this.searchService.getReviewers(data).subscribe(
-            (data1) => {
-              this.reviewers = data1;
-            }
-          )
-        }
-      )
-    } else if(this.task.type === "REVIEW_ANALYSIS") {
-      this.doi = "";
-      this.currency = "";
-      this.price = 0;
-      this.taskService.getApplication(this.task.application).subscribe(
-        (data) => {
-          this.purchaseService.getIssuesForMagazine(data.magazine).subscribe(
-            (data1) => {
-              this.issues = data1;
-            }
-          )
-        }
-      )
-    }
-  }
-
-  submitFinishedTask() {
-    this.task.finished = true;
-    if(this.task.type === "REVIEWER_PROPOSAL") {
-      for(let i = 0; i < this.chosens.length; i++){
-        let review = new Task(null, this.chosens[i], new Date(new Date(this.task.deadline).getTime() + 2*24*3600), this.task.application, "Recenzija", "REVIEW", false);
-        this.taskService.createTask(review).subscribe(
-          (data) => {
-            console.log(data);
-            this.modalService.dismissAll();
-          }
-        )
-      }
-
-      let bigReview = new Task(null, this.loginService.getUser(), new Date(new Date(this.task.deadline).getTime() + 3*24*3600), this.task.application, "Analiziranje recenzija", "REVIEW_ANALYSIS", false);
-      this.taskService.createTask(bigReview).subscribe(
-        (data) => {
-          console.log(data);
-          this.tasks.splice(this.tasks.indexOf(this.task), 1);
-          this.task = null;
-        }
-      )
-    } else if(this.task.type === "REVIEW_ANALYSIS") {
-      this.taskService.getApplication(this.task.application).subscribe(
-        (data) => {
-          let paper: Paper = {
-              doi: this.doi,
-              title: data.title,
-              author: data.author,
-              coauthors: data.coauthors,
-              field: data.field,
-              file: data.file,
-              issue: this.issue,
-              keyTerms: data.keyTerms,
-              lastRevision: data.paperId,
-              paperAbstract: data.paperAbstract,
-              price: this.price,
-              currency: this.currency
-          };
-          this.paperService.publishPaper(paper).subscribe(
-            (data) => {
-              this.modalService.dismissAll();
-            }
-          )
-        }
-      )
-    }
-
-    this.taskService.updateTask(this.task, this.task.id).subscribe(
-      (data) => {
-        console.log(data);
-        this.tasks.splice(this.tasks.indexOf(this.task), 1);
-        this.task = null;
-      }
-    )
   }
 
 }

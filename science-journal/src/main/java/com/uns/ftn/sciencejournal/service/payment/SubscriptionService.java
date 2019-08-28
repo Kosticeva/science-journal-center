@@ -53,7 +53,7 @@ public class SubscriptionService {
         List<Subscription> subscriptions = subscriptionRepository.getByUserAndMagazine(buyer, magazine);
         Subscription currentSub = null;
         for(Subscription sub: subscriptions) {
-            if(sub.getDate().isAfter(LocalDate.now()) && !sub.getCancelled()) {   //if it is valid now
+            if(sub.getDate().isAfter(LocalDate.now()) && (sub.getCancelled() == null || !sub.getCancelled())) {   //if it is valid now
                 currentSub = sub;
                 break;
             }

@@ -55,6 +55,84 @@ public class SearchService {
         return reduceThoseThatWorkForMagazineInField(reduceListOfUsers(allFoundUsers), reviewersForMagazine);
     }
 
+    public List<Credentials> searchReviewersByRadiusAndField(PaperApplication paperApplication) {
+
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+        String reviewersOutside100kmRadius = elasticSearchPlugin.searchForReviewers(jsonUtil.generateGeoQuery(
+                paperApplication.getAuthor().getUserDetails().getLatitude().toString(), paperApplication.getAuthor().getUserDetails().getLongitude().toString()));
+
+        List<Reviewer> reviewersForMagazine = reviewerRepository.findByMagazinesAndFields(paperApplication.getMagazine(), paperApplication.getField());
+        List<Credentials> allFoundUsers = new ArrayList<>(mapObjectToReviewer(jsonUtil.getHitsFromJson(reviewersOutside100kmRadius)));
+
+        return reduceThoseThatWorkForMagazineInField(reduceListOfUsers(allFoundUsers), reviewersForMagazine);
+    }
+
+    public List<Credentials> searchReviewersBySimilarityAndFields(PaperApplication paperApplication) {
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+        String similarPapers = elasticSearchPlugin.searchForPapers(jsonUtil.generateMoreLikeThisQuery(PDFUtils.readFromPDF(paperApplication.getFile()).replace("\n", "")));
+
+        List<Reviewer> reviewersForMagazine = reviewerRepository.findByMagazinesAndFields(paperApplication.getMagazine(), paperApplication.getField());
+        List<Credentials> allFoundUsers = new ArrayList<>(mapPaperToReviewer(jsonUtil.getHitsFromJson(similarPapers)));
+
+        return reduceThoseThatWorkForMagazineInField(reduceListOfUsers(allFoundUsers), reviewersForMagazine);
+    }
+
+    public List<Credentials> searchReviewersBySimilarityAndRadius(PaperApplication paperApplication) {
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+
+        String similarPapers = elasticSearchPlugin.searchForPapers(jsonUtil.generateMoreLikeThisQuery(PDFUtils.readFromPDF(paperApplication.getFile()).replace("\n", "")));
+        List<Credentials> allFoundUsersForSimilarPapers = new ArrayList<>(mapPaperToReviewer(jsonUtil.getHitsFromJson(similarPapers)));
+
+        String reviewersOutside100kmRadius = elasticSearchPlugin.searchForReviewers(jsonUtil.generateGeoQuery(
+                paperApplication.getAuthor().getUserDetails().getLatitude().toString(), paperApplication.getAuthor().getUserDetails().getLongitude().toString()));
+        List<Credentials> allFoundUsersForRadius = new ArrayList<>(mapObjectToReviewer(jsonUtil.getHitsFromJson(reviewersOutside100kmRadius)));
+
+        allFoundUsersForRadius.addAll(allFoundUsersForSimilarPapers);
+        return allFoundUsersForRadius.stream()
+                .distinct()
+                .filter(user -> {
+
+                    List<Reviewer> reviewers = reviewerRepository.findByUser(user);
+                    if(reviewers.isEmpty()) return false;
+
+                    return reviewers.get(0).getMagazines().contains(paperApplication.getMagazine());
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<Credentials> searchReviewersBySimilarity(PaperApplication paperApplication) {
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+
+        String similarPapers = elasticSearchPlugin.searchForPapers(jsonUtil.generateMoreLikeThisQuery(PDFUtils.readFromPDF(paperApplication.getFile()).replace("\n", "")));
+        List<Credentials> allFoundUsers = new ArrayList<>(mapPaperToReviewer(jsonUtil.getHitsFromJson(similarPapers)));
+
+        return allFoundUsers.stream()
+            .filter(user -> {
+                List<Reviewer> reviewers = reviewerRepository.findByUser(user);
+                if(reviewers.isEmpty()) return false;
+
+                return reviewers.get(0).getMagazines().contains(paperApplication.getMagazine());
+            })
+            .collect(Collectors.toList());
+    }
+
+    public List<Credentials> searchReviewersByRadius(PaperApplication paperApplication) {
+        OldElasticSearchJsonUtil jsonUtil = new OldElasticSearchJsonUtil();
+
+        String reviewersOutside100kmRadius = elasticSearchPlugin.searchForReviewers(jsonUtil.generateGeoQuery(
+                paperApplication.getAuthor().getUserDetails().getLatitude().toString(), paperApplication.getAuthor().getUserDetails().getLongitude().toString()));
+        List<Credentials> allFoundUsers = new ArrayList<>(mapObjectToReviewer(jsonUtil.getHitsFromJson(reviewersOutside100kmRadius)));
+
+        return allFoundUsers.stream()
+                .filter(user -> {
+                    List<Reviewer> reviewers = reviewerRepository.findByUser(user);
+                    if(reviewers.isEmpty()) return false;
+
+                    return reviewers.get(0).getMagazines().contains(paperApplication.getMagazine());
+                })
+                .collect(Collectors.toList());
+    }
+
     private List<Credentials> reduceThoseThatWorkForMagazineInField(List<Credentials> found, List<Reviewer> work) {
         List<Credentials> finalList = new ArrayList<>();
         for (Reviewer worker : work) {

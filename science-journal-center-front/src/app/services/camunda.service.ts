@@ -11,7 +11,11 @@ export class CamundaService {
 
   constructor(private http: HttpClient) {}
 
-  startProcess(processKey: string, variableList?: any[]): Observable<any> {
+  startProcess(processKey: string): Observable<any> {
+    return this.http.post(this.CAMUNDA_URL + `process-definition/key/${processKey}/start`, {});
+  }
+
+  startProcessWithVariables(processKey: string, variableList: any[]): Observable<any> {
     
     let variable = {};
     for(let v of variableList) {
@@ -25,21 +29,32 @@ export class CamundaService {
     return this.http.get<any[]>(this.CAMUNDA_URL + `task?processInstanceId=${processId}`);
   }
 
-  getTasksFromUser(user: string) {}
+  getTasksFromUser(user: String) : Observable<any>{
+    return this.http.get<any[]>(this.CAMUNDA_URL + `task?assignee=${user}`);
+  }
 
-  getTaskForm(taskId: string): Observable<any[]> {
-    return this.http.get<any[]>(this.CAMUNDA_URL + `task/${taskId}/form-variables`);
+  getTask(taskId: string): Observable<any> {
+    return this.http.get<any[]>(this.CAMUNDA_URL + `task/${taskId}`);
+  }
+
+  getTaskForm(taskId: string): Observable<any> {
+
+    let headers = new HttpHeaders({
+          'Content-Type': 'application/json'
+      });
+    return this.http.get(this.CAMUNDA_URL + `task/${taskId}/rendered-form`, {headers: headers, responseType: 'text'});
   }
 
   submitTaskForm(formFields: any[], taskId: string): Observable<any> {
 
     let variables = {};
     for(let ff of formFields) {
-      variables[ff.key] = ff;
+      variables[ff.key] = { "value" : ff.value };
     }
 
-    return this.http.post(this.CAMUNDA_URL + `task/${taskId}/submit-form`, {variables});
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(this.CAMUNDA_URL + `task/${taskId}/complete`, JSON.stringify({variables}), {headers: headers});
   }
-
-  completeTask() {}
 }

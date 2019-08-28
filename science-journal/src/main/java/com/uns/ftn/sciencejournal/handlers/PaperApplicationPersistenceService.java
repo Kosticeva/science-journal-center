@@ -1,6 +1,8 @@
 package com.uns.ftn.sciencejournal.handlers;
 
+import com.uns.ftn.sciencejournal.model.common.Magazine;
 import com.uns.ftn.sciencejournal.model.common.PaperApplication;
+import com.uns.ftn.sciencejournal.model.common.ScienceField;
 import com.uns.ftn.sciencejournal.model.enums.PaperApplicationState;
 import com.uns.ftn.sciencejournal.model.users.UserDetails;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,6 +42,9 @@ public class PaperApplicationPersistenceService implements TaskListener {
     @Autowired
     MagazineRepository magazineRepository;
 
+    @Autowired
+    UserDetailsRepository userDetailsRepository;
+
     @Override
     public void notify(DelegateTask delegateTask) {
 
@@ -49,43 +56,70 @@ public class PaperApplicationPersistenceService implements TaskListener {
         String coauthors = runtimeService.getVariable(delegateExecution.getId(), "coauthors").toString();
         String anAbstract = runtimeService.getVariable(delegateExecution.getId(), "abstract").toString();
         String field = runtimeService.getVariable(delegateExecution.getId(), "field").toString();
-        String keyterms = runtimeService.getVariable(delegateExecution.getId(), "keyterms").toString();
+        String keyterms = runtimeService.getVariable(delegateExecution.getId(), "keywords").toString();
         String pdf = runtimeService.getVariable(delegateExecution.getId(), "pdf").toString();
 
         PaperApplication paperApplication = new PaperApplication();
         paperApplication.setAuthor(credentialsRepository.getOne(author));
         paperApplication.setKeyTerms(keyterms);
+        paperApplication.setPaperAbstract(anAbstract);
+        paperApplication.setTitle(title);
 
         Set<UserDetails> coauthorsDb = Arrays.stream(coauthors.split(","))
-                .map(coauthor -> credentialsRepository.getOne(coauthor).getUserDetails())
+                .map(coauthor -> {
+                    Optional<UserDetails> dbCoauthor = userDetailsRepository.findFirstByEmail(coauthor);
+
+                    UserDetails returnVal = null;
+                    if (dbCoauthor.isPresent()) {
+                        returnVal = dbCoauthor.get();
+                    } else {
+                        returnVal = new UserDetails(null, "", "", "", "", coauthor, .0, .0);
+                        returnVal = userDetailsRepository.save(returnVal);
+                    }
+
+                    return returnVal;
+                })
                 .collect(Collectors.toSet());
 
         paperApplication.setCoauthors(coauthorsDb);
 
-        paperApplication.setField(scienceFieldRepository.findByName(field).get(0));
-        paperApplication.setMagazine(magazineRepository.getOne(issn));
-        paperApplication.setPaperAbstract(anAbstract);
-        paperApplication.setTitle(title);
+        String errorMsg = "";
 
-        paperApplication.setTimestamp(LocalDate.now());
-        paperApplication.setAccepted(null);
-        paperApplication.setState(PaperApplicationState.THEME_REVISION);
-        paperApplication.setFile(pdf);
+        Magazine magazine = magazineRepository.getOne(issn);
+        paperApplication.setMagazine(magazine);
+        List<ScienceField> fields = scienceFieldRepository.findByName(field);
 
-        Long paperId = (Long) runtimeService.getVariable(delegateExecution.getId(), "applicationId");
-        if(paperId != null) {
-            PaperApplication existingApp = paperApplicationRepository.getOne(paperId);
-            paperApplication.setVersion(existingApp.getVersion() + 1);
+        if (fields.isEmpty()) {
+            errorMsg = "Nepostojeca oblast. Moguce oblasti su: " + magazine.getFields().stream().map(ScienceField::getName).collect(Collectors.joining(","));
         } else {
-            paperApplication.setVersion(0);
+            paperApplication.setField(scienceFieldRepository.findByName(field).get(0));
+
+            paperApplication.setTimestamp(LocalDate.now());
+            paperApplication.setAccepted(null);
+            paperApplication.setState(PaperApplicationState.THEME_REVISION);
+            paperApplication.setFile(pdf);
+
+            Long paperId = (Long) runtimeService.getVariable(delegateExecution.getId(), "applicationId");
+            if (paperId != null) {
+                PaperApplication existingApp = paperApplicationRepository.getOne(paperId);
+                paperApplication.setVersion(existingApp.getVersion() + 1);
+            } else {
+                paperApplication.setVersion(0);
+            }
+
+            if (PaperApplicationState.MAJOR_PAPER_CORRECTION.equals(paperApplication.getState())) {
+                paperApplication.setState(PaperApplicationState.REVIEW);
+            }
+
+            paperApplication = paperApplicationRepository.save(paperApplication);
+
+            runtimeService.setVariable(delegateExecution.getId(), "applicationId", paperApplication.getId());
         }
 
-        if(PaperApplicationState.MAJOR_PAPER_CORRECTION.equals(paperApplication.getState())) {
-            paperApplication.setState(PaperApplicationState.REVIEW);
+        runtimeService.setVariable(delegateExecution.getId(), "save_app_error", errorMsg);
+
+        if (!"".equals(errorMsg)) {
+            throw new ValidationException(errorMsg);
         }
-
-        paperApplication = paperApplicationRepository.save(paperApplication);
-
-        runtimeService.setVariable(delegateExecution.getId(), "applicationId", paperApplication.getId());
     }
 }

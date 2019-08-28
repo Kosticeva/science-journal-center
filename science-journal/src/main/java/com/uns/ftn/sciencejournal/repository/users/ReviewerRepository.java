@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface ReviewerRepository extends JpaRepository<Reviewer, Integer> {
 
+    List<Reviewer> findByMagazines(Magazine magazine);
     List<Reviewer> findByMagazinesAndFields(Magazine magazine, ScienceField field);
     List<Reviewer> findByUser(Credentials user);
 }

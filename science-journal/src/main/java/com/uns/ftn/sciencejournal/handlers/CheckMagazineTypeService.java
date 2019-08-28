@@ -26,5 +26,6 @@ public class CheckMagazineTypeService implements JavaDelegate {
 
         boolean openAccess = magazine.getType().equals(MagazinePaymentType.OPEN_ACCESS);
         runtimeService.setVariable(delegateExecution.getId(), "open_access", openAccess);
+        runtimeService.setVariable(delegateExecution.getId(), "magazine_title", magazine.getName());
     }
 }

@@ -61,14 +61,8 @@ export const routes: Routes = [
      canActivate: [AuthGuardService]
  },
  {
-     path: 'tasks',
-     component: TasksComponent,
-     canActivate: [AuthGuardService]
- },
- {
-     path: 'comment/:id',
-     component: CommentComponent,
-     canActivate: [AuthGuardService]
+     path: 'task/:id',
+     component: TasksComponent
  },
  {
     path: 'search',

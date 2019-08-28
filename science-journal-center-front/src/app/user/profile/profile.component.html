@@ -45,22 +45,16 @@
     <table class="table table-light">
       <thead>
         <tr>
-          <th scope="col">Opis</th>
-          <th scope="col">Tip</th>
-          <th scope="col">Prijava</th>
+          <th scope="col-3">Opis</th>
           <th scope="col">Rok</th>
           <th scope="col">Akcije</th>
         </tr>
       </thead>
       <tbody>
           <tr *ngFor="let task of tasks">
-            <td>{{task.summary}}</td>
-            <td>{{task.type}}</td>
-            <td><a role="button" (click)="viewApplication(task.application, template)" class="btn btn-primary">Prijava sa sifrom {{task.application}}</a></td>
-            <td>Zavrsiti do: <b>{{task.deadline}}</b></td>
-            <td><span class="btn-group">
-              <button class="btn btn-primary" (click)="finishTask(task, template1)">Zavrsi</button>
-            </span></td>
+            <td>{{task.name}}</td>
+            <td>{{task.due}}</td>
+            <td><button class="btn btn-primary" (click)="submitFinishedTask(task.id)">Zavrsi</button></td>
           </tr>
       </tbody>
     </table>

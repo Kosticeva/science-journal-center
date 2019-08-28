@@ -7,6 +7,7 @@ import com.uns.ftn.sciencejournal.model.users.Editor;
 import com.uns.ftn.sciencejournal.repository.common.MagazineRepository;
 import com.uns.ftn.sciencejournal.repository.common.PaperApplicationRepository;
 import com.uns.ftn.sciencejournal.repository.users.EditorRepository;
+import com.uns.ftn.sciencejournal.service.utils.MailService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -28,6 +29,9 @@ public class ChooseFieldEditorService implements JavaDelegate {
     @Autowired
     PaperApplicationRepository paperApplicationRepository;
 
+    @Autowired
+    MailService mailService;
+
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
@@ -41,5 +45,13 @@ public class ChooseFieldEditorService implements JavaDelegate {
             fieldEditor = editorRepository.findFirstByMagazineAndField(application.getMagazine(), null);
             runtimeService.setVariable(delegateExecution.getId(), "field_editor", fieldEditor.getUser().getUsername());
         }
+
+        runtimeService.removeVariable(delegateExecution.getId(), "review_deadline");
+
+        String recipient = fieldEditor.getUser().getUserDetails().getEmail();
+        String subject = "New application notification";
+        String text = "You have been chosen to set reviewers for application  with id " + paperId;
+
+        mailService.sendEmail(recipient, subject, text);
     }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from 'src/app/services/login.service';
 import { Router } from '@angular/router';
+import { CamundaService } from 'src/app/services/camunda.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,11 +11,12 @@ import { Router } from '@angular/router';
 export class NavbarComponent implements OnInit {
 
   constructor(
-    private loginService: LoginService
+    private loginService: LoginService,
+    private router: Router,
+    private camundaService: CamundaService
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   logout() {
     this.loginService.logout();

@@ -34,5 +34,6 @@ public class ChooseMagazineEditorService implements JavaDelegate {
         }
 
         runtimeService.removeVariable(delegateExecution.getId(), "open_access");
+        runtimeService.removeVariable(delegateExecution.getId(), "structure_deadline");
     }
 }

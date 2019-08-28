@@ -2,12 +2,6 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0f9wc0l" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
   <bpmn:process id="Subscription" name="Uplata clanarine" isExecutable="true">
     <bpmn:startEvent id="StartEvent_00v7v90">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="magazine" label="ISSN" type="string" />
-          <camunda:formField id="initiator" type="string" />
-        </camunda:formData>
-      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_053mnqj</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="ServiceTask_0h0n2nz" name="Provera postojanja clanarine za magazin" camunda:delegateExpression="${magazineCheckTypeService}">
@@ -37,10 +31,15 @@
       <bpmn:incoming>SequenceFlow_160akby</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_13im66i</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:userTask id="UserTask_0t755z5" name="Odabir opcije za pretplatu" camunda:assignee="${initiator}">
+    <bpmn:userTask id="Choose_subscription" name="Odabir opcije za pretplatu" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="subscribe" label="Da li zelite da se pretplatite na magazin?" type="boolean" />
+          <camunda:formField id="Choose_subscription_magazine" label="Magazin" type="string" defaultValue="${magazine_title}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0csazib</bpmn:incoming>
@@ -61,7 +60,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_053mnqj" sourceRef="StartEvent_00v7v90" targetRef="ServiceTask_0h0n2nz" />
     <bpmn:sequenceFlow id="SequenceFlow_128uycg" sourceRef="ServiceTask_0h0n2nz" targetRef="If_Subscribed" />
-    <bpmn:sequenceFlow id="SequenceFlow_0csazib" name="Ne" sourceRef="If_Subscribed" targetRef="UserTask_0t755z5">
+    <bpmn:sequenceFlow id="SequenceFlow_0csazib" name="Ne" sourceRef="If_Subscribed" targetRef="Choose_subscription">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${subscribed==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_1ij4owt" name="Da" sourceRef="If_Subscribed" targetRef="ServiceTask_11ij0gz">
@@ -74,7 +73,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_160akby" name="Ne" sourceRef="ExclusiveGateway_0a92ddr" targetRef="EndEvent_09i8y1o">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${payment_needed==false}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0sr3lv9" sourceRef="UserTask_0t755z5" targetRef="ExclusiveGateway_1k8ax9m" />
+    <bpmn:sequenceFlow id="SequenceFlow_0sr3lv9" sourceRef="Choose_subscription" targetRef="ExclusiveGateway_1k8ax9m" />
     <bpmn:sequenceFlow id="SequenceFlow_1h2k6y7" name="Da" sourceRef="ExclusiveGateway_1k8ax9m" targetRef="ServiceTask_12hdu80">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${subscribe==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -123,7 +122,7 @@
           <dc:Bounds x="785" y="-112" width="75" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_0t755z5_di" bpmnElement="UserTask_0t755z5">
+      <bpmndi:BPMNShape id="UserTask_0t755z5_di" bpmnElement="Choose_subscription">
         <dc:Bounds x="639" y="-97" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1ovt9af_di" bpmnElement="If_Subscribed" isMarkerVisible="true">

@@ -2,21 +2,14 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_15sa6zr" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
   <bpmn:process id="Paper_apply" name="Proces objave casopisa" isExecutable="true">
     <bpmn:startEvent id="Start_paper_apply_process" camunda:initiator="initiator">
-      <bpmn:outgoing>SequenceFlow_1y3c27g</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:userTask id="Choose_magazine" name="Odabir magazina za objavljivanje rada" camunda:assignee="${initiator}">
       <bpmn:extensionElements>
+        <camunda:properties />
         <camunda:formData>
-          <camunda:formField id="magazine" label="Magazin" type="string">
-            <camunda:validation>
-              <camunda:constraint name="required" />
-            </camunda:validation>
-          </camunda:formField>
+          <camunda:formField id="magazine" label="Magazin" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_1y3c27g</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1jwt435</bpmn:outgoing>
-    </bpmn:userTask>
+      <bpmn:outgoing>SequenceFlow_1y3c27g</bpmn:outgoing>
+    </bpmn:startEvent>
     <bpmn:exclusiveGateway id="If_OpenAccess" name="Casopis je Open-access?">
       <bpmn:incoming>SequenceFlow_1neomv6</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_136yanu</bpmn:outgoing>
@@ -55,7 +48,7 @@
               <camunda:constraint name="required" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="keyterms" label="Kljucni pojmovi" type="string">
+          <camunda:formField id="keywords" label="Kljucni pojmovi" type="string">
             <camunda:validation>
               <camunda:constraint name="required" />
             </camunda:validation>
@@ -63,6 +56,11 @@
           <camunda:formField id="pdf" label="Pdf" type="string">
             <camunda:validation>
               <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Enter_paper_metadata_magazine" label="Odabrani magazin" type="string" defaultValue="${magazine_title}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
             </camunda:validation>
           </camunda:formField>
         </camunda:formData>
@@ -75,6 +73,26 @@
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="theme_appropriate" label="Tematski prikladan rad?" type="boolean" />
+          <camunda:formField id="Theme_revision_title" label="Naslov" type="string" defaultValue="${title}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Theme_revision_abstract" label="Abstrakt" type="string" defaultValue="${abstract}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Theme_revision_keywords" label="Kljucne reci" type="string" defaultValue="${keywords}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Theme_revision_field" label="Oblast rada" type="string" defaultValue="${field}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${paperApplicationThemeReviewEndListener}" event="complete" />
       </bpmn:extensionElements>
@@ -101,8 +119,13 @@
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="structure_appropriate" label="Strukturno prikladan rad?" type="boolean" />
-          <camunda:formField id="structure_deadline" label="Rok za ispravku" type="date" />
+          <camunda:formField id="structure_deadline" label="Rok za ispravku" type="string" />
           <camunda:formField id="structure_comment" label="Komentar na strukturu" type="string" />
+          <camunda:formField id="Structure_revision_pdf" label="Sadrzaj rada" type="string" defaultValue="${pdf}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${paperApplicationStructureReviewEndListener}" event="complete" />
       </bpmn:extensionElements>
@@ -118,7 +141,6 @@
     <bpmn:sequenceFlow id="SequenceFlow_0akx4oq" name="Da" sourceRef="If_StructureAppropriate" targetRef="Choose_FieldEditor">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${structure_appropriate==true}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_1kkimm2" sourceRef="Choose_FieldEditor" targetRef="Choose_reviewers" />
     <bpmn:userTask id="Choose_reviewers" name="Odabir recenzenta" camunda:assignee="${field_editor}">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -132,11 +154,19 @@
               <camunda:constraint name="required" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="review_deadline" label="Krajnji rok za recenziju" type="date">
+          <camunda:formField id="review_deadline" label="Krajnji rok za recenziju" type="string">
             <camunda:validation>
               <camunda:constraint name="required" />
             </camunda:validation>
           </camunda:formField>
+          <camunda:formField id="Choose_reviewers_field" label="Naucna oblast" type="string" defaultValue="${field}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="should_review_similar_papers" label="Da li je recenzent vec radio na slicnim radovima?" type="boolean" />
+          <camunda:formField id="should_not_live_nearby_author" label="Da li recenzent ne moze bude osoba koja zivi u blizini autora?" type="boolean" />
+          <camunda:formField id="should_work_in_field" label="Da li recenzent treba da bude strucnjak za oblast?" type="boolean" />
         </camunda:formData>
         <camunda:taskListener delegateExpression="${paperApplicationReviewProposalEndListener}" event="complete" />
       </bpmn:extensionElements>
@@ -144,7 +174,7 @@
       <bpmn:outgoing>SequenceFlow_1wsecq0</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_1wsecq0" sourceRef="Choose_reviewers" targetRef="Review" />
-    <bpmn:userTask id="Review" name="Recenzija">
+    <bpmn:userTask id="Review" name="Recenzija" camunda:dueDate="${review_deadline}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="paper_grade" label="Ocena rada" type="enum" defaultValue="yes">
@@ -160,6 +190,16 @@
           <camunda:formField id="public_comment" label="Komentar" type="string">
             <camunda:validation>
               <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Review_deadline" label="Uraditi do" type="string" defaultValue="${review_deadline}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Review_pdf" label="Rad" type="string" defaultValue="${pdf}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
             </camunda:validation>
           </camunda:formField>
         </camunda:formData>
@@ -186,8 +226,26 @@
             <camunda:value id="minor" name="Prihvatiti uz manje izmene" />
             <camunda:value id="yes" name="Prihvatiti" />
           </camunda:formField>
-          <camunda:formField id="correction_deadline" label="Rok za ispravku rada" type="date" />
-          <camunda:formField id="another_review_needed" label="Potrebna dodatna recenzija?" type="boolean" />
+          <camunda:formField id="correction_deadline" label="Rok za ispravku rada" type="string" />
+          <camunda:formField id="Review_opinion_public_review" label="Komentar recenzenta" type="string" defaultValue="${public_comment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Review_opinion_private_review" label="Privatni komentar recenzenta" type="string" defaultValue="${private_comment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Review_opinion_grade" label="Ocena recenzenta" type="enum" defaultValue="${paper_grade}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+            <camunda:value id="no" name="Odbiti" />
+            <camunda:value id="major" name="Potrebne vece promene" />
+            <camunda:value id="minor" name="Potrebne manje promene" />
+            <camunda:value id="yes" name="Prihvatiti" />
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${paperApplicationReviewEndProposalEndListener}" event="complete" />
       </bpmn:extensionElements>
@@ -207,15 +265,25 @@
     <bpmn:sequenceFlow id="SequenceFlow_0qvkkqz" name="Manje izmene potrebne" sourceRef="If_Decision" targetRef="Minor_UpdateApplication">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision=='minor'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Minor_UpdateApplication" name="Manja izmena rada" camunda:assignee="${initiator}">
+    <bpmn:userTask id="Minor_UpdateApplication" name="Manja izmena rada" camunda:assignee="${initiator}" camunda:dueDate="${correction_deadline}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="pdf" label="Ispravljen rad" type="string">
+          <camunda:formField id="pdf" label="Pdf" type="string">
             <camunda:validation>
               <camunda:constraint name="required" />
             </camunda:validation>
           </camunda:formField>
           <camunda:formField id="modifications" label="Unete promene su" type="string" />
+          <camunda:formField id="Minor_UpdateApplication_comment" label="Komentar recenzenta" type="string" defaultValue="${public_comment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Minor_UpdateApplication_deadline" label="Uraditi do" type="string" defaultValue="${correction_deadline}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${paperApplicationPersistenceService}" event="complete" />
       </bpmn:extensionElements>
@@ -226,7 +294,7 @@
     <bpmn:sequenceFlow id="SequenceFlow_0cfnl52" name="Vece izmene potrebne" sourceRef="If_Decision" targetRef="Major_UpdateApplication">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision=='major'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Major_UpdateApplication" name="Veca izmena rada" camunda:assignee="${initiator}">
+    <bpmn:userTask id="Major_UpdateApplication" name="Veca izmena rada" camunda:assignee="${initiator}" camunda:dueDate="${correction_deadline}">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="pdf" label="Pdf" type="string">
@@ -234,7 +302,16 @@
               <camunda:constraint name="required" />
             </camunda:validation>
           </camunda:formField>
-          <camunda:formField id="modifications" label="Unete promene su" type="string" />
+          <camunda:formField id="Major_UpdateApplication_comment" label="Komentar recenzenta" type="string" defaultValue="${public_comment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Major_UpdateApplication_deadline" label="Uraditi do" type="string" defaultValue="${correction_deadline}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${paperApplicationPersistenceService}" event="complete" />
       </bpmn:extensionElements>
@@ -246,7 +323,28 @@
     <bpmn:userTask id="Check_update" name="Provera izmena rada" camunda:assignee="${field_editor}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="decision_after_correction" label="Ponovna odluka" type="boolean" />
+          <camunda:formField id="decision_after_correction" label="Rad je spreman za objavljivanje?" type="boolean" />
+          <camunda:formField id="correction_deadline" label="Rok za ispravku" type="string" />
+          <camunda:formField id="Check_update_modifications" label="Unete izmene" type="string" defaultValue="${modifications}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Check_update_public_comment" label="Komentar recenzenta" type="string" defaultValue="${public_comment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Check_update_private_comment" label="Privatni komentar recenzenta" type="string" defaultValue="${private_comment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Check_update_pdf" label="Sadrzaj rada" type="string" defaultValue="${pdf}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${finalPaperApplicationChangeCheckListener}" event="complete" />
       </bpmn:extensionElements>
@@ -306,18 +404,27 @@
     <bpmn:sequenceFlow id="SequenceFlow_0f3sjtm" sourceRef="NotifyInitiator_UpgradeApplication" targetRef="Upgrade_application" />
     <bpmn:sequenceFlow id="SequenceFlow_0q5vttg" sourceRef="NotifyEditor_NewPaper" targetRef="Theme_revision" />
     <bpmn:sequenceFlow id="SequenceFlow_0e8rrc5" sourceRef="Choose_editor" targetRef="NotifyEditor_NewPaper" />
-    <bpmn:sequenceFlow id="SequenceFlow_1y3c27g" sourceRef="Start_paper_apply_process" targetRef="Choose_magazine" />
-    <bpmn:sequenceFlow id="SequenceFlow_1jwt435" sourceRef="Choose_magazine" targetRef="Check_magazine_type" />
+    <bpmn:sequenceFlow id="SequenceFlow_1y3c27g" sourceRef="Start_paper_apply_process" targetRef="Check_magazine_type" />
     <bpmn:sequenceFlow id="SequenceFlow_1neomv6" sourceRef="Check_magazine_type" targetRef="If_OpenAccess" />
-    <bpmn:userTask id="Upgrade_application" name="Unos novih podataka za prijavu" camunda:assignee="${initiator}">
+    <bpmn:userTask id="Upgrade_application" name="Unos novih podataka za prijavu" camunda:assignee="${initiator}" camunda:dueDate="${structure_deadline}">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="title" label="Naslov" type="string" />
-          <camunda:formField id="coauthors" label="Koautori" type="string" />
-          <camunda:formField id="abstract" label="Apstrakt" type="string" />
-          <camunda:formField id="field" label="Oblast" type="string" />
-          <camunda:formField id="keyterms" label="Kljucni pojmovi" type="string" />
-          <camunda:formField id="pdf" label="Pdf" type="string" />
+          <camunda:formField id="title" label="Naslov" type="string" defaultValue="${title}" />
+          <camunda:formField id="coauthors" label="Koautori" type="string" defaultValue="${coauthors}" />
+          <camunda:formField id="abstract" label="Apstrakt" type="string" defaultValue="${abstract}" />
+          <camunda:formField id="field" label="Oblast" type="string" defaultValue="${field}" />
+          <camunda:formField id="keywords" label="Kljucni pojmovi" type="string" defaultValue="${keywords}" />
+          <camunda:formField id="pdf" label="Pdf" type="string" defaultValue="${pdf}" />
+          <camunda:formField id="Upgrade_application_comment" label="Komentar" type="string" defaultValue="${structure_comment}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Upgrade_application_deadline" label="Zavrsiti do" type="string" defaultValue="${structure_deadline}">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
         </camunda:formData>
         <camunda:taskListener delegateExpression="${paperApplicationPersistenceService}" event="complete" />
       </bpmn:extensionElements>
@@ -331,7 +438,7 @@
       <bpmn:incoming>SequenceFlow_0kagjmk</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:serviceTask id="Check_magazine_type" name="Provera tipa magazina" camunda:delegateExpression="${checkMagazineTypeService}">
-      <bpmn:incoming>SequenceFlow_1jwt435</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1y3c27g</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1neomv6</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="Choose_editor" name="Odabir urednika casopisa" camunda:delegateExpression="${chooseMagazineEditorService}">
@@ -378,6 +485,9 @@
     <bpmn:sequenceFlow id="SequenceFlow_0kagjmk" sourceRef="NotSubscribed_Error" targetRef="Not_subscribed" />
     <bpmn:sequenceFlow id="SequenceFlow_0sjvh1z" sourceRef="Subscription_subprocess" targetRef="If_OpenAccessJoin" />
     <bpmn:callActivity id="Subscription_subprocess" name="Uplata clanarine" calledElement="Subscription">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1lsil9y</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0sjvh1z</bpmn:outgoing>
     </bpmn:callActivity>
@@ -389,331 +499,325 @@
       <bpmn:outgoing>SequenceFlow_1shbhlf</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_1shbhlf" sourceRef="ServiceTask_1oxnsll" targetRef="EndPaper_Denied" />
+    <bpmn:sequenceFlow id="SequenceFlow_1kkimm2" sourceRef="Choose_FieldEditor" targetRef="Choose_reviewers" />
   </bpmn:process>
   <bpmn:error id="Error_0o2leh9" name="Error_2vl2q2m" errorCode="123" />
   <bpmn:error id="Error_1vnlc6p" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Paper_apply">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Start_paper_apply_process">
-        <dc:Bounds x="-19" y="-16" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_14tztl7_di" bpmnElement="Choose_magazine">
-        <dc:Bounds x="89" y="-38" width="100" height="80" />
+        <dc:Bounds x="-24" y="-21" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_19qu3en_di" bpmnElement="If_OpenAccess" isMarkerVisible="true">
-        <dc:Bounds x="397" y="-23" width="50" height="50" />
+        <dc:Bounds x="397" y="-28" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="381" y="34" width="86" height="27" />
+          <dc:Bounds x="381" y="29" width="86" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_136yanu_di" bpmnElement="SequenceFlow_136yanu">
-        <di:waypoint x="447" y="2" />
-        <di:waypoint x="569" y="2" />
+        <di:waypoint x="447" y="-3" />
+        <di:waypoint x="569" y="-3" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="398" y="-38" width="15" height="14" />
+          <dc:Bounds x="398" y="-43" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1mycdsj_di" bpmnElement="If_OpenAccessJoin" isMarkerVisible="true">
-        <dc:Bounds x="569" y="-23" width="50" height="50" />
+        <dc:Bounds x="569" y="-28" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0m62wfs_di" bpmnElement="SequenceFlow_0m62wfs">
-        <di:waypoint x="447" y="2" />
-        <di:waypoint x="569" y="2" />
+        <di:waypoint x="447" y="-3" />
+        <di:waypoint x="569" y="-3" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="451" y="-18" width="15" height="14" />
+          <dc:Bounds x="451" y="-23" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1q1agpk_di" bpmnElement="SequenceFlow_1q1agpk">
-        <di:waypoint x="619" y="2" />
-        <di:waypoint x="711" y="2" />
+        <di:waypoint x="619" y="-3" />
+        <di:waypoint x="711" y="-3" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1q2hu1q_di" bpmnElement="Enter_paper_metadata">
-        <dc:Bounds x="711" y="-38" width="100" height="80" />
+        <dc:Bounds x="711" y="-43" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_1c156yq_di" bpmnElement="Theme_revision">
-        <dc:Bounds x="1316" y="-152" width="100" height="80" />
+        <dc:Bounds x="1316" y="-157" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_10i6ndp_di" bpmnElement="If_ThemeAppropriate" isMarkerVisible="true">
-        <dc:Bounds x="1341" y="63" width="50" height="50" />
+        <dc:Bounds x="1341" y="58" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1340" y="120" width="52" height="27" />
+          <dc:Bounds x="1340" y="115" width="52" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_1etnt0x_di" bpmnElement="EndPaper_Denied">
-        <dc:Bounds x="1460" y="230" width="36" height="36" />
+        <dc:Bounds x="1460" y="225" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1506" y="232" width="72" height="14" />
+          <dc:Bounds x="1506" y="227" width="72" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0qtt5k4_di" bpmnElement="SequenceFlow_0qtt5k4">
-        <di:waypoint x="1391" y="88" />
-        <di:waypoint x="1478" y="88" />
-        <di:waypoint x="1478" y="230" />
+        <di:waypoint x="1391" y="83" />
+        <di:waypoint x="1478" y="83" />
+        <di:waypoint x="1478" y="225" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1394" y="68" width="15" height="14" />
+          <dc:Bounds x="1394" y="63" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0nferkg_di" bpmnElement="SequenceFlow_0nferkg">
-        <di:waypoint x="1341" y="88" />
-        <di:waypoint x="1191" y="88" />
+        <di:waypoint x="1341" y="83" />
+        <di:waypoint x="1191" y="83" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1321" y="70" width="15" height="14" />
+          <dc:Bounds x="1321" y="65" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_16s2p8l_di" bpmnElement="Structure_revision">
-        <dc:Bounds x="1090" y="48" width="100" height="80" />
+        <dc:Bounds x="1090" y="43" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_0r6w86z_di" bpmnElement="If_StructureAppropriate" isMarkerVisible="true">
-        <dc:Bounds x="507" y="162" width="50" height="50" />
+        <dc:Bounds x="507" y="157" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="504" y="219" width="57" height="27" />
+          <dc:Bounds x="504" y="214" width="57" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0mjpdpy_di" bpmnElement="SequenceFlow_0mjpdpy">
-        <di:waypoint x="1090" y="88" />
-        <di:waypoint x="532" y="88" />
-        <di:waypoint x="532" y="162" />
+        <di:waypoint x="1090" y="83" />
+        <di:waypoint x="532" y="83" />
+        <di:waypoint x="532" y="157" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0akx4oq_di" bpmnElement="SequenceFlow_0akx4oq">
-        <di:waypoint x="507" y="187" />
-        <di:waypoint x="414" y="187" />
+        <di:waypoint x="507" y="182" />
+        <di:waypoint x="429" y="182" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="484" y="169" width="15" height="14" />
+          <dc:Bounds x="485" y="164" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1kkimm2_di" bpmnElement="SequenceFlow_1kkimm2">
-        <di:waypoint x="314" y="195" />
-        <di:waypoint x="204" y="195" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1w5vsv5_di" bpmnElement="Choose_reviewers">
-        <dc:Bounds x="104" y="155" width="100" height="80" />
+        <dc:Bounds x="104" y="150" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1wsecq0_di" bpmnElement="SequenceFlow_1wsecq0">
-        <di:waypoint x="154" y="235" />
-        <di:waypoint x="154" y="389" />
+        <di:waypoint x="154" y="230" />
+        <di:waypoint x="154" y="384" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_15nvyml_di" bpmnElement="Review">
-        <dc:Bounds x="104" y="389" width="100" height="80" />
+        <dc:Bounds x="104" y="384" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1bu1llq_di" bpmnElement="SequenceFlow_1bu1llq">
-        <di:waypoint x="204" y="429" />
-        <di:waypoint x="261" y="429" />
+        <di:waypoint x="204" y="424" />
+        <di:waypoint x="261" y="424" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1c8ck6e_di" bpmnElement="Review_opinion">
-        <dc:Bounds x="261" y="389" width="100" height="80" />
+        <dc:Bounds x="261" y="384" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1c0udb9_di" bpmnElement="If_Decision" isMarkerVisible="true">
-        <dc:Bounds x="554" y="404" width="50" height="50" />
+        <dc:Bounds x="554" y="399" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="492" y="438" width="79" height="27" />
+          <dc:Bounds x="492" y="433" width="79" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_00slmbn_di" bpmnElement="SequenceFlow_00slmbn">
-        <di:waypoint x="596" y="437" />
-        <di:waypoint x="934" y="604" />
+        <di:waypoint x="596" y="432" />
+        <di:waypoint x="934" y="599" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="635" y="445" width="43" height="14" />
+          <dc:Bounds x="635" y="440" width="43" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0qvkkqz_di" bpmnElement="SequenceFlow_0qvkkqz">
-        <di:waypoint x="604" y="429" />
-        <di:waypoint x="835" y="429" />
+        <di:waypoint x="604" y="424" />
+        <di:waypoint x="835" y="424" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="606" y="401" width="69" height="27" />
+          <dc:Bounds x="606" y="396" width="69" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_0dqpm12_di" bpmnElement="Minor_UpdateApplication">
-        <dc:Bounds x="835" y="403" width="100" height="80" />
+        <dc:Bounds x="835" y="398" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0cfnl52_di" bpmnElement="SequenceFlow_0cfnl52">
-        <di:waypoint x="579" y="454" />
-        <di:waypoint x="579" y="610" />
+        <di:waypoint x="579" y="449" />
+        <di:waypoint x="579" y="605" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="578" y="460" width="63" height="27" />
+          <dc:Bounds x="578" y="455" width="63" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_12la1z4_di" bpmnElement="Major_UpdateApplication">
-        <dc:Bounds x="529" y="610" width="100" height="80" />
+        <dc:Bounds x="529" y="605" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_03y2ey6_di" bpmnElement="SequenceFlow_03y2ey6">
-        <di:waypoint x="529" y="650" />
-        <di:waypoint x="32" y="650" />
-        <di:waypoint x="32" y="452" />
-        <di:waypoint x="104" y="452" />
+        <di:waypoint x="529" y="645" />
+        <di:waypoint x="32" y="645" />
+        <di:waypoint x="32" y="447" />
+        <di:waypoint x="104" y="447" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0swohb6_di" bpmnElement="SequenceFlow_0swohb6">
-        <di:waypoint x="935" y="443" />
-        <di:waypoint x="1193" y="443" />
+        <di:waypoint x="935" y="438" />
+        <di:waypoint x="1193" y="438" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_1rzctum_di" bpmnElement="Check_update">
-        <dc:Bounds x="1193" y="403" width="100" height="80" />
+        <dc:Bounds x="1193" y="398" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1euwdto_di" bpmnElement="If_DecisionAfterCorrection" isMarkerVisible="true">
-        <dc:Bounds x="1233" y="527" width="50" height="50" />
+        <dc:Bounds x="1233" y="522" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1278" y="521" width="83" height="27" />
+          <dc:Bounds x="1278" y="516" width="83" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1k6vgn2_di" bpmnElement="SequenceFlow_1k6vgn2">
-        <di:waypoint x="1258" y="483" />
-        <di:waypoint x="1258" y="527" />
+        <di:waypoint x="1258" y="478" />
+        <di:waypoint x="1258" y="522" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_10tz32c_di" bpmnElement="SequenceFlow_10tz32c">
-        <di:waypoint x="1233" y="552" />
-        <di:waypoint x="885" y="552" />
-        <di:waypoint x="885" y="483" />
+        <di:waypoint x="1233" y="547" />
+        <di:waypoint x="885" y="547" />
+        <di:waypoint x="885" y="478" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1219" y="527" width="15" height="14" />
+          <dc:Bounds x="1219" y="522" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1fgp58n_di" bpmnElement="EndPaper_Accepted">
-        <dc:Bounds x="1488" y="611" width="36" height="36" />
+        <dc:Bounds x="1488" y="606" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1466" y="654" width="81" height="14" />
+          <dc:Bounds x="1466" y="649" width="81" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1wwd00c_di" bpmnElement="SequenceFlow_1wwd00c">
-        <di:waypoint x="1258" y="577" />
-        <di:waypoint x="1258" y="608" />
-        <di:waypoint x="1034" y="608" />
+        <di:waypoint x="1258" y="572" />
+        <di:waypoint x="1258" y="603" />
+        <di:waypoint x="1034" y="603" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1269" y="574" width="15" height="14" />
+          <dc:Bounds x="1269" y="569" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0l1vu4s_di" bpmnElement="SequenceFlow_0l1vu4s">
-        <di:waypoint x="579" y="404" />
-        <di:waypoint x="579" y="365" />
-        <di:waypoint x="1428" y="365" />
+        <di:waypoint x="579" y="399" />
+        <di:waypoint x="579" y="360" />
+        <di:waypoint x="1428" y="360" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="605" y="347" width="29" height="14" />
+          <dc:Bounds x="605" y="342" width="29" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0s38432_di" bpmnElement="SequenceFlow_0s38432">
-        <di:waypoint x="1398" y="248" />
-        <di:waypoint x="1460" y="248" />
+        <di:waypoint x="1398" y="243" />
+        <di:waypoint x="1460" y="243" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BoundaryEvent_01bdzy0_di" bpmnElement="UpdateDeadline_finished">
-        <dc:Bounds x="980" y="270" width="36" height="36" />
+        <dc:Bounds x="980" y="265" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1011" y="236" width="62" height="40" />
+          <dc:Bounds x="1011" y="231" width="62" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0del036_di" bpmnElement="SequenceFlow_0del036">
-        <di:waypoint x="1016" y="288" />
-        <di:waypoint x="1348" y="288" />
-        <di:waypoint x="1348" y="267" />
+        <di:waypoint x="1016" y="283" />
+        <di:waypoint x="1348" y="283" />
+        <di:waypoint x="1348" y="262" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BoundaryEvent_0vfd7xr_di" bpmnElement="MinorUpdate_DeadlineFinished">
-        <dc:Bounds x="917" y="385" width="36" height="36" />
+        <dc:Bounds x="917" y="380" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="963" y="390" width="69" height="53" />
+          <dc:Bounds x="963" y="385" width="69" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BoundaryEvent_1mw9kkx_di" bpmnElement="MajorUpdate_DeadlineFinished">
-        <dc:Bounds x="611" y="672" width="36" height="36" />
+        <dc:Bounds x="611" y="667" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="585" y="715" width="88" height="40" />
+          <dc:Bounds x="585" y="710" width="88" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0ek0u1f_di" bpmnElement="SequenceFlow_0ek0u1f">
-        <di:waypoint x="935" y="385" />
-        <di:waypoint x="1399" y="385" />
-        <di:waypoint x="1428" y="385" />
+        <di:waypoint x="935" y="380" />
+        <di:waypoint x="1399" y="380" />
+        <di:waypoint x="1428" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1x30v2q_di" bpmnElement="SequenceFlow_1x30v2q">
-        <di:waypoint x="647" y="690" />
-        <di:waypoint x="1604" y="690" />
-        <di:waypoint x="1604" y="362" />
-        <di:waypoint x="1528" y="362" />
+        <di:waypoint x="647" y="685" />
+        <di:waypoint x="1604" y="685" />
+        <di:waypoint x="1604" y="357" />
+        <di:waypoint x="1528" y="357" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1d5amb2_di" bpmnElement="SequenceFlow_1d5amb2">
-        <di:waypoint x="1366" y="-72" />
-        <di:waypoint x="1366" y="63" />
+        <di:waypoint x="1366" y="-77" />
+        <di:waypoint x="1366" y="58" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1sw8lu4_di" bpmnElement="SequenceFlow_1sw8lu4">
-        <di:waypoint x="557" y="187" />
-        <di:waypoint x="726" y="187" />
+        <di:waypoint x="557" y="182" />
+        <di:waypoint x="726" y="182" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="563" y="167" width="15" height="14" />
+          <dc:Bounds x="563" y="162" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0f3sjtm_di" bpmnElement="SequenceFlow_0f3sjtm">
-        <di:waypoint x="776" y="227" />
-        <di:waypoint x="776" y="248" />
-        <di:waypoint x="898" y="248" />
+        <di:waypoint x="776" y="222" />
+        <di:waypoint x="776" y="243" />
+        <di:waypoint x="898" y="243" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0q5vttg_di" bpmnElement="SequenceFlow_0q5vttg">
-        <di:waypoint x="1184" y="-112" />
-        <di:waypoint x="1316" y="-112" />
+        <di:waypoint x="1184" y="-117" />
+        <di:waypoint x="1316" y="-117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0e8rrc5_di" bpmnElement="SequenceFlow_0e8rrc5">
-        <di:waypoint x="992" y="-38" />
-        <di:waypoint x="992" y="-112" />
-        <di:waypoint x="1084" y="-112" />
+        <di:waypoint x="992" y="-43" />
+        <di:waypoint x="992" y="-117" />
+        <di:waypoint x="1084" y="-117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1y3c27g_di" bpmnElement="SequenceFlow_1y3c27g">
-        <di:waypoint x="17" y="2" />
-        <di:waypoint x="89" y="2" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1jwt435_di" bpmnElement="SequenceFlow_1jwt435">
-        <di:waypoint x="189" y="2" />
-        <di:waypoint x="261" y="2" />
+        <di:waypoint x="12" y="-3" />
+        <di:waypoint x="98" y="-3" />
+        <di:waypoint x="98" y="-2" />
+        <di:waypoint x="184" y="-2" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1neomv6_di" bpmnElement="SequenceFlow_1neomv6">
-        <di:waypoint x="361" y="2" />
-        <di:waypoint x="397" y="2" />
+        <di:waypoint x="284" y="-2" />
+        <di:waypoint x="341" y="-2" />
+        <di:waypoint x="341" y="-3" />
+        <di:waypoint x="397" y="-3" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_03ce79d_di" bpmnElement="Upgrade_application">
-        <dc:Bounds x="898" y="208" width="100" height="80" />
+        <dc:Bounds x="898" y="203" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0s0d0fi_di" bpmnElement="SequenceFlow_0s0d0fi">
-        <di:waypoint x="985" y="208" />
-        <di:waypoint x="985" y="42" />
+        <di:waypoint x="985" y="203" />
+        <di:waypoint x="985" y="37" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1a433rp_di" bpmnElement="SequenceFlow_1a433rp">
-        <di:waypoint x="1034" y="629" />
-        <di:waypoint x="1298" y="629" />
+        <di:waypoint x="1034" y="624" />
+        <di:waypoint x="1298" y="624" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_04w002p_di" bpmnElement="SequenceFlow_04w002p">
-        <di:waypoint x="1398" y="629" />
-        <di:waypoint x="1488" y="629" />
+        <di:waypoint x="1398" y="624" />
+        <di:waypoint x="1488" y="624" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_15p8ebd_di" bpmnElement="Not_subscribed">
         <dc:Bounds x="647" y="-199" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="622" y="-153.5" width="85" height="53" />
+          <dc:Bounds x="622" y="-158" width="85" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_17z5mjz_di" bpmnElement="Check_magazine_type">
-        <dc:Bounds x="261" y="-38" width="100" height="80" />
+        <dc:Bounds x="184" y="-42" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_0fidyep_di" bpmnElement="Choose_editor">
-        <dc:Bounds x="942" y="-38" width="100" height="80" />
+        <dc:Bounds x="942" y="-43" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_04zs9r5_di" bpmnElement="NotifyEditor_NewPaper">
-        <dc:Bounds x="1084" y="-152" width="100" height="80" />
+        <dc:Bounds x="1084" y="-157" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1bwii06_di" bpmnElement="NotifyInitiator_UpgradeApplication">
-        <dc:Bounds x="726" y="147" width="100" height="80" />
+        <dc:Bounds x="726" y="142" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_0qtoiie_di" bpmnElement="NotifyInitiator_Upgrade">
-        <dc:Bounds x="1298" y="187" width="100" height="80" />
+        <dc:Bounds x="1298" y="182" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_1ra9v8l_di" bpmnElement="Choose_FieldEditor">
-        <dc:Bounds x="314" y="147" width="100" height="80" />
+        <dc:Bounds x="329" y="142" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_152g9ek_di" bpmnElement="NotifyInitiator_Accepted">
-        <dc:Bounds x="934" y="589" width="100" height="80" />
+        <dc:Bounds x="934" y="584" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_012kpjt_di" bpmnElement="SequenceFlow_012kpjt">
-        <di:waypoint x="361" y="429" />
-        <di:waypoint x="554" y="429" />
+        <di:waypoint x="361" y="424" />
+        <di:waypoint x="554" y="424" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1oq5nfq_di" bpmnElement="Save_paper">
-        <dc:Bounds x="1298" y="589" width="100" height="80" />
+        <dc:Bounds x="1298" y="584" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1lsil9y_di" bpmnElement="SequenceFlow_1lsil9y">
-        <di:waypoint x="422" y="-23" />
+        <di:waypoint x="422" y="-28" />
         <di:waypoint x="422" y="-141" />
         <di:waypoint x="471" y="-141" />
       </bpmndi:BPMNEdge>
@@ -727,21 +831,25 @@
       <bpmndi:BPMNEdge id="SequenceFlow_0sjvh1z_di" bpmnElement="SequenceFlow_0sjvh1z">
         <di:waypoint x="571" y="-141" />
         <di:waypoint x="594" y="-141" />
-        <di:waypoint x="594" y="-23" />
+        <di:waypoint x="594" y="-28" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="CallActivity_0ga0lmv_di" bpmnElement="Subscription_subprocess">
         <dc:Bounds x="471" y="-181" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0terl1g_di" bpmnElement="SequenceFlow_0terl1g">
-        <di:waypoint x="811" y="2" />
-        <di:waypoint x="942" y="2" />
+        <di:waypoint x="811" y="-3" />
+        <di:waypoint x="942" y="-3" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1oxnsll_di" bpmnElement="ServiceTask_1oxnsll">
-        <dc:Bounds x="1428" y="337" width="100" height="80" />
+        <dc:Bounds x="1428" y="332" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1shbhlf_di" bpmnElement="SequenceFlow_1shbhlf">
-        <di:waypoint x="1478" y="337" />
-        <di:waypoint x="1478" y="266" />
+        <di:waypoint x="1478" y="332" />
+        <di:waypoint x="1478" y="261" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1kkimm2_di" bpmnElement="SequenceFlow_1kkimm2">
+        <di:waypoint x="329" y="190" />
+        <di:waypoint x="204" y="190" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
