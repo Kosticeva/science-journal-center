@@ -60,6 +60,15 @@ public class PaperApplicationPersistenceService implements TaskListener {
         String pdf = runtimeService.getVariable(delegateExecution.getId(), "pdf").toString();
 
         PaperApplication paperApplication = new PaperApplication();
+        Long paperId = (Long) runtimeService.getVariable(delegateExecution.getId(), "applicationId");
+        if (paperId != null) {
+            PaperApplication existingApp = paperApplicationRepository.getOne(paperId);
+            paperApplication.setVersion(existingApp.getVersion() + 1);
+            paperApplication.setId(existingApp.getId());
+        } else {
+            paperApplication.setVersion(0);
+        }
+
         paperApplication.setAuthor(credentialsRepository.getOne(author));
         paperApplication.setKeyTerms(keyterms);
         paperApplication.setPaperAbstract(anAbstract);
@@ -99,13 +108,7 @@ public class PaperApplicationPersistenceService implements TaskListener {
             paperApplication.setState(PaperApplicationState.THEME_REVISION);
             paperApplication.setFile(pdf);
 
-            Long paperId = (Long) runtimeService.getVariable(delegateExecution.getId(), "applicationId");
-            if (paperId != null) {
-                PaperApplication existingApp = paperApplicationRepository.getOne(paperId);
-                paperApplication.setVersion(existingApp.getVersion() + 1);
-            } else {
-                paperApplication.setVersion(0);
-            }
+
 
             if (PaperApplicationState.MAJOR_PAPER_CORRECTION.equals(paperApplication.getState())) {
                 paperApplication.setState(PaperApplicationState.REVIEW);

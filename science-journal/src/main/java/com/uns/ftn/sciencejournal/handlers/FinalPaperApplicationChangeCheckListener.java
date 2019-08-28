@@ -1,7 +1,6 @@
 package com.uns.ftn.sciencejournal.handlers;
 
 import com.uns.ftn.sciencejournal.model.common.PaperApplication;
-import com.uns.ftn.sciencejournal.model.enums.PaperApplicationState;
 import com.uns.ftn.sciencejournal.repository.common.PaperApplicationRepository;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -29,7 +28,7 @@ public class FinalPaperApplicationChangeCheckListener implements TaskListener {
 
         boolean isValidAfterCorrection = (boolean) runtimeService.getVariable(delegateExecution.getId(), "decision_after_correction");
 
-        if(isValidAfterCorrection) {
+        if (isValidAfterCorrection) {
             app.setAccepted(true);
         }
 

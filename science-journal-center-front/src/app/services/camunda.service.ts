@@ -17,12 +17,12 @@ export class CamundaService {
 
   startProcessWithVariables(processKey: string, variableList: any[]): Observable<any> {
     
-    let variable = {};
+    let variables = {};
     for(let v of variableList) {
-      variable[v.name] = { "value": v.value};
+      variables[v.name] = { "value": v.value};
     }
 
-    return this.http.post(this.CAMUNDA_URL + `process-definition/key/${processKey}/start`, variable);
+    return this.http.post(this.CAMUNDA_URL + `process-definition/key/${processKey}/start`, { variables: variables });
   }
 
   getTasksForProcessId(processId: String): Observable<any[]> {
