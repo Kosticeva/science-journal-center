@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
   doi: string;
   price: number;
   currency: string;
-  issue: number;
+  issue: number = 0;
   issues: Issue[];
 
   constructor(

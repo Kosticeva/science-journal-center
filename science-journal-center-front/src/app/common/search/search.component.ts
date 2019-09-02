@@ -22,7 +22,7 @@ export class SearchComponent implements OnInit {
   boolQuery: string = "";
   downloadable: string = null;
 
-  fields: any[];
+  fields: any[] = [];
 
   constructor(
     private searchService: SearchService,
@@ -130,11 +130,13 @@ export class SearchComponent implements OnInit {
   }
 
   buy(thing: any) {
-    let purchase = new PaperPurchase(null, new Date(), this.loginService.getUser(), null, 0, thing.doi, thing.price, thing.currency);
-    this.purchaseService.buyPaper(purchase).subscribe(
+    //let purchase = new PaperPurchase(null, new Date(), this.loginService.getUser(), null, 0, thing.doi, thing.price, thing.currency);
+    this.purchaseService.buyPaper(thing.doi).subscribe(
       (data) => {
-        alert("Uspesna kupovina");
-        this.downloadable = thing.doi;
+        window.open(data.link, '_blank');
+      },
+      (error) => {
+        alert("Doslo je do greske pri kupovini");
       }
     )
   }

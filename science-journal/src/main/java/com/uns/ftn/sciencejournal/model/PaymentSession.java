@@ -14,14 +14,22 @@ import java.time.LocalDateTime;
 public class PaymentSession implements Serializable {
 
 	private String username;
+
+	//
 	private String issn;
 	private Double price;
 	private String currency;
 	private String merchandise;
+	private String description;
 	private LocalDateTime timestamp;
-	private String buyerFirstName;
-	private String buyerLastName;
+	private String buyerSurname;
+	private String buyerName;
 	private String buyerEmail;
+	private String payerId;
+	private String type;
+	private String productId;
+	private Integer quantity;
+	//
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +39,7 @@ public class PaymentSession implements Serializable {
 	}
 
 	public PaymentSession(String username, String issn, Double price, String currency, String merchandise,
-						  LocalDateTime timestamp, Long id) {
+				   LocalDateTime timestamp, Long id) {
 		this.username = username;
 		this.issn = issn;
 		this.price = price;
@@ -97,28 +105,68 @@ public class PaymentSession implements Serializable {
 		this.username = username;
 	}
 
-	public String getBuyerFirstName() {
-		return buyerFirstName;
-	}
-
-	public void setBuyerFirstName(String buyerFirstName) {
-		this.buyerFirstName = buyerFirstName;
-	}
-
-	public String getBuyerLastName() {
-		return buyerLastName;
-	}
-
-	public void setBuyerLastName(String buyerLastName) {
-		this.buyerLastName = buyerLastName;
-	}
-
 	public String getBuyerEmail() {
 		return buyerEmail;
 	}
 
+	public String getProductId() {
+		return productId;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
 	public void setBuyerEmail(String buyerEmail) {
 		this.buyerEmail = buyerEmail;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getBuyerSurname() {
+		return buyerSurname;
+	}
+
+	public void setBuyerSurname(String buyerSurname) {
+		this.buyerSurname = buyerSurname;
+	}
+
+	public String getBuyerName() {
+		return buyerName;
+	}
+
+	public void setBuyerName(String buyerName) {
+		this.buyerName = buyerName;
+	}
+
+	public String getPayerId() {
+		return payerId;
+	}
+
+	public void setPayerId(String payerId) {
+		this.payerId = payerId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

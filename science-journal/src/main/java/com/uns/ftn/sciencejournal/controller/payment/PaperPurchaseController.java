@@ -14,6 +14,7 @@ import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import com.uns.ftn.sciencejournal.service.payment.PaperPurchaseService;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +43,10 @@ public class PaperPurchaseController {
 
     @Autowired
     JwtTokenProvider provider;
+
+    @Autowired
+    @Qualifier("simpleRestTemplate")
+    RestTemplate simpleRestTemplate;
 
     @GetMapping(value = "/my", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PaperPurchaseDTO>> getPaperPurchasesForLoggedUser(javax.servlet.http.HttpServletRequest request) {
@@ -112,8 +117,8 @@ public class PaperPurchaseController {
         Credentials credentials = credentialsRepository.findFirstByUsername(provider.parseToken(request));
 
         session.setUsername(credentials.getUsername());
-        session.setBuyerFirstName(credentials.getUserDetails().getfName());
-        session.setBuyerLastName(credentials.getUserDetails().getlName());
+        session.setBuyerName(credentials.getUserDetails().getfName());
+        session.setBuyerSurname(credentials.getUserDetails().getlName());
         session.setBuyerEmail(credentials.getUserDetails().getEmail());
 
         Paper paper = paperRepository.getOne(doi);
@@ -121,11 +126,11 @@ public class PaperPurchaseController {
         session.setMerchandise(paper.getTitle());
         session.setPrice(paper.getPrice());
         session.setCurrency(paper.getCurrency());
+        session.setQuantity(1);
 
-        RestTemplate template = new RestTemplate();
-        ResponseEntity<String> responseToken = template.postForEntity("https://localhost:8080/sessions", session, String.class);
+        ResponseEntity<String> responseToken = simpleRestTemplate.postForEntity("https://localhost:8080/sessions", session, String.class);
 
         String jwtSessionToken = new Gson().fromJson(responseToken.getBody(), JsonObject.class).get("token").getAsString().substring(6);
-        return ResponseEntity.ok().body("{\"link: \": \"https://localhost:4200/#/choose-payment/" + jwtSessionToken + "\"}");
+        return ResponseEntity.ok().body("{\"link\": \"https://localhost:4200/#/choose-payment/" + jwtSessionToken + "\"}");
     }
 }

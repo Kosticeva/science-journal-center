@@ -49,7 +49,7 @@ export class PurchaseService {
     return this.http.get<Paper>(`http://localhost:8090/api/papers/${doi}`);
   }
 
-  public buyPaper(purchase: PaperPurchase): Observable<PaperPurchase> {
-    return this.http.post<PaperPurchase>(`http://localhost:8090/api/paperPurchases`, purchase);
+  public buyPaper(doi: string): Observable<string> {
+    return this.http.get<string>(`http://localhost:8090/api/paperPurchases/buy/${doi}`);
   }
 }
