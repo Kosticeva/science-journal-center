@@ -15,7 +15,7 @@ public class SubscriptionPurchaseDTO {
 
     private Integer paymentOption;
 
-    private Long subscription;
+    private String subscription;
 
     private Double amount;
 
@@ -24,7 +24,7 @@ public class SubscriptionPurchaseDTO {
     public SubscriptionPurchaseDTO() {
     }
 
-    public SubscriptionPurchaseDTO(String user, String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, Long subscription, Double amount, String currency) {
+    public SubscriptionPurchaseDTO(String user, String id, LocalDateTime timeOfPurchase, Boolean successful, Integer paymentOption, String subscription, Double amount, String currency) {
         this.user = user;
         this.id = id;
         this.timeOfPurchase = timeOfPurchase;
@@ -91,11 +91,11 @@ public class SubscriptionPurchaseDTO {
         this.paymentOption = paymentOption;
     }
 
-    public Long getSubscription() {
+    public String getSubscription() {
         return subscription;
     }
 
-    public void setSubscription(Long subscription) {
+    public void setSubscription(String subscription) {
         this.subscription = subscription;
     }
 

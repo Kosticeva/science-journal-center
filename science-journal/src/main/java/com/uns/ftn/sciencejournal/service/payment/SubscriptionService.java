@@ -62,7 +62,7 @@ public class SubscriptionService {
         return currentSub;
     }
 
-    public Subscription getById(Long id) {
+    public Subscription getById(String id) {
         return subscriptionRepository.findById(id).orElse(null);
     }
 
@@ -71,10 +71,6 @@ public class SubscriptionService {
     }
 
     public Subscription createSubscription(Subscription subscription) {
-
-        if (subscription.getId() != null) {
-            return null;
-        }
 
         if (!checkSubscriptionValidity(subscription)) {
             return null;
@@ -88,7 +84,7 @@ public class SubscriptionService {
         return subscriptionRepository.save(subscription);
     }
 
-    public Subscription updateSubscription(Subscription newSubscription, Long id) {
+    public Subscription updateSubscription(Subscription newSubscription, String id) {
 
         if (id == null) {
             return null;
@@ -136,7 +132,7 @@ public class SubscriptionService {
         return true;
     }
 
-    public void deleteSubscription(Long id) {
+    public void deleteSubscription(String id) {
         if (id != null) {
             subscriptionRepository.deleteById(id);
         }

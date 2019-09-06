@@ -52,7 +52,7 @@ public class SubscriptionController {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SubscriptionDTO> getSubscriptionById(@PathVariable("id") Long id) {
+    public ResponseEntity<SubscriptionDTO> getSubscriptionById(@PathVariable("id") String id) {
         if (!id.equals(null)) {
             return ResponseEntity.ok(subscriptionMapper.mapToDTO(subscriptionService.getById(id)));
         }
@@ -76,7 +76,7 @@ public class SubscriptionController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SubscriptionDTO> updateSubscription(@PathVariable("id") Long id,
+    public ResponseEntity<SubscriptionDTO> updateSubscription(@PathVariable("id") String id,
                                                               @RequestBody SubscriptionDTO newSubscription) {
         if (!newSubscription.getId().equals(null) && !id.equals(null)) {
             Subscription subscription = subscriptionService.updateSubscription(
@@ -91,7 +91,7 @@ public class SubscriptionController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteSubscription(@PathVariable("id") Long id) {
+    public ResponseEntity deleteSubscription(@PathVariable("id") String id) {
         if (!id.equals(null)) {
             subscriptionService.deleteSubscription(id);
             return ResponseEntity.ok(null);

@@ -1,18 +1,28 @@
 package com.uns.ftn.sciencejournal.service.payment;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.uns.ftn.sciencejournal.model.common.Magazine;
+import com.uns.ftn.sciencejournal.model.payment.Subscription;
 import com.uns.ftn.sciencejournal.model.payment.SubscriptionPurchase;
 import com.uns.ftn.sciencejournal.model.users.Credentials;
 import com.uns.ftn.sciencejournal.repository.payment.PaymentOptionRepository;
 import com.uns.ftn.sciencejournal.repository.payment.SubscriptionPurchaseRepository;
-import com.uns.ftn.sciencejournal.repository.payment.SubscriptionRepository;
 import com.uns.ftn.sciencejournal.repository.users.CredentialsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 @Service
 public class SubscriptionPurchaseService {
@@ -21,13 +31,17 @@ public class SubscriptionPurchaseService {
     SubscriptionPurchaseRepository subscriptionPurchaseRepository;
 
     @Autowired
-    SubscriptionRepository subscriptionRepository;
+    SubscriptionService subscriptionService;
 
     @Autowired
     PaymentOptionRepository paymentOptionRepository;
 
     @Autowired
     CredentialsRepository credentialsRepository;
+
+    @Autowired
+    @Qualifier("simpleRestTemplate")
+    private RestTemplate simpleRestTemplate;
 
     public List<SubscriptionPurchase> getAllFromUser(String username) {
         Credentials user = credentialsRepository.findFirstByUsername(username);
@@ -48,16 +62,11 @@ public class SubscriptionPurchaseService {
 
     public SubscriptionPurchase createSubscriptionPurchase(SubscriptionPurchase subscriptionPurchase) {
 
-        if (subscriptionPurchase.getTransactionId() != null) {
-            return null;
-        }
-
         if (!checkSubscriptionPurchaseValidity(subscriptionPurchase)) {
             return null;
         }
 
-        subscriptionPurchase.setTimeOfPurchase(LocalDateTime.now());
-        subscriptionPurchase.setSuccessful(null);
+        subscriptionPurchase.setSuccessful(true);
         subscriptionPurchase.setTransactionId(UUID.randomUUID().toString());
 
         return subscriptionPurchaseRepository.save(subscriptionPurchase);
@@ -113,7 +122,7 @@ public class SubscriptionPurchaseService {
             return false;
         }
 
-        if (subscriptionRepository.getOne(subscriptionPurchase.getSubscription().getId()) == null) {
+        if (subscriptionService.getById(subscriptionPurchase.getSubscription().getId()) == null) {
             return false;
         }
 
@@ -125,6 +134,4 @@ public class SubscriptionPurchaseService {
             subscriptionPurchaseRepository.deleteById(id);
         }
     }
-
-
 }

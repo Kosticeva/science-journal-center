@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class SubscriptionDTO {
 
-    private Long id;
+    private String id;
 
     private String user;
 
@@ -24,7 +24,7 @@ public class SubscriptionDTO {
     public SubscriptionDTO() {
     }
 
-    public SubscriptionDTO(String user, Long id, String magazine, SubscriptionType type, LocalDate date,
+    public SubscriptionDTO(String user, String id, String magazine, SubscriptionType type, LocalDate date,
                            Boolean paid, Boolean cancelled) {
         this.user = user;
         this.id = id;
@@ -67,11 +67,11 @@ public class SubscriptionDTO {
                 '}';
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -45,6 +45,14 @@ export class CamundaService {
     return this.http.get(this.CAMUNDA_URL + `task/${taskId}/rendered-form`, {headers: headers, responseType: 'text'});
   }
 
+  getVariable(processId: string, variable: string): Observable<any> {
+
+    let headers = new HttpHeaders({
+          'Content-Type': 'application/json'
+      });
+    return this.http.get(this.CAMUNDA_URL + `process-instance/${processId}/variables/${variable}`, {headers: headers, responseType: 'text'});
+  }
+
   submitTaskForm(formFields: any[], taskId: string): Observable<any> {
 
     let variables = {};
